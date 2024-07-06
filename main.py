@@ -58,27 +58,49 @@ def compile(code):
             case "?":
                 match base:
                     case "push": 
-                        Push(vars.get(name))
+                        Push(vars[name])
                     
                     case base if base.startswith("("):
-                        vars.get(name).set_equation(base)
-                        vars.get(name).prepare(vars)
+                        
+                        if vars[name].type == Token.MO:
+                            vars[name].set_equation(base)
+                            vars[name].prepare(vars)
+
+                        elif vars[name].type == Token.FUNC:
+                            
+                            vars[name].set_function(base, vars)
+                            #print(vars[name].function)
+
 
                     case "w":
-                        vars.get(name).change_value(paramsList[0])              
+                        vars[name].change_value(paramsList[0])          
+
+                    case "call":
+                        vars[name].call(vars)
                     
             
                     case _:
+                        print("start")
                         Error(201, base).as_string()
             
             case "#":
                 match base:
                     case "CT":
-                        print(vars.get(name))
-                        change_type(vars.get(name), vars, paramsList[0]) # [0] = Type to change
+                        change_type(vars[name], vars, paramsList[0]) # [0] = Type to change
 
                     case "MO":
                         var = MathObject(name)
+                        vars.update({var.name: var})
+                    
+                    case "FUNC":
+                        if 0 <= 1 < len(paramsList):
+                            if paramsList[1] == "~1":
+                                var = Function(name, paramsList[0], True)
+                            else:
+                                var = Function(name, paramsList[0], False)
+                        else:
+                            var = Function(name, paramsList[0])
+
                         vars.update({var.name: var})
 
                     case base if base in TYPES:
@@ -96,8 +118,8 @@ def compile(code):
                         Error(201, base).as_string()
 
     
-    #print(vars.get("a").type)
-    print(vars)
+    
+    print("\n", vars)
 
 
 

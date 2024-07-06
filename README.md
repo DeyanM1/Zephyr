@@ -1,9 +1,8 @@
 
-# Z-Lang
+# Lysia code
 
-My own Varaible based programming language
+My own Variable based programming language
 
-  
   
 # Syntax
 ## Writing
@@ -20,11 +19,11 @@ VARIABLES ARE LOWERCASE!
 
 ```
 PT = Printable Text
-MO = Math Object
 INT = Integer
+MO = Math Object
+FUNC = Function 
 
   
-
 ~1 = True
 ~0 = False
 
@@ -70,5 +69,17 @@ INT = Integer
 # Pass equation
 <Variable Name> ? (<equation>)
 Format: ('a'+'b')  
+```
+## Functions
+Return Types: RES -> Result
+```
+# Declare Function
+<Variable Name> # FUNC:<returnType>|(~1/~0); [1] With Undefined state ; [2] if the used variables can change if you call the function after variable change
 
+# Pass 
+<Variable Name> ? (<equation>)
+Format: ('a'+'b')
+
+# Functions have to be called:
+<Variable Name> ? call:;
 ```

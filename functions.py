@@ -6,7 +6,7 @@ PT_reg = "^'.*'$"
 
 DIGITS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
-TYPES = ["INT", "MO", "PT"]
+TYPES = ["INT", "MO", "PT", "FUNC"]
 
 class Token:
     def __init__(self, type_):
@@ -25,6 +25,9 @@ class Token:
     
     def MO(self):
         return self.type
+    
+    def FUNC(self):
+        return self.type
 
 class Error:
     def __init__(self, exception_code:int, details):
@@ -42,6 +45,7 @@ class Error:
             case 107: print("ERROR: Variable Value inappropriate for changing to: |  %s" % self.details)
             case 201: print("ERROR: Unknown Function | Name: %s" % self.details)
             case 301: print("ERROR: No Digits in Math equations | Value: %s" % self.details)
+            case 401: print("ERROR: Unknown Return function | Function: %s" % self.details)
         quit()
 
 
@@ -68,7 +72,6 @@ def assign_type(type):
         case "PT": return Token.PT
         case "MO": return Token.MO
 
-
 def change_type(var, vars, newType):
         check_existance(vars, var.name)
  
@@ -78,7 +81,7 @@ def change_type(var, vars, newType):
         if var.const:
             Error(102, var.name).as_string()
 
-        if var.type == Token.MO:
+        if var.type == Token.MO or var.type == Token.FUNC:
             #print("type", assign_type(newType))
             vars.update({var.name: Variable(name=var.name, type=newType, value=var.value, const=var.const)})
 
@@ -93,7 +96,8 @@ def change_type(var, vars, newType):
 def Push(var):
         if var.type != Token.PT:
             Error(104, var.name).as_string()
-        print(var.value)
+        print("PUSH: ", var.value)
+
 
 
 class Variable:
@@ -130,8 +134,6 @@ class Variable:
         return True
 
 
-
-
 class MathObject:
     def __init__(self, name, value = 0, equation = ()):
         self.name = name
@@ -148,7 +150,7 @@ class MathObject:
         self.equation = equation
 
     def prepare(self, vars):
-        print(self.equation)
+        self.calculation = ""
         in_var = False
         varstr = ""
 
@@ -181,20 +183,39 @@ class MathObject:
         self.calculate()
         #print(f"Variables: {varList} \nCalculation: {self.calculation}")
 
-
     def calculate(self):
         # TODO: make better calculation, because very unsave: https://stackoverflow.com/questions/9685946/math-operations-from-string
         
         self.value = eval(self.calculation)
-        #print(self.value, " | ", self.calculation)
 
+class Function:
+    def __init__(self, name, return_func, call_const = False, function="",  value = 0):
+        return_func_commands = ["RES"]
 
+        self.name = name
+        self.type = Token.FUNC # >> For Consistency
+        self.const = False # >> For Consistency
+        self.value = value
 
+        self.call_const = call_const
+        self.function = function
+        self.MO_equation = None
+        self.return_func = return_func if return_func in return_func_commands else Error(401, self.name).as_string()
 
+    def set_function(self, function, vars):
+        
+        self.MO_equation = MathObject(name = self.name, equation=function)
+        self.MO_equation.prepare(vars=vars)
+        
 
-
-
-
+    def call(self, vars):
+        #print("Const: ", self.call_const)
+        if not self.call_const:
+            self.MO_equation.prepare(vars=vars)
+            self.value = self.MO_equation.value
+        else: 
+            self.value = self.MO_equation.value
+"""
 class MATH_LEXER:
     def __init__(self, equation):
         self.current_char = None
@@ -211,3 +232,4 @@ class MATH_LEXER:
         while self.current_char != None:
             if self.current_char in '\t':
                 self.advance
+"""

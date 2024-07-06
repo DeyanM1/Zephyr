@@ -1,11 +1,17 @@
-mo # MO:;
+func # FUNC:RES|~0;
 
 a # INT:5;
 b # INT:3;
-c # INT:2;
 
-mo ? ('a'*('b'+'c')):;
+func ? ('a'+'b'):;
 
-mo # CT:PT;
+func ? call:;
 
-mo ? push:;
+b # INT:2;
+
+func ? call:;
+
+func # CT:PT;
+
+func ? push:;
+
