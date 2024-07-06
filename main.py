@@ -2,9 +2,9 @@ from functions import *
 
 
 
-TYPES = ["INT", "FLOAT", "PT"]
+TYPES = ["INT", "PT"]
 USE_COMMANDS = ["?"]
-DIGITS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
 
 """
     PT = Printable Text
@@ -51,32 +51,21 @@ def compile(code):
         name, base = name.replace(" ", ""), base.replace(" ", "")
 
 
+        if name.startswith("#"):
+            continue
+
         match func:
             case "?":
                 match base:
                     case "push": 
-                        Push(vars, name).print()
+                        Push(vars.get(name))
                     
-                    case "CT":
-    
-                        vars.get(name).change_type(vars, paramsList[0]) # [0] = Type to change
-
-                        #check_existance(vars, name)
-                        #if not paramsList[0] in TYPES:
-                        #    Error(105, paramsList[0]).as_string()
-                        #if vars.get(name).change_type(paramsList[0]) != True:
-                        #    Error(102, paramsList[0]).as_string()
-                        
-
-                
-                    case "(":
-                        pass
+                    case base if base.startswith("("):
+                        vars.get(name).set_equation(base)
+                        vars.get(name).prepare(vars)
 
                     case "w":
-                        vars.get(name).change_value(paramsList[0])
-
-                        #vars.update({var.name: var})
-                    
+                        vars.get(name).change_value(paramsList[0])              
                     
             
                     case _:
@@ -84,6 +73,14 @@ def compile(code):
             
             case "#":
                 match base:
+                    case "CT":
+                        print(vars.get(name))
+                        change_type(vars.get(name), vars, paramsList[0]) # [0] = Type to change
+
+                    case "MO":
+                        var = MathObject(name)
+                        vars.update({var.name: var})
+
                     case base if base in TYPES:
                         if 0 <= 1 < len(paramsList):
                             if paramsList[1] == "~1":
@@ -94,24 +91,18 @@ def compile(code):
                             var = Variable(name, base, paramsList[0], False)
 
                         vars.update({var.name: var})
+                    
+                    case _:
+                        Error(201, base).as_string()
 
-            
-            case "+":
-                match base:
-                    case "+":
-                        match paramsList[0]:
-                            case "+":
-                                values = []
-                                for i in range(2, len(paramsList)):
-                                    values.append(paramsList[i])
-                                vars.get(name).math(paramsList[0], values)
-
+    
+    #print(vars.get("a").type)
     print(vars)
 
 
 
 if __name__ == "__main__":
-    c = convert("code.zl")
+    c = convert("code.lys")
     #print(c)
     compile(c)
     #print(compile(c))

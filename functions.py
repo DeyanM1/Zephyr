@@ -3,10 +3,10 @@ int_reg = "^\d+$" #"^\*\d*\*$"
 PT_reg = "^'.*'$"
 
 
-TT_INT = "TT_INT"
-TT_FLOAT = "TT_FLOAT"
 
-TYPES = ["INT", "FLOAT", "PT"]
+DIGITS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+
+TYPES = ["INT", "MO", "PT"]
 
 class Token:
     def __init__(self, type_):
@@ -22,6 +22,9 @@ class Token:
 
     def PT(self):
         return self.type
+    
+    def MO(self):
+        return self.type
 
 class Error:
     def __init__(self, exception_code:int, details):
@@ -36,14 +39,13 @@ class Error:
             case 104: print("ERROR: Value not a printable Text | Value: %s" % self.details)
             case 105: print("ERROR: Unknown variable | Variable: %s" % self.details)
             case 106: print("ERROR: Variable type not supported | Value: %s" % self.details)
+            case 107: print("ERROR: Variable Value inappropriate for changing to: |  %s" % self.details)
             case 201: print("ERROR: Unknown Function | Name: %s" % self.details)
+            case 301: print("ERROR: No Digits in Math equations | Value: %s" % self.details)
         quit()
 
 
 def check_type_value(type, value):
-    #if value is Token.__class__:
-    #    pass
-    #else:
     match type:
         case "INT" | Token.INT:
             if not re.search(int_reg, value):
@@ -64,35 +66,56 @@ def assign_type(type):
     match type:
         case "INT": return Token.INT
         case "PT": return Token.PT
+        case "MO": return Token.MO
 
 
+def change_type(var, vars, newType):
+        check_existance(vars, var.name)
+ 
+        if not newType in TYPES:
+            Error(106, newType).as_string() 
+
+        if var.const:
+            Error(102, var.name).as_string()
+
+        if var.type == Token.MO:
+            #print("type", assign_type(newType))
+            vars.update({var.name: Variable(name=var.name, type=newType, value=var.value, const=var.const)})
+
+        if check_type_value(newType, var.value):
+            var.type = assign_type(newType)
+        else:
+            Error(107, newType).as_string()
+
+        return vars
+
+
+def Push(var):
+        if var.type != Token.PT:
+            Error(104, var.name).as_string()
+        print(var.value)
 
 
 class Variable:
     def __init__(self, name, type, value, const = False):
         self.name = name
-        if check_type_value(type, value) :
-            self.type = assign_type(type)
-        else:
-            Error(101, self.name).as_string()
+        self.type = assign_type(type) if check_type_value(type, value) else Error(101, self.name).as_string()
         self.value = value
         self.const = const
-        self.message = ""
-        #print("Declaration")
 
-    def change_type(self, vars, type):
+    def change_type(self, vars, newType):
         check_existance(vars, self.name)
 
         if self.const:
-            return False
+            Error(102, self.name).as_string()
         
-        if not type in TYPES:
-            Error(106, type).as_string() 
+        if not newType in TYPES:
+            Error(106, newType).as_string() 
         
-        if check_type_value(type, self.value):
-            self.type = assign_type(type)
+        if check_type_value(newType, self.value):
+            self.type = assign_type(newType)
         else:
-            Error(101, self.name).as_string()
+            Error(107, newType).as_string()
 
         return True
     
@@ -105,26 +128,73 @@ class Variable:
         
         self.value = value
         return True
+
+
+
+
+class MathObject:
+    def __init__(self, name, value = 0, equation = ()):
+        self.name = name
+        self.type = Token.MO  # >> For Consistency
+        self.const = False # >> For Consistency
+        self.value = value
+
+        self.equation = equation
+        self.calculation = ""
+
+
     
-    def Push(self):
-        return
+    def set_equation(self, equation):
+        self.equation = equation
+
+    def prepare(self, vars):
+        print(self.equation)
+        in_var = False
+        varstr = ""
 
 
-    def math(self, operator, values: list):
-        if self.const:
-            Error(101, self.name).as_string()
-        if self.type != "INT" or self.type != "FLOAT":
-            Error(103, f"{self.name} is {self.type}").as_string()
-
-        match operator:
-            case "+":
-                result = 0
-                for elem in values:
-                    result += values[elem]
-                self.value = result
-                
-                return True
         
+        for elem in self.equation:
+            if elem in DIGITS: Error(301, self.equation).as_string()
+            elif elem == "+": self.calculation += "+"
+            elif elem == "-": self.calculation += "-"
+            elif elem == "*": self.calculation += "*"
+            elif elem == "/": self.calculation += "/"
+            elif elem == "(": self.calculation += "("
+            elif elem == ")": self.calculation += ")"
+            elif elem == "'": 
+                if in_var:
+                    self.calculation += str(vars.get(varstr).value)
+                    varstr, in_var = "", False
+                else:
+                    in_var = True
+
+
+            elif elem == "}": 
+                #varList.update({varstr: vars.get(varstr).value})
+                self.calculation += str(vars.get(varstr).value)
+                varstr, in_var = "", False
+
+            elif elem.isalpha(): 
+                if in_var: varstr += elem
+        
+        self.calculate()
+        #print(f"Variables: {varList} \nCalculation: {self.calculation}")
+
+
+    def calculate(self):
+        # TODO: make better calculation, because very unsave: https://stackoverflow.com/questions/9685946/math-operations-from-string
+        
+        self.value = eval(self.calculation)
+        #print(self.value, " | ", self.calculation)
+
+
+
+
+
+
+
+
 class MATH_LEXER:
     def __init__(self, equation):
         self.current_char = None
@@ -141,28 +211,3 @@ class MATH_LEXER:
         while self.current_char != None:
             if self.current_char in '\t':
                 self.advance
-
-    
-
-
-
-class Push():
-    def __init__(self, vars, name):
-        self.var = vars.get(name)
-
-        self.name = name
-        self.type = self.var.type
-        self.message = self.var.value
-        self.prepare()
-    
-    def prepare(self):
-        if self.type != Token.PT:
-            Error(104, self.name).as_string()
-        return True
-        
-    def get(self):
-        return self.message
-
-    def print(self):
-        if self.prepare():
-            print(self.message)

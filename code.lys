@@ -1,0 +1,11 @@
+mo # MO:;
+
+a # INT:5;
+b # INT:3;
+c # INT:2;
+
+mo ? ('a'*('b'+'c')):;
+
+mo # CT:PT;
+
+mo ? push:;
