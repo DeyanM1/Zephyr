@@ -1,12 +1,11 @@
 import re
-int_reg = "^\d+$" #"^\*\d*\*$"
+int_reg = "^\d+$"
 PT_reg = "^'.*'$"
 
+DEBUG = True
 
-
-DIGITS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
-
-TYPES = ["INT", "MO", "PT", "FUNC"]
+global DIGITS; DIGITS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+global Types; TYPES = ["INT", "PT", "MO", "FUNC"]
 
 class Token:
     def __init__(self, type_):
@@ -29,6 +28,16 @@ class Token:
     def FUNC(self):
         return self.type
 
+    def LOOP(self):
+        return self.type
+    
+    
+    def LOOP_INIFITE(self):
+        return self.type
+    def LOOP_FINITE(self):
+        return self.type
+        
+
 class Error:
     def __init__(self, exception_code:int, details):
         self.exception_code = exception_code
@@ -46,8 +55,17 @@ class Error:
             case 201: print("ERROR: Unknown Function | Name: %s" % self.details)
             case 301: print("ERROR: No Digits in Math equations | Value: %s" % self.details)
             case 401: print("ERROR: Unknown Return function | Function: %s" % self.details)
+            case 501: print(f"ERROR: Type {self.details[0]} has no function {self.details[1]}")
         quit()
 
+class Debug:
+    def __init__(self, name, description):
+        self.name = name
+        self.description = description
+    
+    def as_string(self):
+        if DEBUG:
+            print(f"{self.name}: {self.description}")
 
 def check_type_value(type, value):
     match type:
@@ -83,9 +101,12 @@ def change_type(var, vars, newType):
 
         if var.type == Token.MO or var.type == Token.FUNC:
             #print("type", assign_type(newType))
+            Debug(var.name, f"{var.type} set to: {newType}").as_string()
             vars.update({var.name: Variable(name=var.name, type=newType, value=var.value, const=var.const)})
+            
 
-        if check_type_value(newType, var.value):
+        elif check_type_value(newType, var.value):
+            Debug(var.name, f"{var.type} set to: {newType}").as_string()
             var.type = assign_type(newType)
         else:
             Error(107, newType).as_string()
@@ -147,9 +168,12 @@ class MathObject:
 
     
     def set_equation(self, equation):
+        Debug(self.name, "equation set to %s" % equation)
         self.equation = equation
 
     def prepare(self, vars):
+        Debug(self.name, "prepare with calulation: %s" % self.calculation).as_string()
+
         self.calculation = ""
         in_var = False
         varstr = ""
@@ -187,7 +211,7 @@ class MathObject:
 
     def calculate(self):
         # TODO: make better calculation, because very unsave: https://stackoverflow.com/questions/9685946/math-operations-from-string
-        
+        Debug(self.name, ("calculating: %s" % self.calculation)).as_string()
         self.value = eval(self.calculation)
 
 class Function:
@@ -205,18 +229,27 @@ class Function:
         self.return_func = return_func if return_func in return_func_commands else Error(401, self.name).as_string()
 
     def set_function(self, function, vars):
-        
+        Debug(self.name, ("Function set to %s" % function)).as_string()
         self.MO_equation = MathObject(name = self.name, equation=function)
         self.MO_equation.prepare(vars=vars)
         
 
     def call(self, vars):
-        #print("Const: ", self.call_const)
+        Debug(self.name, "is called").as_string()
         if not self.call_const:
+            Debug(self.name, "isn't const").as_string()
             self.MO_equation.prepare(vars=vars)
             self.value = self.MO_equation.value
-        else: 
+        else:
+            Debug(self.name, "is const") .as_string()
             self.value = self.MO_equation.value
+
+class Loop:
+    def __init__(self, name, LoopType):
+        self.name = name
+        self.type = Token.LOOP # For consistency
+        self.const = False # >> For Consistency
+
 """
 class MATH_LEXER:
     def __init__(self, equation):

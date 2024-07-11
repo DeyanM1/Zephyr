@@ -1,0 +1,14 @@
+func # FUNC:RES|~1;
+
+a # INT:5;
+b # INT:2;
+
+func ? ('a'-'b'):;
+
+a ? w:10;
+
+func ? call:;
+
+func ? CT:PT;
+
+func ? push:;
