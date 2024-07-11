@@ -56,7 +56,7 @@ def check_type_value(type, value):
                 return False
             return Token.INT
         case "PT" | Token.PT:
-            #if not re.search(PT_reg, value):
+            # if not re.search(PT_reg, value):
             #    return False
             return Token.PT
         case _:
@@ -166,6 +166,8 @@ class MathObject:
             elif elem == ")": self.calculation += ")"
             elif elem == "'": 
                 if in_var:
+                    if vars.get(varstr).type != Token.INT:
+                        Error(106, vars.get(varstr).name).as_string()
                     self.calculation += str(vars.get(varstr).value)
                     varstr, in_var = "", False
                 else:
