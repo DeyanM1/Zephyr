@@ -1,5 +1,5 @@
 
-# Lysia code
+# Lysia-code
 
 My own Variable based programming language
 
@@ -34,7 +34,7 @@ FUNC = Function
 
 ```
 ? - For using Variables
-# - For Declaring Variables, changing Types
+# - For Declaring Variables
 ```
 
   
