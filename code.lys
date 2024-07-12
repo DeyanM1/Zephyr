@@ -1,18 +1,3 @@
-func # FUNC:RES|~0;
-
-a # INT:5;
-b # INT:2;
-
-func ? ('a'-'b'):;
-
-a ? w:++;
-
-func ? call:;
-
-b ? w:++;
-
-func ? call:;
-
-func ? CT:PT;
-
-func ? push:;
+a # PT:Hey;
+a ? push
+__c ? JUMP:2;
