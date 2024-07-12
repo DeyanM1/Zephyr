@@ -1,5 +1,5 @@
 
-# Lysia-code
+# Lysia code
 
 My own Variable based programming language
 
