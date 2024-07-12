@@ -50,6 +50,8 @@ FUNC = Function
  
 # change value
 <Variable Name> ? w:<Value>; Value has to be the right type
+<Variable Name> ? w:++; Increment Value by 1
+<Variable Name> ? w:--; Decrement Value by 1
 
 
 # change type

@@ -36,7 +36,7 @@ class Token:
         return self.type
     def LOOP_FINITE(self):
         return self.type
-        
+     
 
 class Error:
     def __init__(self, exception_code:int, details):
@@ -66,6 +66,7 @@ class Debug:
     def as_string(self):
         if DEBUG:
             print(f"{self.name}: {self.description}")
+
 
 def check_type_value(type, value):
     match type:
@@ -151,7 +152,14 @@ class Variable:
         if self.const:
             return False
         
-        self.value = value
+        if value == "++":
+            self.value = str(int(self.value) + 1)
+        else:  
+            if check_type_value(self.type, value):
+                self.value = value
+            else:
+                Error(101, self.name).as_string()	
+
         return True
 
 

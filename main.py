@@ -109,7 +109,7 @@ def compile(code):
                             vars[name].prepare(vars)
 
                         case _:
-                            Error(501, ["Token.INT", base]).as_string()
+                            Error(501, ["Token.MO", base]).as_string()
         
         elif vars[name].type == Token.FUNC:
             match func:
@@ -125,6 +125,9 @@ def compile(code):
                         
                         case "call":
                             vars[name].call(vars)
+                            
+                        case _:
+                            Error(501, ["Token.MO", base]).as_string()
 
     
     print("\n", vars)

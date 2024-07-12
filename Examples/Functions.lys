@@ -5,7 +5,7 @@ b # INT:2;
 
 func ? ('a'-'b'):;
 
-a ? w:10;
+a ? w:++;
 
 func ? call:;
 
