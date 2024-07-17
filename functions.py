@@ -2,10 +2,13 @@ import re
 int_reg = "^\d+$"
 PT_reg = "^'.*'$"
 
-DEBUG = True
+DEBUG = False
 
 global DIGITS; DIGITS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
-global Types; TYPES = ["INT", "PT", "MO", "FUNC"]
+global TYPES; TYPES = ["INT", "PT", "MO", "FUNC", "LOOP", "CO"]
+global BOOL; BOOL = ["~1", "~0"]
+global CONDITIONS; CONDITIONS = [">", "<", "==", "!=", ">=", "<="]
+global TRANSLATE_BOOL; TRANSLATE_BOOL = {"~1":"True", "~0":"False"}
 
 class Token:
     def __init__(self, type_):
@@ -25,16 +28,16 @@ class Token:
     def MO(self):
         return self.type
     
+    def CO(self):
+        return self.type
+    
     def FUNC(self):
         return self.type
 
     def LOOP(self):
         return self.type
     
-    
-    def LOOP_INIFITE(self):
-        return self.type
-    def LOOP_FINITE(self):
+    def Lib(self):
         return self.type
      
 
@@ -55,7 +58,7 @@ class Error:
             case 201: print("ERROR: Unknown Function | Name: %s" % self.details)
             case 301: print("ERROR: No Digits in Math equations | Value: %s" % self.details)
             case 401: print("ERROR: Unknown Return function | Function: %s" % self.details)
-            case 501: print(f"ERROR: Type {self.details[0]} has no function {self.details[1]}")
+            case 501: print(f"ERROR: Type {self.details[0]} has no function: {self.details[1]}")
         quit()
 
 class Debug:
@@ -66,6 +69,14 @@ class Debug:
     def as_string(self):
         if DEBUG:
             print(f"{self.name}: {self.description}")
+
+def search(code, vars, libs):
+    comm, params = code.split(":")
+    paramsList = params.split("|")
+
+    name, func, base = comm.split(" ")
+    name, base = name.replace(" ", ""), base.replace(" ", "")
+
 
 
 def check_type_value(type, value):
@@ -81,7 +92,7 @@ def check_type_value(type, value):
         case _:
             return False
         
-def check_existance(vars, name):
+def check_existence(vars, name):
     if name not in vars.keys():
         Error(105, name).as_string()
 
@@ -92,27 +103,27 @@ def assign_type(type):
         case "MO": return Token.MO
 
 def change_type(var, vars, newType):
-        check_existance(vars, var.name)
- 
-        if not newType in TYPES:
-            Error(106, newType).as_string() 
+    check_existence(vars, var.name)
 
-        if var.const:
-            Error(102, var.name).as_string()
+    if not newType in TYPES:
+        Error(106, newType).as_string() 
 
-        if var.type == Token.MO or var.type == Token.FUNC:
-            #print("type", assign_type(newType))
-            Debug(var.name, f"{var.type} set to: {newType}").as_string()
-            vars.update({var.name: Variable(name=var.name, type=newType, value=var.value, const=var.const)})
-            
+    if var.const:
+        Error(102, var.name).as_string()
 
-        elif check_type_value(newType, var.value):
-            Debug(var.name, f"{var.type} set to: {newType}").as_string()
-            var.type = assign_type(newType)
-        else:
-            Error(107, newType).as_string()
+    if var.type == Token.MO or var.type == Token.FUNC:
+        #print("type", assign_type(newType))
+        Debug(var.name, f"{var.type} set to: {newType}").as_string()
+        vars.update({var.name: Variable(name=var.name, type=newType, value=var.value, const=var.const)})
+        
 
-        return vars
+    elif check_type_value(newType, var.value):
+        Debug(var.name, f"{var.type} set to: {newType}").as_string()
+        var.type = assign_type(newType)
+    else:
+        Error(107, newType).as_string()
+
+    return vars
 
 
 def Push(var):
@@ -130,7 +141,7 @@ class Variable:
         self.const = const
 
     def change_type(self, vars, newType):
-        check_existance(vars, self.name)
+        check_existence(vars, self.name)
 
         if self.const:
             Error(102, self.name).as_string()
@@ -180,7 +191,7 @@ class MathObject:
         self.equation = equation
 
     def prepare(self, vars):
-        Debug(self.name, "prepare with calulation: %s" % self.calculation).as_string()
+        Debug(self.name, "prepare with calculation: %s" % self.calculation).as_string()
 
         self.calculation = ""
         in_var = False
@@ -218,7 +229,7 @@ class MathObject:
         #print(f"Variables: {varList} \nCalculation: {self.calculation}")
 
     def calculate(self):
-        # TODO: make better calculation, because very unsave: https://stackoverflow.com/questions/9685946/math-operations-from-string
+        # TODO: make better calculation, because very unsafe: https://stackoverflow.com/questions/9685946/math-operations-from-string
         Debug(self.name, ("calculating: %s" % self.calculation)).as_string()
         self.value = eval(self.calculation)
 
@@ -252,11 +263,105 @@ class Function:
             Debug(self.name, "is const") .as_string()
             self.value = self.MO_equation.value
 
+class ConditionObject:
+    def __init__(self, name, condition, value = 0):
+        self.name = name
+        self.type = Token.CO
+        self.const = False
+        self.value = value
+        
+        self.condition = condition
+        self.edit_condition = ""
+        
+    
+    def prepare(self, vars):
+        self.edit_condition = ""
+        in_var = False
+        varstr = ""
+
+        "'a'>'b'"
+        for elem in self.condition:
+            if elem in DIGITS: Error(301, self.condition).as_string()
+            elif elem == '>': self.edit_condition += elem
+            elif elem == '<': self.edit_condition += elem
+            elif elem == '!': self.edit_condition += elem
+            elif elem == '=': self.edit_condition += elem
+            elif elem == '>': self.edit_condition += elem
+            elif elem == "'": 
+                if in_var:
+                    if vars.get(varstr).type != Token.INT:
+                        Error(106, vars.get(varstr).name).as_string()
+                    self.edit_condition += str(vars.get(varstr).value)
+                    varstr, in_var = "", False
+                    
+                else:
+                    in_var = True
+
+            elif elem.isalpha(): 
+                if in_var: varstr += elem
+
+    
+        self.check_condition()
+    
+    def check_condition(self):
+        try:
+            if eval(f"{self.edit_condition}"):
+                self.value = "~1"
+            else:
+                self.value = "~0"
+        except Exception:
+            print(f"ERROR: {self.condition} is not a valid condition!")
+
 class Loop:
-    def __init__(self, name, LoopType):
+    def __init__(self, name, startIndex, vars, conditionObject = None):
         self.name = name
         self.type = Token.LOOP # For consistency
         self.const = False # >> For Consistency
+        self.startIndex = startIndex
+        self.endIndex = False
+        
+        self.infinite = False
+        
+        if conditionObject.isalpha(): 
+            self.condition = vars[conditionObject]; 
+            
+            self.condition.prepare(vars)
+            
+        elif conditionObject in BOOL:
+            self.infinite = True
+            
+        
+        self.repeat_count = 0
+        
+    def END(self, endIndex, vars):
+        if not self.endIndex:
+            self.endIndex = endIndex
+        
+        if self.infinite:
+            if not self.repeat_count >= 65536:
+                self.repeat_count += 1
+                index = self.startIndex
+                return index
+            else:
+                return endIndex  
+            
+        self.condition.prepare(vars)
+        if self.condition.value != "~1":
+            return endIndex
+        
+          
+        index = self.startIndex
+        return index
+
+
+class Library:
+    def __init__(self, name, lib_name):
+        self.name = name
+        self.type = Token.Lib
+        self.lib_name = lib_name
+    
+    def search(self):
+        pass
 
 """
 class MATH_LEXER:

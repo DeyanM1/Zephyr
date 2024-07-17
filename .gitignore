@@ -2,3 +2,5 @@
 /.fleet
 /.vscode
 /Tests
+/venv
+/.idea

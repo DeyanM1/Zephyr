@@ -1,4 +1,3 @@
-
 # Lysia code
 
 My own Variable based programming language
@@ -10,7 +9,6 @@ VARIABLES ARE LOWERCASE!
 
 ```
 <VariableName> <Command>:<Argument1>|<Argument2>|<...>;
-
 ```
 
   
@@ -22,11 +20,12 @@ PT = Printable Text
 INT = Integer
 MO = Math Object
 FUNC = Function 
+LOOP = Loops
+CO = Conditional Object
 
   
 ~1 = True
 ~0 = False
-
 ```
 
 
@@ -41,6 +40,11 @@ FUNC = Function
 
 # Tutorials
 
+## Buildin Functions
+Are functions that can be used without a definition
+```
+__ ? JUMP:<lINE>; Jumps to a certain !!function!! Not LINE
+```
 ## Variables
 
 ```
@@ -64,15 +68,20 @@ FUNC = Function
 
 ## Math Objects
 
+At type change result is the value of the Variable
 ```
 # Declare MO 
 <Variable Name> # MO:; -> With Undefined state
 
 # Pass equation
-<Variable Name> ? (<equation>)
+<Variable Name> ? (<equation>):;
 Format: ('a'+'b')  
+
+# change equation
+<Variable Name> ? w:<Equation>;
 ```
 ## Functions
+At type change result is the value of the Variable
 Return Types: RES -> Result
 ```
 # Declare Function
@@ -82,6 +91,31 @@ Return Types: RES -> Result
 <Variable Name> ? (<equation>)
 Format: ('a'+'b')
 
-# Functions have to be called:
+# Functions have to be called to activate:
 <Variable Name> ? call:;
 ```
+
+## Loops
+Forever loop repeat maximum 65536 times
+conditional object can be boolean value to make loop infinite
+
+```
+# Declare Loop
+<Variable Name> # LOOP:<Conditional Object name>;
+
+conditional object can be boolean value to make loop infinite
+
+
+# End Loop
+<Variable Name> ? END:;
+```
+
+## Conditional Objects
+Returns ~1 / ~0
+Conditions: <  > != == <= >=
+```
+# Declare Conditional Object
+<Variable Name> # CO:(<condition>);
+Format: ('a'>'b')
+```
+At change type value is the return and can be printed

@@ -1,4 +1,7 @@
-loop # LOOP:INFINITE;
+a # PT:Hey;
 
+loop # LOOP:;
 
-loop ? END
+a ? push:;
+
+loop ? END:;

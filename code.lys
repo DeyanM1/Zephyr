@@ -1,3 +1,16 @@
-a # PT:Hey;
-a ? push
-__c ? JUMP:2;
+maths @ maths.py:;
+
+
+a # INT:4;
+b # INT:2;
+
+cond # CO:('a'!='b');
+
+loop # LOOP:cond;
+
+    b ? w:++;
+
+loop ? END:;
+
+b ? CT:PT;
+b ? push:;
