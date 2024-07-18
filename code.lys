@@ -1,16 +1,10 @@
-maths @ maths.py:;
+maths # LIB:maths;
 
+a # INT:0;
 
-a # INT:4;
-b # INT:2;
+maths ? add10:a;
+maths ? add10:a;
+maths ? add10:a;
 
-cond # CO:('a'!='b');
-
-loop # LOOP:cond;
-
-    b ? w:++;
-
-loop ? END:;
-
-b ? CT:PT;
-b ? push:;
+a ? CT:PT;
+a ? push:;

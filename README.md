@@ -22,6 +22,7 @@ MO = Math Object
 FUNC = Function 
 LOOP = Loops
 CO = Conditional Object
+LIB = Library
 
   
 ~1 = True
@@ -119,3 +120,56 @@ Conditions: <  > != == <= >=
 Format: ('a'>'b')
 ```
 At change type value is the return and can be printed
+
+
+## Libraries
+Create custom function for Lysia code
+
+Self values: 
+
+    self.name
+    self.type
+    self.value
+    self.libName
+    self.libObject
+```
+# Declare Library
+<Variable Name> # LIB:<library file name>;
+
+# Use Library
+<Variable Name> ? <Function>:<Params>;
+```
+
+
+# Create Library
+## Structure
+#### File Structure
+libraries are in lib directory: 
+
+    lib/
+    └── exampleLibrary.py
+    main.py
+    functions.py
+    code.lys
+#### Code Structure
+1. search function:
+search function is necessary; checking if statements can be change
+```python
+def search(name, func, base, paramsList, codeLine):  # Takes necessary parameters
+    match func: # Checks function char
+        case "?": # If char is "?"
+            match base: # checks Base function
+                case "add10": # If base is add10: run add10 function
+                    vars = add10(vars, vars[paramsList[0]]) # edits variables from add10 function
+    
+    return vars # returns edited variables to compiler
+
+def add10(vars, var):
+    a = int(var.value)
+    b = a + 10
+    var.value = str(b)
+    
+    vars.update({var.name: var}) # updates variables
+    return vars # returns edited variables
+```
+Custom function can be added

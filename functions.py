@@ -1,11 +1,13 @@
 import re
+import importlib
+
 int_reg = "^\d+$"
 PT_reg = "^'.*'$"
 
 DEBUG = False
 
 global DIGITS; DIGITS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
-global TYPES; TYPES = ["INT", "PT", "MO", "FUNC", "LOOP", "CO"]
+global TYPES; TYPES = ["INT", "PT", "MO", "FUNC", "LOOP", "CO", "LIB"]
 global BOOL; BOOL = ["~1", "~0"]
 global CONDITIONS; CONDITIONS = [">", "<", "==", "!=", ">=", "<="]
 global TRANSLATE_BOOL; TRANSLATE_BOOL = {"~1":"True", "~0":"False"}
@@ -59,6 +61,7 @@ class Error:
             case 301: print("ERROR: No Digits in Math equations | Value: %s" % self.details)
             case 401: print("ERROR: Unknown Return function | Function: %s" % self.details)
             case 501: print(f"ERROR: Type {self.details[0]} has no function: {self.details[1]}")
+            case 601: print(f"ERROR: Unknown library name: {self.details[0]} in variable: {self.details[1]}")
         quit()
 
 class Debug:
@@ -70,12 +73,8 @@ class Debug:
         if DEBUG:
             print(f"{self.name}: {self.description}")
 
-def search(code, vars, libs):
-    comm, params = code.split(":")
-    paramsList = params.split("|")
 
-    name, func, base = comm.split(" ")
-    name, base = name.replace(" ", ""), base.replace(" ", "")
+            
 
 
 
@@ -355,13 +354,26 @@ class Loop:
 
 
 class Library:
-    def __init__(self, name, lib_name):
+    def __init__(self, name, libName):
         self.name = name
         self.type = Token.Lib
-        self.lib_name = lib_name
+        self.value = 0
+        
+        self.libName = libName
+        self.libObject = None
+        
+        self.set_Lib()
     
-    def search(self):
-        pass
+    def set_Lib(self):
+        try:
+            module = importlib.import_module("lib.%s" % self.libName)
+            self.libObject = module
+
+        except ImportError as e:
+            Error(601, (self.libName, self.libObject)).as_string()
+
+            
+
 
 """
 class MATH_LEXER:

@@ -1,4 +1,5 @@
 from functions import *
+import importlib
 import time
 
 MEASURE_TIME = False
@@ -24,7 +25,7 @@ def convert(filename: str):
                     continue
                 else:
                     current_function = current_function + char
-    print(converted_code)
+    #print(converted_code)
     return converted_code
 
 
@@ -89,6 +90,11 @@ def compile(code):
                     var = ConditionObject(name, paramsList[0])
                     var.prepare(vars)
                     vars.update({var.name: var})
+                
+                case "LIB":
+                    var = Library(name, paramsList[0])
+                    vars.update({var.name: var})
+                    
                 
                 case _:
                     if 0 <= 1 < len(paramsList):
@@ -199,8 +205,11 @@ def compile(code):
                         case _:
                             Error(501, ["Token.CO", f"# {base}"]).as_string()
     
+        elif vars[name].type == Token.Lib:
+            vars = vars[name].libObject.search(name, func, base, paramsList, code[index])
+    
         else:
-            search(code[index], vars, libs)
+            pass
         index += 1
     
     print("\n", vars)
