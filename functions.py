@@ -74,8 +74,6 @@ class Debug:
             print(f"{self.name}: {self.description}")
 
 
-            
-
 
 
 def check_type_value(type, value):
@@ -171,7 +169,6 @@ class Variable:
                 Error(101, self.name).as_string()	
 
         return True
-
 
 class MathObject:
     def __init__(self, name, value = 0, equation = ()):
@@ -351,7 +348,6 @@ class Loop:
           
         index = self.startIndex
         return index
-
 
 class Library:
     def __init__(self, name, libName):

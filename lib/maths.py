@@ -1,10 +1,4 @@
-def search(vars, codeLine):
-    comm, params = codeLine.split(":")
-    paramsList = params.split("|")
-
-    name, func, base = comm.split(" ")
-    name, base = name.replace(" ", ""), base.replace(" ", "")
-    
+def search(name, func, base, paramsList, vars):
     match func:
         case "?":
             match base:

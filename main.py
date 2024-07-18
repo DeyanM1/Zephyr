@@ -206,7 +206,7 @@ def compile(code):
                             Error(501, ["Token.CO", f"# {base}"]).as_string()
     
         elif vars[name].type == Token.Lib:
-            vars = vars[name].libObject.search(name, func, base, paramsList, code[index])
+            vars = vars[name].libObject.search(name, func, base, paramsList, vars)
     
         else:
             pass
