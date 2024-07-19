@@ -126,7 +126,7 @@ At change type value is the return and can be printed
 
 
 ## Libraries
-Create custom function for Lysia code
+Create custom function for Zephyr code
 
 Self values: 
 
