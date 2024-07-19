@@ -1,10 +1,5 @@
-maths # LIB:maths;
+pt # PT:;
 
-a # INT:0;
+pt ? INPUT:-> ;
 
-maths ? add10:a;
-maths ? add10:a;
-maths ? add10:a;
-
-a ? CT:PT;
-a ? push:;
+pt ? push:;

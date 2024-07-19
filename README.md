@@ -1,4 +1,4 @@
-# Lysia code
+# Zephyr
 
 My own Variable based programming language
 
@@ -41,7 +41,7 @@ LIB = Library
 
 # Tutorials
 
-## Buildin Functions
+## Build-in Functions
 Are functions that can be used without a definition
 ```
 __ ? JUMP:<lINE>; Jumps to a certain !!function!! Not LINE
@@ -52,19 +52,22 @@ __ ? JUMP:<lINE>; Jumps to a certain !!function!! Not LINE
 # Declare Variables
 <Variable Name> # <Type>:<Value>(|<~1>/<~0>); <- For absolutes
 
- 
-# change value
-<Variable Name> ? w:<Value>; Value has to be the right type
-<Variable Name> ? w:++; Increment Value by 1
-<Variable Name> ? w:--; Decrement Value by 1
-
-
 # change type
 <Variable Name> ? CT:<Type>;
 
+# change value
+<Variable Name> ? w:<Value>; Value has to be the right type
+```
+### INT
+```
+<Variable Name> ? w:++; Increment Value by 1
+<Variable Name> ? w:--; Decrement Value by 1
+```
+### PT
+```
 
-# print value
-<Variable Name> ? push:; -> Variable type has to be PT
+<Variable Name> ? push:; -> print value
+<Variable Name> ? INPUT:<optional Input message> -> takes user input
 ```
 
 ## Math Objects

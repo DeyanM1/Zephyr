@@ -123,12 +123,6 @@ def change_type(var, vars, newType):
     return vars
 
 
-def Push(var):
-        if var.type != Token.PT:
-            Error(104, var.name).as_string()
-        print("PUSH: ", var.value)
-
-
 
 class Variable:
     def __init__(self, name, type, value, const = False):
@@ -169,6 +163,12 @@ class Variable:
                 Error(101, self.name).as_string()	
 
         return True
+
+    def push(self):
+        print("PUSH: ", self.value)
+    
+    def setValueByInput(self, text):
+        self.value = input(text)
 
 class MathObject:
     def __init__(self, name, value = 0, equation = ()):

@@ -1,4 +1,5 @@
 from functions import *
+import sys
 import importlib
 import time
 
@@ -113,9 +114,12 @@ def compile(code):
                 case "?":
                     match base:
                         case "push": 
-                            Push(vars[name])
+                            vars[name].push()
                         case "w":
                             vars[name].change_value(paramsList[0])
+                            
+                        case "INPUT":
+                            vars[name].setValueByInput(paramsList[0])
                         
                         case _:
                             Error(501, ["Token.PT", f"? {base}"]).as_string()
@@ -222,7 +226,9 @@ def compile(code):
 if __name__ == "__main__":
     if MEASURE_TIME: st = time.time()
     
-    c = convert("code.lys")
+    if len(sys.argv) > 1: c = convert(sys.argv[1])
+    else: c = convert("code.lys")
+    
     compile(c)
     
     if MEASURE_TIME: et = time.time(); elapsed_time = et - st; print(f"\n Elapsed time: {elapsed_time}s")
