@@ -36,10 +36,11 @@ def compile(code):
     libs = {}
     index = 0
     while index <= len(code)-1:
-        if '\n' in code[index]: 
+        if '\n' in code[index] or code[index].startswith("~"): 
             index += 1
             continue
-        
+
+     
         comm, params = code[index].split(":")
         paramsList = params.split("|")
 
@@ -47,11 +48,9 @@ def compile(code):
         name, base = name.replace(" ", ""), base.replace(" ", "")
 
 
-        if name.startswith("#"):
-            index += 1
-            continue
+        
 
-        elif name == "__":
+        if name == "__":
             match func:
                 case "?":
                     match base:
@@ -59,11 +58,6 @@ def compile(code):
                             index = int(paramsList[0]) -1
                             continue
 
-        elif func == "@": # Libraries
-            libs.update({name, base})
-            
-            #var = Library(name, base)
-            #vars.update({var.name: var})
 
         elif base in TYPES:
             match base:
@@ -116,7 +110,7 @@ def compile(code):
                         case "push": 
                             vars[name].push()
                         case "w":
-                            vars[name].change_value(paramsList[0])
+                            vars[name].changeValue(paramsList[0])
                             
                         case "INPUT":
                             vars[name].setValueByInput(paramsList[0])
@@ -126,7 +120,7 @@ def compile(code):
                 case "#":
                     match base:
                         case "CT":
-                            vars = change_type(vars[name], vars, paramsList[0]) # [0] = Type to change
+                            vars = changeType(vars[name], vars, paramsList[0]) # [0] = Type to change
                         case _:
                             Error(501, ["Token.PT", f"# {base}"]).as_string()
 
@@ -135,58 +129,66 @@ def compile(code):
                 case "?":
                     match base:
                         case "w":
-                            vars[name].change_value(paramsList[0])
-                        
-                        case "CT":
-                            vars = change_type(vars[name], vars, paramsList[0]) # [0] = Type to change
+                            vars[name].changeValue(paramsList[0])
 
                         case _:
                             Error(501, ["Token.INT", f"? {base}"]).as_string()
+                            
+                case "#":
+                    match base:
+                        case "CT":
+                            vars = changeType(vars[name], vars, paramsList[0]) # [0] = Type to change
+                        case _:
+                            Error(501, ["Token.PT", f"# {base}"]).as_string()
 
         elif vars[name].type == Token.MO:
             match func:
                 case "?":
                     match base:
                         case "w":
-                            vars[name].set_equation(paramsList[0])
-                        
-                        case "CT":
-                            vars = change_type(vars[name], vars, paramsList[0]) # [0] = Type to change
+                            vars[name].setEquation(paramsList[0])
                         
                         case base if base.startswith("("):
-                            vars[name].set_equation(base)
+                            vars[name].setEquation(base)
                             vars[name].prepare(vars)
 
                         case _:
                             Error(501, ["Token.MO", f"? {base}"]).as_string()
+                            
+                case "#":
+                    match base:
+                        case "CT":
+                            vars = changeType(vars[name], vars, paramsList[0]) # [0] = Type to change
+                        case _:
+                            Error(501, ["Token.PT", f"# {base}"]).as_string()
         
         elif vars[name].type == Token.FUNC:
             match func:
                 case "?":
-                    match base:
-                        case "CT":
-                            vars = change_type(vars[name], vars, paramsList[0]) # [0] = Type to change
-                            
+                    match base:                        
                         case base if base.startswith("("):
                             if vars[name].type == Token.FUNC:
-                                vars[name].set_function(base, vars)
+                                vars[name].setFunction(base, vars)
                         
                         case "call":
                             vars[name].call(vars)
                             
                         case _:
                             Error(501, ["Token.MO", f"? {base}"]).as_string()
+                            
                 case "#":
-                    match base:    
+                    match base:
+                        case "CT":
+                            vars = changeType(vars[name], vars, paramsList[0]) # [0] = Type to change
                         case _:
-                            Error(501, ["Token.MO", f"# {base}"]).as_string()
+                            Error(501, ["Token.PT", f"# {base}"]).as_string()
         
         elif vars[name].type == Token.LOOP:
             match func:
                 case "?":
                     match base:
                         case "END":
-                            index = vars[name].END(index, vars)
+                            index = vars[name].loopEnd(index, vars)
                         case _:
                             Error(501, ["Token.LOOP", f"? {base}"]).as_string()          
                 case "#":
@@ -198,16 +200,16 @@ def compile(code):
             match func:
                 case "?":
                     match base:
-                        case "CT":
-                            vars = change_type(vars[name], vars, paramsList[0]) # [0] = Type to change
                             
                         case _:
                             Error(501, ["Token.CO", f"? {base}"]).as_string()
                 
                 case "#":
                     match base:
+                        case "CT":
+                            vars = changeType(vars[name], vars, paramsList[0]) # [0] = Type to change
                         case _:
-                            Error(501, ["Token.CO", f"# {base}"]).as_string()
+                            Error(501, ["Token.PT", f"# {base}"]).as_string()
     
         elif vars[name].type == Token.Lib:
             vars = vars[name].libObject.search(name, func, base, paramsList, vars)

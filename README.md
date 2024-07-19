@@ -53,7 +53,7 @@ __ ? JUMP:<lINE>; Jumps to a certain !!function!! Not LINE
 <Variable Name> # <Type>:<Value>(|<~1>/<~0>); <- For absolutes
 
 # change type
-<Variable Name> ? CT:<Type>;
+<Variable Name> # CT:<Type>;
 
 # change value
 <Variable Name> ? w:<Value>; Value has to be the right type
@@ -67,7 +67,7 @@ __ ? JUMP:<lINE>; Jumps to a certain !!function!! Not LINE
 ```
 
 <Variable Name> ? push:; -> print value
-<Variable Name> ? INPUT:<optional Input message> -> takes user input
+<Variable Name> ? INPUT:<optional Input message>; -> takes user input
 ```
 
 ## Math Objects
@@ -127,14 +127,7 @@ At change type value is the return and can be printed
 
 ## Libraries
 Create custom function for Zephyr code
-
-Self values: 
-
-    self.name
-    self.type
-    self.value
-    self.libName
-    self.libObject
+Library file name without extension eg. ".py"
 ```
 # Declare Library
 <Variable Name> # LIB:<library file name>;
@@ -148,7 +141,6 @@ Self values:
 ## Structure
 #### File Structure
 libraries are in lib directory: 
-
     lib/
     └── exampleLibrary.py
     main.py
