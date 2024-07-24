@@ -1,8 +1,8 @@
 import re
 import importlib
 
-int_reg = "^\d+$"
-PT_reg = "^'.*'$"
+int_reg = r"^\d+$"
+PT_reg = r"^'.*'$"
 
 DEBUG = False
 
