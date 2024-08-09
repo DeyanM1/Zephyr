@@ -30,7 +30,7 @@ def convert(filename: str):
 
 
 
-def compile(code):
+def compile(code: list):
     vars = {}
     libs = {}
     index = 0
