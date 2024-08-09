@@ -1,6 +1,4 @@
-__ ? PredefVar:predefVars;
+x # INT:4;
 
-x ? w:++;
-x # CT:PT;
 
-x ? push:;
+__ ? DumpVars:;

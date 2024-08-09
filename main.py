@@ -57,9 +57,13 @@ def compile(code: list):
                             index = int(paramsList[0]) -1
                             continue
                         
-                        case "PredefVar":
+                        case "PredefVars":
                             var = PredefVar(name, paramsList[0], vars)
                             vars = var.read()
+                        
+                        case "DumpVars":
+                            var = PredefVar(name, paramsList[0], vars)
+                            var.dump()
 
 
         elif base in TYPES:

@@ -14,6 +14,10 @@ global BOOL; BOOL = ["~1", "~0"]
 global CONDITIONS; CONDITIONS = [">", "<", "==", "!=", ">=", "<="]
 global TRANSLATE_BOOL; TRANSLATE_BOOL = {"~1":"True", "~0":"False"}
 
+global TRANSLATE_BOOL_TO_JSON; TRANSLATE_BOOL_TO_JSON = {"True":"true", "False":"false"}
+
+
+
 class Token:
     def __init__(self, type_):
         self.type = assignType(type_) if assignType(type_) else Error(105, type_).as_string()
@@ -50,6 +54,7 @@ class Token:
     def PredefVar(self):
         return self.type
      
+global TRANSLATE_TOKEN_TO_STR; TRANSLATE_TOKEN_TO_STR = {Token.INT: "INT", Token.PT: "PT", Token.MO: "MO", Token.FUNC: "FUNC", Token.LOOP: "LOOP", Token.CO: "CO", Token.Lib: "Lib", Token.RNG: "RNG", Token.PredefVar: "PredefVar"}
 
 class Error:
     def __init__(self, exception_code:int, details):
@@ -416,22 +421,45 @@ class PredefVar:
         type = variableRaw.get('type')
         
         match type:
-            case "INT":
+            case "INT" | Token.INT:
                 var = Variable(name, type, str(variableRaw.get("value")), const = variableRaw.get("const"))
                 self.vars.update({name: var})
-            case "PT":
+            case "PT" | Token.PT:
                 var = Variable(name, type, str(variableRaw.get("value")), const = variableRaw.get("const"))
                 self.vars.update({name: var})
-            case "MO":
+            case "MO" | Token.MO:
                 var = MathObject(name, variableRaw.get("equation"))
                 var.prepare(vars=self.vars)
                 self.vars.update({name: var})
-            case "FUNC":
+            case "FUNC" | Token.FUNC:
                 var = Function(name, variableRaw.get("return function"), variableRaw.get("call const"), variableRaw.get("equation"))
-            case "CO":
+            case "CO" | Token.CO:
                 var = ConditionObject(name, variableRaw.get("condition"))
                 var.prepare(vars=self.vars)
                 self.vars.update({name: var})
-            case "RNG":
+            case "RNG" | Token.RNG:
                 var = RNG(name, variableRaw.get("rng type"), variableRaw.get("rng range"))
                 self.vars.update({name: var})
+    
+    def dump(self):
+        data = {}
+        for var in self.vars.values():
+            match var.type:
+                case Token.INT | Token.PT:
+                    data[var.name] = {"type": TRANSLATE_TOKEN_TO_STR[var.type], "value": var.value, "const": bool(var.const)} #TRANSLATE_BOOL_TO_JSON.get(str(var.const))
+                
+                case Token.MO:
+                    data[var.name] = {"equation": var.equation}
+                    
+                case Token.FUNC:
+                    data[var.name] = {"return function": var.return_func, "call const": var.call_const, "equation": var.equation}
+                    
+                case Token.CO:
+                    data[var.name] = {"condition": var.condition}
+                
+                case Token.RNG:
+                    data[var.name] = {"rng type": var.rngType, "rng range": var.rngRange}
+        
+        print(data)
+        with open(f"lib/{self.fileName}.json", "w") as file:
+            json.dump(data, file, indent=4) 
