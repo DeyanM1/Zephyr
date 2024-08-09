@@ -1,0 +1,27 @@
+{
+    "integer": {
+        "type": "INT",
+        "value": 10,
+        "const": false
+    },
+    "printableText": {
+        "type": "PT",
+        "value": "123",
+        "const": false
+    },
+    "mathObject": {
+        "equation": "('a'+'b')"
+    },
+    "function": {
+        "return function": "RES",
+        "call const": false,
+        "equation": "('a'+'b')"
+    },
+    "conditionObject": {
+        "condition": "('a'>'b')"
+    },
+    "RNG": {
+        "rng type": "INT",
+        "rng range": "1->6"
+    }
+}

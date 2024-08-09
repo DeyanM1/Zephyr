@@ -1,5 +1,6 @@
-a # INT:55;
+__ ? PredefVar:predefVars;
 
-a # CT:PT;
+x ? w:++;
+x # CT:PT;
 
-a ? push:;
+x ? push:;

@@ -1,5 +1,7 @@
 import re
 import importlib
+import json
+import numpy as np
 
 int_reg = r"^\d+$"
 PT_reg = r"^'.*'$"
@@ -7,7 +9,7 @@ PT_reg = r"^'.*'$"
 DEBUG = False
 
 global DIGITS; DIGITS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
-global TYPES; TYPES = ["INT", "PT", "MO", "FUNC", "LOOP", "CO", "LIB"]
+global TYPES; TYPES = ["INT", "PT", "MO", "FUNC", "LOOP", "CO", "LIB", "RNG", "PredefVar"]
 global BOOL; BOOL = ["~1", "~0"]
 global CONDITIONS; CONDITIONS = [">", "<", "==", "!=", ">=", "<="]
 global TRANSLATE_BOOL; TRANSLATE_BOOL = {"~1":"True", "~0":"False"}
@@ -41,6 +43,12 @@ class Token:
     
     def Lib(self):
         return self.type
+    
+    def RNG(self):
+        return self.type
+     
+    def PredefVar(self):
+        return self.type
      
 
 class Error:
@@ -62,6 +70,7 @@ class Error:
             case 401: print("ERROR: Unknown Return function | Function: %s" % self.details)
             case 501: print(f"ERROR: Type {self.details[0]} has no function: {self.details[1]}")
             case 601: print(f"ERROR: Unknown library name: {self.details[0]} in variable: {self.details[1]}")
+            case 701: print(f"ERROR: RNG range not accepted: {self.details[0]} in variable: {self.details[1]}")
         quit()
 
 class Debug:
@@ -109,6 +118,9 @@ def changeType(var, vars, newType):
     if var.type == Token.MO or var.type == Token.FUNC:
         #print("type", assign_type(newType))
         Debug(var.name, f"{var.type} set to: {newType}").as_string()
+        vars.update({var.name: Variable(name=var.name, type=newType, value=var.value, const=var.const)})
+    
+    if var.type == Token.RNG:
         vars.update({var.name: Variable(name=var.name, type=newType, value=var.value, const=var.const)})
         
 
@@ -350,3 +362,76 @@ class Library:
 
         except ImportError as e:
             Error(601, (self.libName, self.libObject)).as_string()
+            
+class RNG:
+    def __init__(self, name, rngType, rngRange):
+        self.name = name
+        self.type = Token.RNG
+        self.value = 0
+        self.const = False
+        
+        self.rngType = rngType
+        self.rngRange = self.setRange(rngRange)
+        self.rngRangeCompiled = []
+        
+        
+        
+    def setRange(self, rngRange):
+        try:
+            rangeMin, rangeMax = rngRange.replace(" ", "").split("->")
+            rangeMin, rangeMax = int(rangeMin), int(rangeMax)
+            self.rngRangeCompiled = [rangeMin, rangeMax]
+        except Exception as e:
+            Error(701, (rngRange, self.name)).as_string()
+        
+        self.generateRNG()
+        
+        
+    def generateRNG(self):
+        self.value = np.random.randint(self.rngRangeCompiled[0], self.rngRangeCompiled[1], size=1).item()
+    
+    def changeRange(self, newRange):
+        self.setRange(newRange)
+        
+        self.generateRNG()
+    
+class PredefVar:
+    def __init__(self, name, fileName, vars):
+        self.name = name
+        self.type = Token.PredefVar
+        
+        self.fileName = fileName
+        self.vars = vars
+        
+    
+    def read(self):
+        with open(f"lib/{self.fileName}.json", "r") as file:
+            data = json.load(file)
+            for var in data:
+                self.compile(data[var], var)
+        
+        return self.vars
+    
+    def compile(self, variableRaw, name):
+        type = variableRaw.get('type')
+        
+        match type:
+            case "INT":
+                var = Variable(name, type, str(variableRaw.get("value")), const = variableRaw.get("const"))
+                self.vars.update({name: var})
+            case "PT":
+                var = Variable(name, type, str(variableRaw.get("value")), const = variableRaw.get("const"))
+                self.vars.update({name: var})
+            case "MO":
+                var = MathObject(name, variableRaw.get("equation"))
+                var.prepare(vars=self.vars)
+                self.vars.update({name: var})
+            case "FUNC":
+                var = Function(name, variableRaw.get("return function"), variableRaw.get("call const"), variableRaw.get("equation"))
+            case "CO":
+                var = ConditionObject(name, variableRaw.get("condition"))
+                var.prepare(vars=self.vars)
+                self.vars.update({name: var})
+            case "RNG":
+                var = RNG(name, variableRaw.get("rng type"), variableRaw.get("rng range"))
+                self.vars.update({name: var})

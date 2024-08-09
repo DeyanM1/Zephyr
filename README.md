@@ -35,6 +35,8 @@ LIB = Library
 ```
 ? - For using Variables
 # - For Declaring Variables
+
+~ - command (ignoring whole line)
 ```
 
   
@@ -69,6 +71,18 @@ __ ? JUMP:<lINE>; Jumps to a certain !!function!! Not LINE
 <Variable Name> ? push:; -> print value
 <Variable Name> ? INPUT:<optional Input message>; -> takes user input
 ```
+### Random Number Generator
+types: INT
+```
+<Variable Name> # RNG:<Random number type>|<range>;
+<range> Format: 0->30 (30 & 0 inclusive)
+
+# change range
+<variable Name> ? CR:<range>;
+
+
+```
+
 
 ## Math Objects
 
@@ -125,10 +139,42 @@ Format: ('a'>'b')
 At change type value is the return and can be printed
 
 
+## Predefined Variables
+You can define variables in a python script and use them in
+the file goes inside the lib library
+filename without extension
+```
+__ ? PredefVars:<filename>
+```
+
+## create Predefined Variable Files
+### Structure
+#### File Structure
+predefVar files are in lib directory: 
+
+    lib/
+    └── examplePredefVars.json
+    main.py
+    functions.py
+    code.lys
+
+#### Code Structure
+Types supported: INT, PT, MO, FUNC, CO, RNG
+```json
+{
+    "<Variable Name>": {
+        "type": "<Variable Type>",
+        "value": "<Variable Value>",
+        "const": false
+        <etc>
+    }
+}
+```
+
 ## Libraries
 Create custom function for Zephyr code
 Library file name without extension eg. ".py"
-```
+```zephyr
 # Declare Library
 <Variable Name> # LIB:<library file name>;
 

@@ -56,6 +56,10 @@ def compile(code: list):
                         case "JUMP":
                             index = int(paramsList[0]) -1
                             continue
+                        
+                        case "PredefVar":
+                            var = PredefVar(name, paramsList[0], vars)
+                            vars = var.read()
 
 
         elif base in TYPES:
@@ -88,6 +92,11 @@ def compile(code: list):
                 case "LIB":
                     var = Library(name, paramsList[0])
                     vars.update({var.name: var})
+                
+                case  "RNG":
+                    var = RNG(name, paramsList[0], paramsList[1])
+                    vars.update({var.name:var})
+                
                     
                 
                 case _:
@@ -139,7 +148,24 @@ def compile(code: list):
                             vars = changeType(vars[name], vars, paramsList[0]) # [0] = Type to change
                         case _:
                             Error(501, ["Token.PT", f"# {base}"]).as_string()
+        
+        elif vars[name].type == Token.RNG:
+            match func:
+                case "?":
+                    match base:
+                        case "CR":
+                            vars[name].setRange(paramsList[0])
 
+                        case _:
+                            Error(501, ["Token.RNG", f"? {base}"]).as_string()
+                            
+                case "#":
+                    match base:
+                        case "CT":
+                            vars = changeType(vars[name], vars, paramsList[0]) # [0] = Type to change
+                        case _:
+                            Error(501, ["Token.RNG", f"# {base}"]).as_string()
+                        
         elif vars[name].type == Token.MO:
             match func:
                 case "?":
