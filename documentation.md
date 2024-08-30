@@ -294,13 +294,18 @@ __ ? PredefVars:<filename>;
     }
 }
 ```
-
 - Place predefined variable files in the `lib/` directory.
+
+**Dump Variables used in code**
+```zephyr
+__ ? DumpVars:<filename>;
+```
 
 **Example:**
 
 ```zephyr
 __ ? PredefVars:examplePredefVars;
+__ ? DumpVars:usedVars;
 ```
 
 ---

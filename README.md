@@ -140,11 +140,17 @@ At change type value is the return and can be printed
 
 
 ## Predefined Variables
-You can define variables in a python script and use them in
+You can define variables in a json script and use them in
 the file goes inside the lib library
 filename without extension
 ```
-__ ? PredefVars:<filename>
+__ ? PredefVars:<filename>;
+```
+## DumpVars
+file is inside lib directory
+filename without extension
+```
+__ ? DumpVars:<filename>;
 ```
 
 ## create Predefined Variable Files

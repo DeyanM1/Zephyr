@@ -442,6 +442,7 @@ class PredefVar:
                 self.vars.update({name: var})
     
     def dump(self):
+        print("hehe")
         data = {}
         for var in self.vars.values():
             match var.type:

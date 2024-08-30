@@ -1,4 +1,4 @@
-x # INT:4;
+message # PT:Hello;
 
-
-__ ? DumpVars:;
+__ ? DumpVars:dump;
+message ? push:;
