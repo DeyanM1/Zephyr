@@ -25,6 +25,7 @@ Zephyr is a variable-based programming language designed for simplicity and effi
 
 - **PT**: Printable Text
 - **INT**: Integer
+- **FLOAT**: Float
 - **MO**: Math Object
 - **FUNC**: Function
 - **LOOP**: Loops
@@ -97,8 +98,9 @@ __ ? JUMP:<Line>;
 
 ```zephyr
 <VariableName> ? w:<Value>;
+<VariableName> ? w:<VariableName>;
 ```
-
+- By entering variable name, it copies the value of the variable
 - **Value**: Must be compatible with the variable's type.
 
 **Examples:**

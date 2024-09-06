@@ -4,12 +4,13 @@ import json
 import numpy as np
 
 int_reg = r"^\d+$"
+FLOAT_reg = r'^\d+\.\d+$'
 PT_reg = r"^'.*'$"
 
 DEBUG = False
 
 global DIGITS; DIGITS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
-global TYPES; TYPES = ["INT", "PT", "MO", "FUNC", "LOOP", "CO", "LIB", "RNG", "PredefVar"]
+global TYPES; TYPES = ["INT", "FLOAT", "PT", "MO", "FUNC", "LOOP", "CO", "LIB", "RNG", "PredefVar"]
 global BOOL; BOOL = ["~1", "~0"]
 global CONDITIONS; CONDITIONS = [">", "<", "==", "!=", ">=", "<="]
 global TRANSLATE_BOOL; TRANSLATE_BOOL = {"~1":"True", "~0":"False"}
@@ -28,6 +29,9 @@ class Token:
         return f'{self.type}'
     
     def INT(self):
+        return self.type
+    
+    def FLOAT(self):
         return self.type
 
     def PT(self):
@@ -55,6 +59,7 @@ class Token:
         return self.type
      
 global TRANSLATE_TOKEN_TO_STR; TRANSLATE_TOKEN_TO_STR = {Token.INT: "INT", Token.PT: "PT", Token.MO: "MO", Token.FUNC: "FUNC", Token.LOOP: "LOOP", Token.CO: "CO", Token.Lib: "Lib", Token.RNG: "RNG", Token.PredefVar: "PredefVar"}
+global NUMBERVARS; NUMBERVARS = [Token.INT, Token.FLOAT]
 
 class Error:
     def __init__(self, exception_code:int, details):
@@ -93,10 +98,20 @@ class Debug:
 def checkTypeForValue(type, value):
     match type:
         case "INT" | Token.INT:
+            if value.startswith(''):
+                return Token.FLOAT
             if not re.search(int_reg, value):
                 return False
             return Token.INT
+        case "FLOAT" | Token.FLOAT:
+            if value.startswith(''):
+                return Token.FLOAT
+            if not re.search(FLOAT_reg, value):
+                return False
+            return Token.FLOAT
         case "PT" | Token.PT:
+            if str(value).startswith(''):
+                return Token.FLOAT
             return Token.PT
         case _:
             return False
@@ -108,6 +123,7 @@ def checkVariableExistence(vars, name):
 def assignType(type):
     match type:
         case "INT": return Token.INT
+        case "FLOAT": return Token.FLOAT
         case "PT": return Token.PT
         case "MO": return Token.MO
 
@@ -123,7 +139,7 @@ def changeType(var, vars, newType):
     if var.type == Token.MO or var.type == Token.FUNC:
         #print("type", assign_type(newType))
         Debug(var.name, f"{var.type} set to: {newType}").as_string()
-        vars.update({var.name: Variable(name=var.name, type=newType, value=var.value, const=var.const)})
+        vars.update({var.name: Variable(name=var.name, type=newType, value=var.value, vars=vars, const=var.const)})
     
     if var.type == Token.RNG:
         vars.update({var.name: Variable(name=var.name, type=newType, value=var.value, const=var.const)})
@@ -140,21 +156,30 @@ def changeType(var, vars, newType):
 
 
 class Variable:
-    def __init__(self, name, type, value, const = False):
+    def __init__(self, name, type, value, vars, const = False):
+        value = str(value)
         self.name = name
-        self.type = assignType(type) if checkTypeForValue(type, value) else Error(101, self.name).as_string()
-        self.value = value
+        self.type = assignType(type) if checkTypeForValue(type, str(value)) else Error(101, self.name).as_string()
         self.const = const
+        self.value = ""
+        self.changeValue(str(value), vars)
 
     
     def getType(self):
         return self.type
 
-    def changeValue(self, value):
+    def changeValue(self, value, vars):
         if self.const:
             return False
+        if value.startswith("'"):
+            var = value.replace("'", "")
+                
+                
+            self.value = str(vars.get(var).value)
+
+            
         
-        if value == "++":
+        elif value == "++":
             self.value = str(int(self.value) + 1)
         else:  
             if checkTypeForValue(self.type, value):
@@ -205,8 +230,9 @@ class MathObject:
             elif elem == ")": self.calculation += ")"
             elif elem == "'": 
                 if in_var:
-                    if vars.get(varStr).type != Token.INT:
+                    if vars.get(varStr).type not in NUMBERVARS:
                         Error(106, vars.get(varStr).name).as_string()
+                        
                     self.calculation += str(vars.get(varStr).value)
                     varStr, in_var = "", False
                 else:
@@ -228,7 +254,7 @@ class MathObject:
         # TODO: make better calculation, because very unsafe: https://stackoverflow.com/questions/9685946/math-operations-from-string
         Debug(self.name, ("calculating: %s" % self.calculation)).as_string()
         self.value = eval(self.calculation)
-
+        
 class Function:
     def __init__(self, name, return_func, call_const = False, function="",  value = 0):
         return_func_commands = ["RES"]
@@ -424,6 +450,9 @@ class PredefVar:
             case "INT" | Token.INT:
                 var = Variable(name, type, str(variableRaw.get("value")), const = variableRaw.get("const"))
                 self.vars.update({name: var})
+            case "FLOAT" | Token.FLOAT:
+                var = Variable(name, type, str(variableRaw.get("value")), const = variableRaw.get("const"))
+                self.vars.update({name: var})
             case "PT" | Token.PT:
                 var = Variable(name, type, str(variableRaw.get("value")), const = variableRaw.get("const"))
                 self.vars.update({name: var})
@@ -442,7 +471,6 @@ class PredefVar:
                 self.vars.update({name: var})
     
     def dump(self):
-        print("hehe")
         data = {}
         for var in self.vars.values():
             match var.type:

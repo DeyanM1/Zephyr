@@ -106,11 +106,11 @@ def compile(code: list):
                 case _:
                     if 0 <= 1 < len(paramsList):
                         if paramsList[1] == "~1":
-                            var = Variable(name, base, paramsList[0], True)
+                            var = Variable(name, base, paramsList[0], vars, True)
                         else:
-                            var = Variable(name, base, paramsList[0], False)
+                            var = Variable(name, base, paramsList[0], vars, False)
                     else:
-                        var = Variable(name, base, paramsList[0], False)
+                        var = Variable(name, base, paramsList[0], vars, False)
 
                         vars.update({var.name: var})
 
@@ -122,7 +122,7 @@ def compile(code: list):
                         case "push": 
                             vars[name].push()
                         case "w":
-                            vars[name].changeValue(paramsList[0])
+                            vars[name].changeValue(paramsList[0], vars)
                             
                         case "INPUT":
                             vars[name].setValueByInput(paramsList[0])
@@ -141,7 +141,7 @@ def compile(code: list):
                 case "?":
                     match base:
                         case "w":
-                            vars[name].changeValue(paramsList[0])
+                            vars[name].changeValue(paramsList[0], vars)
 
                         case _:
                             Error(501, ["Token.INT", f"? {base}"]).as_string()
@@ -151,7 +151,24 @@ def compile(code: list):
                         case "CT":
                             vars = changeType(vars[name], vars, paramsList[0]) # [0] = Type to change
                         case _:
-                            Error(501, ["Token.PT", f"# {base}"]).as_string()
+                            Error(501, ["Token.INT", f"# {base}"]).as_string()
+                            
+        elif vars[name].type == Token.FLOAT:
+            match func:
+                case "?":
+                    match base:
+                        case "w":
+                            vars[name].changeValue(paramsList[0], vars)
+
+                        case _:
+                            Error(501, ["Token.FLOAT", f"? {base}"]).as_string()
+                            
+                case "#":
+                    match base:
+                        case "CT":
+                            vars = changeType(vars[name], vars, paramsList[0]) # [0] = Type to change
+                        case _:
+                            Error(501, ["Token.FLOAT", f"# {base}"]).as_string()
         
         elif vars[name].type == Token.RNG:
             match func:
