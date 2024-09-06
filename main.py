@@ -43,7 +43,12 @@ def compile(code: list):
         comm, params = code[index].split(":")
         paramsList = params.split("|")
 
-        name, func, base = comm.split(" ")
+        try:
+            name, func, base = comm.split(" ")
+        except Exception as e:
+            print(f"Comma Error on: {index}")
+            quit()
+        
         name, base = name.replace(" ", ""), base.replace(" ", "")
 
 
