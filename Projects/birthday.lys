@@ -21,9 +21,12 @@ iLoop # LOOP:iLoopCO;
 
     probMO ? (('one'-'prob')*'hund'):;
     
-    i # CT:PT;
-    i ? push:;
-    i # CT:INT;
+    
+    ~ Uncomment to show number of people
+    
+    ~i # CT:PT;
+    ~i ? push:;
+    ~i # CT:INT;
 
 
     probMO # CT:PT;
