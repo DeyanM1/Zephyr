@@ -1,0 +1,40 @@
+{
+    "pi": {
+        "type": "FLOAT",
+        "value": "3.139080094741128",
+        "const": false
+    },
+    "divisor": {
+        "type": "FLOAT",
+        "value": "797.0",
+        "const": false
+    },
+    "four": {
+        "type": "FLOAT",
+        "value": "4.0",
+        "const": false
+    },
+    "two": {
+        "type": "FLOAT",
+        "value": "2.0",
+        "const": false
+    },
+    "iterations": {
+        "type": "INT",
+        "value": "200",
+        "const": false
+    },
+    "iteration": {
+        "type": "INT",
+        "value": "200",
+        "const": false
+    },
+    "iLoopCO": {
+        "condition": "('iteration' < 'iterations')"
+    },
+    "piMO": {
+        "type": "PT",
+        "value": "3.139080094741128",
+        "const": false
+    }
+}

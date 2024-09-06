@@ -58,7 +58,7 @@ class Token:
     def PredefVar(self):
         return self.type
      
-global TRANSLATE_TOKEN_TO_STR; TRANSLATE_TOKEN_TO_STR = {Token.INT: "INT", Token.PT: "PT", Token.MO: "MO", Token.FUNC: "FUNC", Token.LOOP: "LOOP", Token.CO: "CO", Token.Lib: "Lib", Token.RNG: "RNG", Token.PredefVar: "PredefVar"}
+global TRANSLATE_TOKEN_TO_STR; TRANSLATE_TOKEN_TO_STR = {Token.INT: "INT", Token.PT: "PT", Token.FLOAT: "FLOAT", Token.MO: "MO", Token.FUNC: "FUNC", Token.LOOP: "LOOP", Token.CO: "CO", Token.Lib: "Lib", Token.RNG: "RNG", Token.PredefVar: "PredefVar"}
 global NUMBERVARS; NUMBERVARS = [Token.INT, Token.FLOAT]
 
 class Error:
@@ -488,8 +488,8 @@ class PredefVar:
         data = {}
         for var in self.vars.values():
             match var.type:
-                case Token.INT | Token.PT:
-                    data[var.name] = {"type": TRANSLATE_TOKEN_TO_STR[var.type], "value": var.value, "const": bool(var.const)} #TRANSLATE_BOOL_TO_JSON.get(str(var.const))
+                case Token.INT | Token.PT | Token.FLOAT:
+                    data[var.name] = {"type": TRANSLATE_TOKEN_TO_STR[var.type], "value": var.value, "const": bool(var.const)}
                 
                 case Token.MO:
                     data[var.name] = {"equation": var.equation}

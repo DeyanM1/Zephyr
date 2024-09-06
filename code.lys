@@ -30,3 +30,5 @@ iLoop # LOOP:iLoopCO;
 
 
 iLoop ? END:;
+
+__ ? DumpVars:dumpMe;
