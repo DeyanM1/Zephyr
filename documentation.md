@@ -103,16 +103,23 @@ __ ? JUMP:<Line>;
 - By entering variable name, it copies the value of the variable
 - **Value**: Must be compatible with the variable's type.
 
-**Examples:**
+**Incrementing:**
 
-- Increment integer by 1:
+- Increment integer or Float by 1 (1.0):
   ```zephyr
   counter ? w:++;
   ```
-- Decrement integer by 1:
+- Decrement integer or Float by 1 (1.0):
   ```zephyr
   counter ? w:--;
   ```
+- Increment PT:
+  ```zephyr
+  printableText # PT:HelloWorld;
+  printableText ? w:++;
+  ```
+  printableText after increment: HelloWorldHelloWorld
+
 
 ---
 

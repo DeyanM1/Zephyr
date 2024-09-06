@@ -180,7 +180,21 @@ class Variable:
             
         
         elif value == "++":
-            self.value = str(int(self.value) + 1)
+            match self.type:
+                case Token.INT:
+                    self.value = str(int(self.value) + 1)
+                case Token.FLOAT:
+                    self.value = str(float(self.value) + 1.0)
+                case Token.PT:
+                    self.value = self.value + self.value
+        elif value == "++":
+            match self.type:
+                case Token.INT:
+                    self.value = str(int(self.value) - 1)
+                case Token.FLOAT:
+                    self.value = str(float(self.value) - 1.0)
+
+                
         else:  
             if checkTypeForValue(self.type, value):
                 self.value = value
