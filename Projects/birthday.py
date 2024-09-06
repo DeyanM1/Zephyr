@@ -5,15 +5,13 @@ dass in einer Gruppe von n Personen mindestens zwei den gleichen Geburtstag habe
 """
 
 
-one = 1
-hund = 100
 
 
 n = 2
 iMax = 5
 i = 0
 
-daysInYear = 365
+
 prob = 1.0
 
 while i < 5:
