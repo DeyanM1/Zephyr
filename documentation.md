@@ -284,7 +284,7 @@ Conditional objects return boolean values (`~1` for true, `~0` for false) based 
 
 ## Predefined Variables
 
-Predefined variables allow you to define variables in a Python script and use them in Zephyr.
+Predefined variables allow you to define variables in a json script and use them in Zephyr.
 
 **Load Predefined Variables:**
 

@@ -34,6 +34,7 @@
         "name": "myLoop",
         "type": "LOOP",
         "startIndex": 6,
+        "CO name": "~1",
         "infinite": true
     },
     "maths": {

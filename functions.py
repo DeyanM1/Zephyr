@@ -2,8 +2,8 @@
 Done Var dumping: Variable, MO, CO, LOOP, LIB, RNG
 TODO: FUNCTION
 
-DONE Var Reading:
-TODO: Variable, MO, CO, LOOP, LIB, RNG, FUNCTION
+DONE Var Reading: Variable, MO, CO, LOOP, LIB, RNG, 
+TODO: FUNCTION
 
 """
 
@@ -70,6 +70,7 @@ class Token:
      
 global TRANSLATE_TOKEN_TO_STR; TRANSLATE_TOKEN_TO_STR = {Token.INT: "INT", Token.PT: "PT", Token.FLOAT: "FLOAT", Token.MO: "MO", Token.FUNC: "FUNC", Token.LOOP: "LOOP", Token.CO: "CO", Token.Lib: "Lib", Token.RNG: "RNG", Token.PredefVar: "PredefVar"}
 global NUMBERVARS; NUMBERVARS = [Token.INT, Token.FLOAT]
+global VAR_TYPES; VAR_TYPES = [Token.INT, "INT", Token.FLOAT, "FLOAT", Token.PT, "PT"]
 
 class Error:
     def __init__(self, exception_code:int, details):
@@ -152,7 +153,7 @@ def changeType(var, vars, newType):
         vars.update({var.name: Variable(name=var.name, type=newType, value=var.value, vars=vars, const=var.const)})
     
     if var.type == Token.RNG:
-        vars.update({var.name: Variable(name=var.name, type=newType, value=var.value, const=var.const)})
+        vars.update({var.name: Variable(name=var.name, type=newType, value=var.value, vars=vars, const=var.const)})
         
 
     elif checkTypeForValue(newType, var.value):
@@ -401,6 +402,7 @@ class Loop:
             self.dumpConfig = {"name": self.name, 
                            "type": TRANSLATE_TOKEN_TO_STR[self.type], 
                            "startIndex": self.startIndex, 
+                           "CO name": self.infinite,
                            "infinite": self.infinite}
         
         self.repeat_count = 0
@@ -421,7 +423,12 @@ class Loop:
         if self.condition.value != "~1":
             return endIndex
         
-        self.dumpConfig = {"name": self.name, "type": TRANSLATE_TOKEN_TO_STR[self.type], "startIndex": self.startIndex, "endIndex": endIndex, "infinite": self.infinite}
+        self.dumpConfig = {"name": self.name, 
+                           "type": TRANSLATE_TOKEN_TO_STR[self.type], 
+                           "startIndex": self.startIndex, 
+                           "endIndex": endIndex, 
+                           "CO name": self.condition.value,
+                           "infinite": self.infinite}
 
         index = self.startIndex
         return index
@@ -508,36 +515,38 @@ class PredefVar:
         with open(f"lib/{self.fileName}.json", "r") as file:
             data = json.load(file)
             for var in data:
-                self.compile(data[var], var)
+                self.compile(data[var])
         
         return self.vars
     
-    def compile(self, variableRaw, name):
+    def compile(self, variableRaw):
+        print(variableRaw)
         type = variableRaw.get('type')
         
+        if type in VAR_TYPES:
+            var = Variable(variableRaw.get("name"), variableRaw.get("type"), vars, variableRaw.get("const"))
+            self.vars.update({variableRaw.get("name"): var})
+        
         match type:
-            case "INT" | Token.INT:
-                var = Variable(name, type, str(variableRaw.get("value")), const = variableRaw.get("const"))
-                self.vars.update({name: var})
-            case "FLOAT" | Token.FLOAT:
-                var = Variable(name, type, str(variableRaw.get("value")), const = variableRaw.get("const"))
-                self.vars.update({name: var})
-            case "PT" | Token.PT:
-                var = Variable(name, type, str(variableRaw.get("value")), const = variableRaw.get("const"))
-                self.vars.update({name: var})
-            case "MO" | Token.MO:
-                var = MathObject(name, variableRaw.get("equation"))
-                var.prepare(vars=self.vars)
-                self.vars.update({name: var})
-            case "FUNC" | Token.FUNC:
-                var = Function(name, variableRaw.get("return function"), variableRaw.get("call const"), variableRaw.get("equation"))
-            case "CO" | Token.CO:
-                var = ConditionObject(name, variableRaw.get("condition"))
-                var.prepare(vars=self.vars)
-                self.vars.update({name: var})
-            case "RNG" | Token.RNG:
-                var = RNG(name, variableRaw.get("rng type"), variableRaw.get("rng range"))
-                self.vars.update({name: var})
+            case "MO":
+                var = MathObject(variableRaw.get("name"), variableRaw.get("value"), variableRaw.get("equation"))
+                self.vars.update({variableRaw.get("name"): var})
+            
+            case "CO":
+                var = ConditionObject(variableRaw.get("name"), variableRaw.get("condition"))
+                self.vars.update({variableRaw.get("name"): var})
+            
+            case "LOOP":
+                var = Loop(variableRaw.get("name"), variableRaw.get("startIndex"), vars, variableRaw.get("CO name"))
+                self.vars.update({variableRaw.get("name"): var})
+            
+            case "Lib":
+                var = Library(variableRaw.get("name"), variableRaw.get("libName"))
+                self.vars.update({variableRaw.get("name"): var})
+            
+            case "RNG":
+                var = RNG(variableRaw.get("name"), variableRaw.get("rngType"), f"{variableRaw.get('rngRangeMin')} -> {variableRaw.get('rngRangeMax')}")
+                self.vars.update({variableRaw.get("name"): var})
     
     def dump(self):
         data = {}

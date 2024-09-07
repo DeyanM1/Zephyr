@@ -1,17 +1,4 @@
-num # INT:55;
-name # PT:ich;
-float # FLOAT:5.3;
+__ ? predefVars:dumpMe;
 
-myMO # MO:;
-myMO ? ('float'*'num'):;
-
-myCO # CO:('float'>'num');
-
-myLoop # LOOP:~1;
-myLoop ? END:;
-
-maths # LIB:maths;
-
-rngNumber # RNG:INT|5->10;
-
-__ ? dumpVars:dumpMe;
+rngNumber # CT:PT;
+rngNumber ? push:;
