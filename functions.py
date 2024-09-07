@@ -520,11 +520,10 @@ class PredefVar:
         return self.vars
     
     def compile(self, variableRaw):
-        print(variableRaw)
         type = variableRaw.get('type')
         
         if type in VAR_TYPES:
-            var = Variable(variableRaw.get("name"), variableRaw.get("type"), vars, variableRaw.get("const"))
+            var = Variable(name=variableRaw.get("name"), type=variableRaw.get("type"), value=variableRaw.get("value"), vars=self.vars, const=variableRaw.get("const"))
             self.vars.update({variableRaw.get("name"): var})
         
         match type:

@@ -1,4 +1,6 @@
 __ ? predefVars:dumpMe;
 
-rngNumber # CT:PT;
-rngNumber ? push:;
+~num # INT:55;
+
+num # CT:PT;
+num ? push:;

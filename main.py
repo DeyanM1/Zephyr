@@ -68,7 +68,6 @@ def compile(code: list):
                         case "predefVars":
                             var = PredefVar(name, paramsList[0], vars)
                             vars = var.read()
-                            print("finishVars:   ", vars)
                         
                         case "dumpVars":
                             var = PredefVar(name, paramsList[0], vars)
