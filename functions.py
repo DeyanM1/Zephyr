@@ -1,3 +1,13 @@
+"""
+Done Var dumping: Variable, MO, CO, LOOP, LIB, RNG
+TODO: FUNCTION
+
+DONE Var Reading:
+TODO: Variable, MO, CO, LOOP, LIB, RNG, FUNCTION
+
+"""
+
+
 import re
 import importlib
 import json
@@ -158,12 +168,14 @@ def changeType(var, vars, newType):
 class Variable:
     def __init__(self, name, type, value, vars, const = False):
         value = str(value)
+        self.dumpConfig = {}
+          
         self.name = name
         self.type = assignType(type) if checkTypeForValue(type, str(value)) else Error(101, self.name).as_string()
         self.const = const
         self.value = ""
         self.changeValue(str(value), vars)
-
+        
     
     def getType(self):
         return self.type
@@ -201,6 +213,8 @@ class Variable:
             else:
                 Error(101, self.name).as_string()	
 
+
+        self.dumpConfig = {"name": self.name, "type": TRANSLATE_TOKEN_TO_STR[self.type], "value": self.value, "const": self.const}
         return True
 
     def push(self):
@@ -218,6 +232,9 @@ class MathObject:
 
         self.equation = equation
         self.calculation = ""
+        
+        self.dumpConfig = {"name": self.name, "type": TRANSLATE_TOKEN_TO_STR[self.type], "value": self.value, "equation": self.equation, "calculation": "None"}
+
 
 
     
@@ -268,7 +285,8 @@ class MathObject:
         # TODO: make better calculation, because very unsafe: https://stackoverflow.com/questions/9685946/math-operations-from-string
         Debug(self.name, ("calculating: %s" % self.calculation)).as_string()
         self.value = eval(self.calculation)
-        
+        self.dumpConfig = {"name": self.name, "type": TRANSLATE_TOKEN_TO_STR[self.type], "value": self.value, "equation": self.equation, "calculation": self.calculation}
+  
 class Function:
     def __init__(self, name, return_func, call_const = False, function="",  value = 0):
         return_func_commands = ["RES"]
@@ -309,13 +327,16 @@ class ConditionObject:
         self.condition = condition
         self.edit_condition = ""
         
+        self.dumpConfig = {"name": self.name, "type": TRANSLATE_TOKEN_TO_STR[self.type], "value": self.value, "condition": self.condition}
+
+        
     
     def prepare(self, vars):
         self.edit_condition = ""
         in_var = False
         varstr = ""
 
-        "'a'>'b'"
+
         for elem in self.condition:
             if elem in DIGITS: Error(301, self.condition).as_string()
             elif elem == '>': self.edit_condition += elem
@@ -325,7 +346,7 @@ class ConditionObject:
             elif elem == '>': self.edit_condition += elem
             elif elem == "'": 
                 if in_var:
-                    if vars.get(varstr).type != Token.INT:
+                    if vars.get(varstr).type != Token.INT and vars.get(varstr).type != Token.FLOAT:
                         Error(106, vars.get(varstr).name).as_string()
                     self.edit_condition += str(vars.get(varstr).value)
                     varstr, in_var = "", False
@@ -345,6 +366,9 @@ class ConditionObject:
                 self.value = "~1"
             else:
                 self.value = "~0"
+            
+            self.dumpConfig = {"name": self.name, "type": TRANSLATE_TOKEN_TO_STR[self.type], "value": self.value, "condition": self.condition}
+
         except Exception:
             print(f"ERROR: {self.condition} is not a valid condition!")
 
@@ -360,12 +384,24 @@ class Loop:
         
         if conditionObject.isalpha(): 
             self.condition = vars[conditionObject]; 
-            
             self.condition.prepare(vars)
+            
+            self.dumpConfig = {"name": self.name, 
+                           "type": TRANSLATE_TOKEN_TO_STR[self.type], 
+                           "startIndex": self.startIndex, 
+                           "CO name": str(vars[conditionObject].name),
+                           "CO condition": str(vars[conditionObject].condition), 
+                           "CO value": str(vars[conditionObject].value)}
+
             
         elif conditionObject in BOOL:
             self.infinite = True
             
+        
+            self.dumpConfig = {"name": self.name, 
+                           "type": TRANSLATE_TOKEN_TO_STR[self.type], 
+                           "startIndex": self.startIndex, 
+                           "infinite": self.infinite}
         
         self.repeat_count = 0
         
@@ -385,7 +421,8 @@ class Loop:
         if self.condition.value != "~1":
             return endIndex
         
-          
+        self.dumpConfig = {"name": self.name, "type": TRANSLATE_TOKEN_TO_STR[self.type], "startIndex": self.startIndex, "endIndex": endIndex, "infinite": self.infinite}
+
         index = self.startIndex
         return index
 
@@ -398,12 +435,21 @@ class Library:
         self.libName = libName
         self.libObject = None
         
+        self.dumpConfig = {"name": self.name, 
+                           "type": TRANSLATE_TOKEN_TO_STR[self.type], 
+                           "libName": self.libName,
+                           "libObject": self.libObject}
+
         self.setLib()
     
     def setLib(self):
         try:
             module = importlib.import_module("lib.%s" % self.libName)
             self.libObject = module
+            self.dumpConfig = {"name": self.name, 
+                           "type": TRANSLATE_TOKEN_TO_STR[self.type], 
+                           "libName": self.libName,
+                           "libObject": str(self.libObject)}
 
         except ImportError as e:
             Error(601, (self.libName, self.libObject)).as_string()
@@ -416,8 +462,15 @@ class RNG:
         self.const = False
         
         self.rngType = rngType
-        self.rngRange = self.setRange(rngRange)
         self.rngRangeCompiled = []
+        self.rngRange = self.setRange(rngRange)
+        
+        self.dumpConfig = {"name": self.name, 
+                           "type": TRANSLATE_TOKEN_TO_STR[self.type], 
+                           "value": self.value,
+                           "rngType": self.rngType,
+                           "rngRangeMin": self.rngRangeCompiled[0],
+                           "rngRangeMax": self.rngRangeCompiled[1]}
         
         
         
@@ -434,11 +487,13 @@ class RNG:
         
     def generateRNG(self):
         self.value = np.random.randint(self.rngRangeCompiled[0], self.rngRangeCompiled[1], size=1).item()
-    
-    def changeRange(self, newRange):
-        self.setRange(newRange)
-        
-        self.generateRNG()
+        self.dumpConfig = {"name": self.name, 
+                           "type": TRANSLATE_TOKEN_TO_STR[self.type], 
+                           "value": self.value,
+                           "rngType": self.rngType,
+                           "rngRangeMin": self.rngRangeCompiled[0],
+                           "rngRangeMax": self.rngRangeCompiled[1]}
+
     
 class PredefVar:
     def __init__(self, name, fileName, vars):
@@ -487,22 +542,12 @@ class PredefVar:
     def dump(self):
         data = {}
         for var in self.vars.values():
-            match var.type:
-                case Token.INT | Token.PT | Token.FLOAT:
-                    data[var.name] = {"type": TRANSLATE_TOKEN_TO_STR[var.type], "value": var.value, "const": bool(var.const)}
-                
-                case Token.MO:
-                    data[var.name] = {"equation": var.equation}
-                    
-                case Token.FUNC:
-                    data[var.name] = {"return function": var.return_func, "call const": var.call_const, "equation": var.equation}
-                    
-                case Token.CO:
-                    data[var.name] = {"condition": var.condition}
-                
-                case Token.RNG:
-                    data[var.name] = {"rng type": var.rngType, "rng range": var.rngRange}
+            name = var.dumpConfig["name"]
+            dump = var.dumpConfig
+            
+            data[name] = dump
+            
         
-        print(data)
+        #print(data)
         with open(f"lib/{self.fileName}.json", "w") as file:
             json.dump(data, file, indent=4) 

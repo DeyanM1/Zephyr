@@ -289,7 +289,7 @@ Predefined variables allow you to define variables in a Python script and use th
 **Load Predefined Variables:**
 
 ```zephyr
-__ ? PredefVars:<filename>;
+__ ? predefVars:<filename>;
 ```
 
 **Predefined Variable File Structure:**
@@ -307,14 +307,14 @@ __ ? PredefVars:<filename>;
 
 **Dump Variables used in code**
 ```zephyr
-__ ? DumpVars:<filename>;
+__ ? dumpVars:<filename>;
 ```
 
 **Example:**
 
 ```zephyr
-__ ? PredefVars:examplePredefVars;
-__ ? DumpVars:usedVars;
+__ ? predefVars:examplePredefVars;
+__ ? dumpVars:usedVars;
 ```
 
 ---

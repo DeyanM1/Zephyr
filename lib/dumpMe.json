@@ -1,40 +1,53 @@
 {
-    "pi": {
-        "type": "FLOAT",
-        "value": "3.139080094741128",
-        "const": false
-    },
-    "divisor": {
-        "type": "FLOAT",
-        "value": "797.0",
-        "const": false
-    },
-    "four": {
-        "type": "FLOAT",
-        "value": "4.0",
-        "const": false
-    },
-    "two": {
-        "type": "FLOAT",
-        "value": "2.0",
-        "const": false
-    },
-    "iterations": {
+    "num": {
+        "name": "num",
         "type": "INT",
-        "value": "200",
+        "value": "55",
         "const": false
     },
-    "iteration": {
-        "type": "INT",
-        "value": "200",
-        "const": false
-    },
-    "iLoopCO": {
-        "condition": "('iteration' < 'iterations')"
-    },
-    "piMO": {
+    "name": {
+        "name": "name",
         "type": "PT",
-        "value": "3.139080094741128",
+        "value": "ich",
         "const": false
+    },
+    "float": {
+        "name": "float",
+        "type": "FLOAT",
+        "value": "5.3",
+        "const": false
+    },
+    "myMO": {
+        "name": "myMO",
+        "type": "MO",
+        "value": 291.5,
+        "equation": "('float'*'num')",
+        "calculation": "(5.3*55)"
+    },
+    "myCO": {
+        "name": "myCO",
+        "type": "CO",
+        "value": "~0",
+        "condition": "('float'>'num')"
+    },
+    "myLoop": {
+        "name": "myLoop",
+        "type": "LOOP",
+        "startIndex": 6,
+        "infinite": true
+    },
+    "maths": {
+        "name": "maths",
+        "type": "Lib",
+        "libName": "maths",
+        "libObject": "<module 'lib.maths' from 'c:\\\\Users\\\\deyan\\\\---GitHub---\\\\Zephyr\\\\lib\\\\maths.py'>"
+    },
+    "rngNumber": {
+        "name": "rngNumber",
+        "type": "RNG",
+        "value": 5,
+        "rngType": "INT",
+        "rngRangeMin": 5,
+        "rngRangeMax": 10
     }
 }

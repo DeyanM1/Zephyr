@@ -39,14 +39,17 @@ def compile(code: list):
             index += 1
             continue
 
-     
-        comm, params = code[index].split(":")
+        try:
+            comm, params = code[index].split(":")
+        except Exception as e:
+            print(f"Parameter splitting error on: {index+1}")
+            quit()
         paramsList = params.split("|")
 
         try:
             name, func, base = comm.split(" ")
         except Exception as e:
-            print(f"Comma Error on: {index}")
+            print(f"Comma Error on: {index+1}")
             quit()
         
         name, base = name.replace(" ", ""), base.replace(" ", "")
@@ -62,11 +65,11 @@ def compile(code: list):
                             index = int(paramsList[0]) -1
                             continue
                         
-                        case "PredefVars":
+                        case "predefVars":
                             var = PredefVar(name, paramsList[0], vars)
                             vars = var.read()
                         
-                        case "DumpVars":
+                        case "dumpVars":
                             var = PredefVar(name, paramsList[0], vars)
                             var.dump()
 
