@@ -37,12 +37,6 @@
         "CO name": "~1",
         "infinite": true
     },
-    "maths": {
-        "name": "maths",
-        "type": "Lib",
-        "libName": "maths",
-        "libObject": "<module 'lib.maths' from 'c:\\\\Users\\\\deyan\\\\---GitHub---\\\\Zephyr\\\\lib\\\\maths.py'>"
-    },
     "rngNumber": {
         "name": "rngNumber",
         "type": "RNG",

@@ -1,6 +1,6 @@
 __ ? predefVars:dumpMe;
 
-~num # INT:55;
+
 
 num # CT:PT;
 num ? push:;
