@@ -9,22 +9,26 @@ def convert(filename: str):
     replaceList = ["\n", "\r", "\t"]
 
     converted_code = []
-    current_function = ""
-    with open(filename, "r") as file:
-        for line in file:  
-            for char in line: 
+    current_function = "" 
+    with open(filename, 'r') as file:
+        for line in file:
+            for char in line:
+                if char in replaceList: continue
                 if char == ";":
-                    if current_function.startswith(" "):
-                        current_function = current_function[1:]
-                        while current_function.startswith(" "):
+                    while True:
+                        if current_function.startswith(" "):
                             current_function = current_function[1:]
+                        else:
+                            break
+                    
                     converted_code.append(current_function)
                     current_function = ""
                     continue
-                elif char in replaceList:
-                    continue
-                else:
-                    current_function = current_function + char
+                
+                current_function += char
+
+                
+    
     #print(converted_code)
     return converted_code
 
@@ -38,19 +42,20 @@ def compile(code: list):
         if '\n' in code[index] or code[index].startswith("~"): 
             index += 1
             continue
+        
 
-        try:
-            comm, params = code[index].split(":")
-        except Exception as e:
-            print(f"Parameter splitting error on: {index+1}")
-            quit()
+        #try:
+        comm, params = code[index].split(":")
+        #except Exception as e:
+        #    print(f"Parameter splitting error on: {index+1}")
+        #    quit()
         paramsList = params.split("|")
 
-        try:
-            name, func, base = comm.split(" ")
-        except Exception as e:
-            print(f"Comma Error on: {index+1}")
-            quit()
+        #try:
+        name, func, base = comm.split(" ")
+        #except Exception as e:
+        #    print(f"Comma Error on: {index+1}")
+        #    quit()
         
         name, base = name.replace(" ", ""), base.replace(" ", "")
 

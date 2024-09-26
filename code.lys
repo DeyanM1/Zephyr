@@ -1,6 +1,1 @@
-__ ? predefVars:dumpMe;
-
-
-
-num # CT:PT;
-num ? push:;
+a # PT:4;              a ? push:;
