@@ -6,13 +6,13 @@ four # FLOAT:4.0;
 two # FLOAT:2.0;
 
 
-iterations # INT:200;
+iterations # INT:50000;
 iteration # INT:1;
 
 iLoopCO # CO:('iteration' < 'iterations');
 iLoop # LOOP:iLoopCO;
 
-    piMO # MO:;
+piMO # MO:;
     piMO ? ('pi'+'four'/'divisor'-'four'/('divisor'+'two')):;
 
     pi ? w:'piMO';
@@ -30,3 +30,4 @@ iLoop # LOOP:iLoopCO;
 
 
 iLoop ? END:;
+__ ? dumpVars:piApproximatorVars;

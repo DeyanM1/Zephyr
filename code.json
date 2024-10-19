@@ -1,0 +1,18 @@
+{
+    "0::AaaA # PT:heyyyyyyyyyy": {
+        "name": "AaaA",
+        "base": "#",
+        "function": "PT",
+        "paramsList": [
+            "heyyyyyyyyyy"
+        ]
+    },
+    "1::AaaA ? push:": {
+        "name": "AaaA",
+        "base": "?",
+        "function": "push",
+        "paramsList": [
+            ""
+        ]
+    }
+}

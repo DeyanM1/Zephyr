@@ -9,13 +9,16 @@
 **Basic Structure:**
 
 ```zephyr
-<VariableName> <Command>:<Argument1>|<Argument2>|...;
+<VariableName> <base> <function>:<Argument1>|<Argument2>|...;
+<--------------------------command------------------------->
 ```
 
-- **Variables**: All variables must be lowercase.
-- **Commands**: The command indicates the action to be performed on the variable.
-- **Arguments**: The arguments provide the necessary data or parameters for the command.
 
+- **variableName**: The name of the variable
+- **base**: The Base of the variable is used to define what is beeing done to th var ("#" or "?")
+- **function**: The function is the ht thing to be executed as the var (e.g. printing / defining a function, etc.)
+- **arguments**: The arguments are used to pass more information to the function
+- **command**: The entire thing combined is called command
 ---
 
 ## Types
@@ -31,11 +34,10 @@
 
 ---
 
-## Commands
+## base
 
 - **?**: Used for variable operations (e.g., modifying or retrieving values).
 - **#**: Used for declaring variables or changing their types.
-- **~**: Used to ignore the entire line (comment).
 
 ---
 
@@ -50,8 +52,8 @@ Zephyr comes with several built-in functions that can be used without prior defi
 ```zephyr
 __ ? JUMP:<Line>;
 ```
-
 - **JUMP**: Jumps to a specific function, not a line.
+- **DUMPING VARS** see below
 
 ---
 
@@ -59,13 +61,14 @@ __ ? JUMP:<Line>;
 
 ### Declaring Variables
 
+- usage
 ```zephyr
 <VariableName> # <Type>:<Value>(|<~1>/<~0>);
 ```
 
 - **Type**: The data type of the variable.
 - **Value**: The initial value of the variable.
-- **~1/~0**: Optional flags for constants or special properties.
+- **~1/~0**: Optional flags for constants.
 
 **Examples:**
 
@@ -75,14 +78,16 @@ __ ? JUMP:<Line>;
   ```
 - Declare a constant text:
   ```zephyr
-  message # PT:"Hello World" | ~1;
+  message # PT:"Hello World"|~1;
   ```
 
 ### Changing Type
 
+- usage:
 ```zephyr
 <VariableName> # CT:<Type>;
 ```
+- **Type**: The new variable type
 
 **Example:**
 
@@ -93,12 +98,13 @@ __ ? JUMP:<Line>;
 
 ### Modifying Values
 
+- usage:
 ```zephyr
 <VariableName> ? w:<Value>;
 <VariableName> ? w:<VariableName>;
 ```
-- By entering variable name, it copies the value of the variable
 - **Value**: Must be compatible with the variable's type.
+- **VariableName**: By entering a VariableName, it copies its value
 
 **Incrementing:**
 
@@ -124,12 +130,14 @@ __ ? JUMP:<Line>;
 
 **Print a value:**
 
+- usage:
 ```zephyr
 <VariableName> ? push:;
 ```
 
 **Take user input:**
 
+- usage:
 ```zephyr
 <VariableName> ? INPUT:<optional input message>;
 ```
@@ -145,6 +153,7 @@ __ ? JUMP:<Line>;
 
 ## Random Number Generator
 
+- usage:
 ```zephyr
 <VariableName> # RNG:<Random number type>|<range>;
 ```
@@ -160,6 +169,7 @@ __ ? JUMP:<Line>;
 
 ### Changing Range
 
+- usage:
 ```zephyr
 <VariableName> ? CR:<range>;
 ```
@@ -172,20 +182,22 @@ Math objects allow for complex calculations.
 
 **Declare a Math Object:**
 
+- usage:
 ```zephyr
 <VariableName> # MO:; 
 ```
 
 **Pass an Equation:**
 
+- usage:
 ```zephyr
 <VariableName> ? (<equation>):;
 ```
-
-- **Equation Format**: `(a + b)` where `a` and `b` are variables or literals.
+- **Equation Format**: `(a + b)` where `a` and `b` are variables.
 
 **Example:**
 
+- usage:
 - Define and use a math object:
   ```zephyr
   result # MO:;
@@ -200,6 +212,7 @@ Functions in Zephyr allow you to encapsulate logic and reuse it.
 
 **Declare a Function:**
 
+- usage:
 ```zephyr
 <VariableName> # FUNC:<returnType>|(~1/~0);
 ```
@@ -209,12 +222,14 @@ Functions in Zephyr allow you to encapsulate logic and reuse it.
 
 **Pass an Equation to a Function:**
 
+- usage:
 ```zephyr
 <VariableName> ? (<equation>);
 ```
 
 **Call a Function:**
 
+- usage:
 ```zephyr
 <VariableName> ? call:;
 ```
@@ -236,6 +251,7 @@ Loops in Zephyr allow you to repeat actions.
 
 **Declare a Loop:**
 
+- usage:
 ```zephyr
 <VariableName> # LOOP:<Conditional Object Name>;
 ```
@@ -244,6 +260,7 @@ Loops in Zephyr allow you to repeat actions.
 
 **End a Loop:**
 
+- usage:
 ```zephyr
 <VariableName> ? END:;
 ```

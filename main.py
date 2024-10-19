@@ -1,71 +1,80 @@
 from functions import *
 import sys
 import time
+import json
 
-MEASURE_TIME = False
+MEASURE_TIME = True
+FILE_NAME = "code"
 
-def convert(filename: str):
 
-    replaceList = ["\n", "\r", "\t"]
 
-    converted_code = []
-    current_function = "" 
-    with open(filename, 'r') as file:
-        for line in file:
-            for char in line:
-                if char in replaceList: continue
-                if char == ";":
-                    while True:
-                        if current_function.startswith(" "):
-                            current_function = current_function[1:]
-                        else:
-                            break
-                    
-                    converted_code.append(current_function)
-                    current_function = ""
-                    continue
-                
-                current_function += char
-
-                
+def lexer(filename: str):
+    currentCommand = ""
     
-    #print(converted_code)
-    return converted_code
+    code = []
+    
+    bannedChars = ["\n", "\r", "\t"]
+    with open(f"{filename}.lys", 'r') as file:
+        for line in file:
+            line = line.lstrip()    # remove spaces from start
+            for char in line:
+                if char != ";":
+                    if char in bannedChars:
+                        continue
+                    currentCommand += char
+                
+                if char == ";":
+                    code.append(currentCommand)
+                    currentCommand = ""
+    
+    #print(code) 
+    
+    data = {}
+    
+    for elem in range(len(code)):
+        try:
+            command, params = code[elem].split(":")
+            name, base, function = command.split(" ")
+            
+            paramsList = params.split("|")
+        except ValueError:
+            print(f"[{elem}]  missing semicolon")
+            quit()
+
+        data.update({f"{elem}::{code[elem]}": {"name": name,"base": base, "function": function, "paramsList": paramsList}})
+
+        
+    with open(f"{filename}.json", "w") as file:
+        json.dump(data, file, indent=4) 
+    
+    return data
 
 
+def compile(filename: str): 
+    with open(f"{filename}.json", "r") as file:
 
-def compile(code: list):
+        code = json.load(file)
+        
+        
     vars = {}
     libs = {}
     index = 0
+    
+    
     while index <= len(code)-1:
-        if '\n' in code[index] or code[index].startswith("~"): 
-            index += 1
-            continue
+        currentCmdName = code.get(list(code)[index])
+        
+        name = currentCmdName.get('name')
+        base = currentCmdName.get('base')
+        function = currentCmdName.get('function')
+        paramsList = currentCmdName.get('paramsList')
         
 
-        #try:
-        comm, params = code[index].split(":")
-        #except Exception as e:
-        #    print(f"Parameter splitting error on: {index+1}")
-        #    quit()
-        paramsList = params.split("|")
-
-        #try:
-        name, func, base = comm.split(" ")
-        #except Exception as e:
-        #    print(f"Comma Error on: {index+1}")
-        #    quit()
         
-        name, base = name.replace(" ", ""), base.replace(" ", "")
-
-
-        
-
         if name == "__":
-            match func:
+            match base:
                 case "?":
-                    match base:
+                    match function:
                         case "JUMP":
                             index = int(paramsList[0]) -1
                             continue
@@ -79,8 +88,8 @@ def compile(code: list):
                             var.dump()
 
 
-        elif base in TYPES:
-            match base:
+        elif function in TYPES:
+            match function:
                 case "MO":
                     var = MathObject(name)
                     vars.update({var.name: var})
@@ -117,21 +126,22 @@ def compile(code: list):
                     
                 
                 case _:
+
                     if 0 <= 1 < len(paramsList):
                         if paramsList[1] == "~1":
-                            var = Variable(name, base, paramsList[0], vars, True)
+                            var = Variable(name, function, paramsList[0], vars, True)
                         else:
-                            var = Variable(name, base, paramsList[0], vars, False)
+                            var = Variable(name, function, paramsList[0], vars, False)
                     else:
-                        var = Variable(name, base, paramsList[0], vars, False)
+                        var = Variable(name, function, paramsList[0], vars, False)
 
                         vars.update({var.name: var})
 
 
         elif vars[name].type == Token.PT:
-            match func:
+            match base:
                 case "?":
-                    match base:
+                    match function:
                         case "push": 
                             vars[name].push()
                         case "w":
@@ -141,155 +151,154 @@ def compile(code: list):
                             vars[name].setValueByInput(paramsList[0])
                         
                         case _:
-                            Error(501, ["Token.PT", f"? {base}"]).as_string()
+                            Error(501, ["Token.PT", f"? {function}"]).as_string()
                 case "#":
-                    match base:
+                    match function:
                         case "CT":
                             vars = changeType(vars[name], vars, paramsList[0]) # [0] = Type to change
                         case _:
-                            Error(501, ["Token.PT", f"# {base}"]).as_string()
+                            Error(501, ["Token.PT", f"# {function}"]).as_string()
 
         elif vars[name].type == Token.INT:
-            match func:
+            match base:
                 case "?":
-                    match base:
+                    match function:
                         case "w":
                             vars[name].changeValue(paramsList[0], vars)
 
                         case _:
-                            Error(501, ["Token.INT", f"? {base}"]).as_string()
+                            Error(501, ["Token.INT", f"? {function}"]).as_string()
                             
                 case "#":
-                    match base:
+                    match function:
                         case "CT":
                             vars = changeType(vars[name], vars, paramsList[0]) # [0] = Type to change
                         case _:
-                            Error(501, ["Token.INT", f"# {base}"]).as_string()
+                            Error(501, ["Token.INT", f"# {function}"]).as_string()
                             
         elif vars[name].type == Token.FLOAT:
-            match func:
+            match base:
                 case "?":
-                    match base:
+                    match function:
                         case "w":
                             vars[name].changeValue(paramsList[0], vars)
 
                         case _:
-                            Error(501, ["Token.FLOAT", f"? {base}"]).as_string()
+                            Error(501, ["Token.FLOAT", f"? {function}"]).as_string()
                             
                 case "#":
-                    match base:
+                    match function:
                         case "CT":
                             vars = changeType(vars[name], vars, paramsList[0]) # [0] = Type to change
                         case _:
-                            Error(501, ["Token.FLOAT", f"# {base}"]).as_string()
+                            Error(501, ["Token.FLOAT", f"# {function}"]).as_string()
         
         elif vars[name].type == Token.RNG:
-            match func:
+            match base:
                 case "?":
-                    match base:
+                    match function:
                         case "CR":
                             vars[name].setRange(paramsList[0])
 
                         case _:
-                            Error(501, ["Token.RNG", f"? {base}"]).as_string()
+                            Error(501, ["Token.RNG", f"? {function}"]).as_string()
                             
                 case "#":
-                    match base:
+                    match function:
                         case "CT":
                             vars = changeType(vars[name], vars, paramsList[0]) # [0] = Type to change
                         case _:
-                            Error(501, ["Token.RNG", f"# {base}"]).as_string()
+                            Error(501, ["Token.RNG", f"# {function}"]).as_string()
                         
         elif vars[name].type == Token.MO:
-            match func:
+            match base:
                 case "?":
-                    match base:
+                    match function:
                         case "w":
                             vars[name].setEquation(paramsList[0])
                         
-                        case base if base.startswith("("):
-                            vars[name].setEquation(base)
+                        case function if function.startswith("("):
+                            vars[name].setEquation(function)
                             vars[name].prepare(vars)
 
                         case _:
-                            Error(501, ["Token.MO", f"? {base}"]).as_string()
+                            Error(501, ["Token.MO", f"? {function}"]).as_string()
                             
                 case "#":
-                    match base:
+                    match function:
                         case "CT":
                             vars = changeType(vars[name], vars, paramsList[0]) # [0] = Type to change
                         case _:
-                            Error(501, ["Token.PT", f"# {base}"]).as_string()
+                            Error(501, ["Token.PT", f"# {function}"]).as_string()
         
         elif vars[name].type == Token.FUNC:
-            match func:
+            match base:
                 case "?":
-                    match base:                        
-                        case base if base.startswith("("):
+                    match function:                        
+                        case function if function.startswith("("):
                             if vars[name].type == Token.FUNC:
-                                vars[name].setFunction(base, vars)
+                                vars[name].setFunction(function, vars)
                         
                         case "call":
                             vars[name].call(vars)
                             
                         case _:
-                            Error(501, ["Token.MO", f"? {base}"]).as_string()
+                            Error(501, ["Token.MO", f"? {function}"]).as_string()
                             
                 case "#":
-                    match base:
+                    match function:
                         case "CT":
                             vars = changeType(vars[name], vars, paramsList[0]) # [0] = Type to change
                         case _:
-                            Error(501, ["Token.PT", f"# {base}"]).as_string()
+                            Error(501, ["Token.PT", f"# {function}"]).as_string()
         
         elif vars[name].type == Token.LOOP:
-            match func:
+            match base:
                 case "?":
-                    match base:
+                    match function:
                         case "END":
                             index = vars[name].loopEnd(index, vars)
                         case _:
-                            Error(501, ["Token.LOOP", f"? {base}"]).as_string()          
+                            Error(501, ["Token.LOOP", f"? {function}"]).as_string()          
                 case "#":
-                    match base:
+                    match function:
                         case _:
-                            Error(501, ["Token.LOOP", f"# {base}"]).as_string()
+                            Error(501, ["Token.LOOP", f"# {function}"]).as_string()
     
         elif vars[name].type == Token.CO:
-            match func:
+            match base:
                 case "?":
-                    match base:
+                    match function:
                             
                         case _:
-                            Error(501, ["Token.CO", f"? {base}"]).as_string()
+                            Error(501, ["Token.CO", f"? {function}"]).as_string()
                 
                 case "#":
-                    match base:
+                    match function:
                         case "CT":
                             vars = changeType(vars[name], vars, paramsList[0]) # [0] = Type to change
                         case _:
-                            Error(501, ["Token.PT", f"# {base}"]).as_string()
+                            Error(501, ["Token.PT", f"# {function}"]).as_string()
     
         elif vars[name].type == Token.Lib:
-            vars = vars[name].libObject.search(name, func, base, paramsList, vars)
+            vars = vars[name].libObject.search(name, base, function, paramsList, vars)
     
         else:
             pass
-        index += 1
     
+        index += 1
     print("\n", vars)
+        
+    
 
-
-
-
-
+ 
 
 if __name__ == "__main__":
     if MEASURE_TIME: st = time.time()
     
-    if len(sys.argv) > 1: c = convert(sys.argv[1])
-    else: c = convert("code.lys")
+    if len(sys.argv) > 1: lexer(sys.argv[1])
+    else: lexer(FILE_NAME)
     
-    compile(c)
+    compile(FILE_NAME)
     
     if MEASURE_TIME: et = time.time(); elapsed_time = et - st; print(f"\n Elapsed time: {elapsed_time}s")
