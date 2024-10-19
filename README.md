@@ -1,13 +1,4 @@
- ________  ________      ___    ___ ________  ________   ___     ___    ___
-|\   ____\|\   __  \    |\  \  /  /|\   __  \|\   ___  \|\  \   |\  \  /  /|
-\ \  \___|\ \  \|\  \   \ \  \/  / | \  \|\  \ \  \\ \  \ \  \  \ \  \/  / /
- \ \  \    \ \   _  _\   \ \    / / \ \  \\\  \ \  \\ \  \ \  \  \ \    / /
-  \ \  \____\ \  \\  \|   \/  /  /   \ \  \\\  \ \  \\ \  \ \  \  /     \/
-   \ \_______\ \__\\ _\ __/  / /      \ \_______\ \__\\ \__\ \__\/  /\   \
-    \|_______|\|__|\|__|\___/ /        \|_______|\|__| \|__|\|__/__/ /\ __\
-                       \|___|/                                  |__|/ \|__|
-
-# Zephyr
+![wwww](https://github.com/user-attachments/assets/621614f4-354e-4368-832e-184b75503e86)
 
 ## Introduction
 
@@ -26,3 +17,14 @@ Zephyr is a variable-based programming language designed for simplicity and effi
 ## Write programs
 
 **See documentation** [here](https://github.com/DeyanM1/Zephyr/blob/main/documentation.md)
+
+
+
+
+
+
+
+---
+
+https://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=Zephyr%0A
+https://convertio.co/txt-png/
