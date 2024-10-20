@@ -1,7 +1,14 @@
-a # PT:Hey;
+text # PT:HEY;
 
-loop # LOOP:;
+max # INT:5;
+index # INT:1;
 
-a ? push:;
+
+co # CO:('index'<='max');
+loop # LOOP:co;
+
+
+text ? push:;
+index ? w:++;
 
 loop ? END:;

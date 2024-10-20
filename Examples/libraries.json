@@ -1,0 +1,50 @@
+{
+    "0::moreMath # LIB:moreMath": {
+        "name": "moreMath",
+        "base": "#",
+        "function": "LIB",
+        "paramsList": [
+            "moreMath"
+        ]
+    },
+    "1::a # INT:1": {
+        "name": "a",
+        "base": "#",
+        "function": "INT",
+        "paramsList": [
+            "1"
+        ]
+    },
+    "2::moreMath ? add10:a": {
+        "name": "moreMath",
+        "base": "?",
+        "function": "add10",
+        "paramsList": [
+            "a"
+        ]
+    },
+    "3::moreMath ? add5:a": {
+        "name": "moreMath",
+        "base": "?",
+        "function": "add5",
+        "paramsList": [
+            "a"
+        ]
+    },
+    "4::moreMath # CT:PT": {
+        "name": "moreMath",
+        "base": "#",
+        "function": "CT",
+        "paramsList": [
+            "PT"
+        ]
+    },
+    "5::moreMath ? push:": {
+        "name": "moreMath",
+        "base": "?",
+        "function": "push",
+        "paramsList": [
+            ""
+        ]
+    }
+}

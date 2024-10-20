@@ -1,0 +1,66 @@
+{
+    "0::text # PT:HEY": {
+        "name": "text",
+        "base": "#",
+        "function": "PT",
+        "paramsList": [
+            "HEY"
+        ]
+    },
+    "1::max # INT:5": {
+        "name": "max",
+        "base": "#",
+        "function": "INT",
+        "paramsList": [
+            "5"
+        ]
+    },
+    "2::index # INT:1": {
+        "name": "index",
+        "base": "#",
+        "function": "INT",
+        "paramsList": [
+            "1"
+        ]
+    },
+    "3::co # CO:('index'<='max')": {
+        "name": "co",
+        "base": "#",
+        "function": "CO",
+        "paramsList": [
+            "('index'<='max')"
+        ]
+    },
+    "4::loop # LOOP:co": {
+        "name": "loop",
+        "base": "#",
+        "function": "LOOP",
+        "paramsList": [
+            "co"
+        ]
+    },
+    "5::text ? push:": {
+        "name": "text",
+        "base": "?",
+        "function": "push",
+        "paramsList": [
+            ""
+        ]
+    },
+    "6::index ? w:++": {
+        "name": "index",
+        "base": "?",
+        "function": "w",
+        "paramsList": [
+            "++"
+        ]
+    },
+    "7::loop ? END:": {
+        "name": "loop",
+        "base": "?",
+        "function": "END",
+        "paramsList": [
+            ""
+        ]
+    }
+}

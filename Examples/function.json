@@ -1,0 +1,108 @@
+{
+    "0::a # INT:5": {
+        "name": "a",
+        "base": "#",
+        "function": "INT",
+        "paramsList": [
+            "5"
+        ]
+    },
+    "1::b # INT:6": {
+        "name": "b",
+        "base": "#",
+        "function": "INT",
+        "paramsList": [
+            "6"
+        ]
+    },
+    "2::function # FUNC:RES|~0": {
+        "name": "function",
+        "base": "#",
+        "function": "FUNC",
+        "paramsList": [
+            "RES",
+            "~0"
+        ]
+    },
+    "3::function ? ('a'+'b'):": {
+        "name": "function",
+        "base": "?",
+        "function": "('a'+'b')",
+        "paramsList": [
+            ""
+        ]
+    },
+    "4::function ? call:": {
+        "name": "function",
+        "base": "?",
+        "function": "call",
+        "paramsList": [
+            ""
+        ]
+    },
+    "5::function # CT:PT": {
+        "name": "function",
+        "base": "#",
+        "function": "CT",
+        "paramsList": [
+            "PT"
+        ]
+    },
+    "6::function ? push:": {
+        "name": "function",
+        "base": "?",
+        "function": "push",
+        "paramsList": [
+            ""
+        ]
+    },
+    "7::function2 # FUNC:RES|~0": {
+        "name": "function2",
+        "base": "#",
+        "function": "FUNC",
+        "paramsList": [
+            "RES",
+            "~0"
+        ]
+    },
+    "8::function2 ? ('a'+'b'):": {
+        "name": "function2",
+        "base": "?",
+        "function": "('a'+'b')",
+        "paramsList": [
+            ""
+        ]
+    },
+    "9::a ? w:++": {
+        "name": "a",
+        "base": "?",
+        "function": "w",
+        "paramsList": [
+            "++"
+        ]
+    },
+    "10::function2 ? call:": {
+        "name": "function2",
+        "base": "?",
+        "function": "call",
+        "paramsList": [
+            ""
+        ]
+    },
+    "11::function2 # CT:PT": {
+        "name": "function2",
+        "base": "#",
+        "function": "CT",
+        "paramsList": [
+            "PT"
+        ]
+    },
+    "12::function2 ? push:": {
+        "name": "function2",
+        "base": "?",
+        "function": "push",
+        "paramsList": [
+            ""
+        ]
+    }
+}

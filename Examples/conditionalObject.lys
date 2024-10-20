@@ -1,0 +1,8 @@
+a # INT:5;
+b # INT:7;
+
+conditionalObject # CO:('a'>'b');
+
+conditionalObject # CT:PT;
+
+conditionalObject ? push:;

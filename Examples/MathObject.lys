@@ -1,10 +1,8 @@
-a # INT:4;
+a # INT:5;
 b # INT:6;
 
-m # MO:;
+mathObject # MO:('a'+'b');
 
-m ? ('a'+'b'):;
+mathObject # CT:PT;
 
-m ? CT:PT;
-
-m ? push:;
+mathObject ? push:;

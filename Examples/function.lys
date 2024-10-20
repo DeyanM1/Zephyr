@@ -1,0 +1,21 @@
+a # INT:5;
+b # INT:6;
+
+function # FUNC:RES|~0;
+function ? ('a'+'b'):;
+function ? call:;
+
+function # CT:PT;
+function ? push:;
+
+~~~~ FUNCTION 2
+
+function2 # FUNC:RES|~1;
+function2 ? ('a'+'b'):;
+
+a ? w:++;
+
+function2 ? call:;
+
+function2 # CT:PT;
+function2 ? push:;

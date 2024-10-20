@@ -1,0 +1,42 @@
+{
+    "0::a # INT:5": {
+        "name": "a",
+        "base": "#",
+        "function": "INT",
+        "paramsList": [
+            "5"
+        ]
+    },
+    "1::b # INT:7": {
+        "name": "b",
+        "base": "#",
+        "function": "INT",
+        "paramsList": [
+            "7"
+        ]
+    },
+    "2::conditionalObject # CO:('a'>'b')": {
+        "name": "conditionalObject",
+        "base": "#",
+        "function": "CO",
+        "paramsList": [
+            "('a'>'b')"
+        ]
+    },
+    "3::conditionalObject # CT:PT": {
+        "name": "conditionalObject",
+        "base": "#",
+        "function": "CT",
+        "paramsList": [
+            "PT"
+        ]
+    },
+    "4::conditionalObject ? push:": {
+        "name": "conditionalObject",
+        "base": "?",
+        "function": "push",
+        "paramsList": [
+            ""
+        ]
+    }
+}

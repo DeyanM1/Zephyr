@@ -1,0 +1,12 @@
+string # PT:Hello, World;
+number # INT:5;
+decimal # FLOAT:5.3;
+
+
+string ? push:;
+
+number # CT:PT;
+number ? push:;
+
+decimal # CT:PT;
+decimal ? push:;

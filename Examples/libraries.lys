@@ -1,0 +1,9 @@
+moreMath # LIB:moreMath;
+
+a # INT:1;
+
+moreMath ? add10:a;
+moreMath ? add5:a;
+
+a # CT:PT;
+a ? push:;
