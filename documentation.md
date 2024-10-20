@@ -28,8 +28,8 @@
 - **FLOAT**: Float
 - **MO**: Math Object
 - **FUNC**: Function
-- **LOOP**: Loops
 - **CO**: Conditional Object
+- **LOOP**: Loops
 - **LIB**: Library
 
 ---
@@ -185,6 +185,7 @@ Math objects allow for complex calculations.
 - usage:
 ```zephyr
 <VariableName> # MO:; 
+<VariableName> # MO:(<equation>);
 ```
 
 **Pass an Equation:**
@@ -245,6 +246,29 @@ Functions in Zephyr allow you to encapsulate logic and reuse it.
 
 ---
 
+
+
+## Conditional Objects
+
+Conditional objects return boolean values (`~1` for true, `~0` for false) based on conditions.
+
+**Declare a Conditional Object:**
+
+```zephyr
+<VariableName> # CO:;
+<VariableName> # CO:(<condition>);
+```
+
+- **Condition Format**: `(a > b)`
+
+**Example:**
+
+- Create a condition:
+  ```zephyr
+  isGreater # ('a' > 'b'):;
+  isGreater # CO:('a' > 'b');
+  ```
+
 ## Loops
 
 Loops in Zephyr allow you to repeat actions.
@@ -267,34 +291,15 @@ Loops in Zephyr allow you to repeat actions.
 
 **Example:**
 
-- Create a loop that runs while a condition is true:
+- Create a loop that runs while a conditionObject is true:
   ```zephyr
-  repeatLoop # LOOP:condition;
+  repeatLoop # LOOP:<conditionalObject>;
   repeatLoop ? END:;
   ```
 
----
 
-## Conditional Objects
 
-Conditional objects return boolean values (`~1` for true, `~0` for false) based on conditions.
 
-**Declare a Conditional Object:**
-
-```zephyr
-<VariableName> # CO:(<condition>);
-```
-
-- **Condition Format**: `(a > b)`
-
-**Example:**
-
-- Create a condition:
-  ```zephyr
-  isGreater # CO:('a' > 'b');
-  ```
-
----
 
 ## Predefined Variables
 

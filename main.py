@@ -4,7 +4,9 @@ import time
 import json
 
 MEASURE_TIME = True
-FILE_NAME = "code"
+LIB_FOLDER_NAME = "lib"
+FILE_LIBRARY = "Examples"
+FILE_NAME = "libraries"
 
 
 
@@ -14,7 +16,7 @@ def lexer(filename: str):
     code = []
     
     bannedChars = ["\n", "\r", "\t"]
-    with open(f"{filename}.lys", 'r') as file:
+    with open(f"{FILE_LIBRARY}/{filename}.lys", 'r') as file:
         for line in file:
             line = line.lstrip()    # remove spaces from start
             for char in line:
@@ -51,7 +53,7 @@ def lexer(filename: str):
 
 
 def compile(filename: str): 
-    with open(f"{filename}.json", "r") as file:
+    with open(f"{FILE_LIBRARY}/{filename}.json", "r") as file:
 
         code = json.load(file)
         
@@ -68,6 +70,7 @@ def compile(filename: str):
         base = currentCmdName.get('base')
         function = currentCmdName.get('function')
         paramsList = currentCmdName.get('paramsList')
+    
         
 
         
@@ -93,6 +96,12 @@ def compile(filename: str):
                 case "MO":
                     var = MathObject(name)
                     vars.update({var.name: var})
+                    
+                    if len(paramsList) == 1:
+                        if paramsList[0].startswith("("):
+                            vars[name].setEquation(paramsList[0])
+                            vars[name].prepare(vars)
+                    
                 
                 case "LOOP":
                     var = Loop(name=name, startIndex=index, vars=vars, conditionObject=paramsList[0])
@@ -100,23 +109,25 @@ def compile(filename: str):
                     vars.update({var.name: var})
                 
                 case "FUNC":
-                    if len(paramsList) == 0:
+                    if len(paramsList) == 2:
                         if paramsList[1] == "~1":
                             var = Function(name, paramsList[0], True)
                         else:
                             var = Function(name, paramsList[0], False)
                     else:
-                        var = Function(name, paramsList[0])
+                        var = Function(name, False)
 
                     vars.update({var.name: var})
                 
                 case "CO":
-                    var = ConditionObject(name, paramsList[0])
+                    var = ConditionObject(name)
+                    var.setCondition(paramsList[0])
                     var.prepare(vars)
                     vars.update({var.name: var})
                 
                 case "LIB":
-                    var = Library(name, paramsList[0])
+                    libPath = f"{FILE_LIBRARY}.{LIB_FOLDER_NAME}"
+                    var = Library(name, libPath, paramsList[0])
                     vars.update({var.name: var})
                 
                 case  "RNG":
@@ -269,6 +280,9 @@ def compile(filename: str):
             match base:
                 case "?":
                     match function:
+                        case function if function.startswith("("):
+                            if vars[name].type == Token.CO:
+                                vars[name].setCondition(function)
                             
                         case _:
                             Error(501, ["Token.CO", f"? {function}"]).as_string()
@@ -281,8 +295,8 @@ def compile(filename: str):
                             Error(501, ["Token.PT", f"# {function}"]).as_string()
     
         elif vars[name].type == Token.Lib:
-            vars = vars[name].libObject.search(name, base, function, paramsList, vars)
-    
+            vars = vars[name].libObject.search(name=name, base=base, function=function, paramsList=paramsList, vars=vars)
+            print(vars["a"].name, vars["a"].value)
         else:
             pass
     

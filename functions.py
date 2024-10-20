@@ -155,7 +155,9 @@ def changeType(var, vars, newType):
     if var.type == Token.RNG:
         vars.update({var.name: Variable(name=var.name, type=newType, value=var.value, vars=vars, const=var.const)})
         
-
+    if var.type == Token.CO:
+        vars.update({var.name: Variable(name=var.name, type=newType, value=var.value, vars=vars, const=var.const)})
+        
     elif checkTypeForValue(newType, var.value):
         Debug(var.name, f"{var.type} set to: {newType}").as_string()
         var.type = assignType(newType) 
@@ -251,7 +253,6 @@ class MathObject:
         varStr = ""
 
 
-        
         for elem in self.equation:
             if elem in DIGITS: Error(301, self.equation).as_string()
             elif elem == "+": self.calculation += "+"
@@ -271,7 +272,8 @@ class MathObject:
                     in_var = True
 
 
-            elif elem == "}": 
+            elif elem == "'": 
+                print("hlkhsfdg")
                 #varList.update({varStr: vars.get(varStr).value})
                 self.calculation += str(vars.get(varStr).value)
                 varStr, in_var = "", False
@@ -280,7 +282,6 @@ class MathObject:
                 if in_var: varStr += elem
         
         self.calculate()
-        #print(f"Variables: {varList} \nCalculation: {self.calculation}")
 
     def calculate(self):
         # TODO: make better calculation, because very unsafe: https://stackoverflow.com/questions/9685946/math-operations-from-string
@@ -319,19 +320,22 @@ class Function:
             self.value = self.MO_equation.value
 
 class ConditionObject:
-    def __init__(self, name, condition, value = 0):
+    def __init__(self, name, value = 0):
         self.name = name
         self.type = Token.CO
         self.const = False
         self.value = value
         
-        self.condition = condition
         self.edit_condition = ""
         
+
+        
+    def setCondition(self, condition):
+        self.condition = condition
         self.dumpConfig = {"name": self.name, "type": TRANSLATE_TOKEN_TO_STR[self.type], "value": self.value, "condition": self.condition}
 
         
-    
+            
     def prepare(self, vars):
         self.edit_condition = ""
         in_var = False
@@ -434,32 +438,34 @@ class Loop:
         return index
 
 class Library:
-    def __init__(self, name, libName):
+    def __init__(self, name, libPath, libName):
         self.name = name
         self.type = Token.Lib
         self.value = 0
         
+        self.libPath = libPath
         self.libName = libName
         self.libObject = None
         
         self.dumpConfig = {"name": self.name, 
                            "type": TRANSLATE_TOKEN_TO_STR[self.type], 
+                           "libFolderName": self.libPath,
                            "libName": self.libName,
                            "libObject": self.libObject}
 
         self.setLib()
     
     def setLib(self):
-        try:
-            module = importlib.import_module("lib.%s" % self.libName)
-            self.libObject = module
-            self.dumpConfig = {"name": self.name, 
-                           "type": TRANSLATE_TOKEN_TO_STR[self.type], 
-                           "libName": self.libName,
-                           "libObject": str(self.libObject)}
+        #try:
+        module = importlib.import_module(f"{self.libPath}.{self.libName}")
+        self.libObject = module
+        self.dumpConfig = {"name": self.name, 
+                        "type": TRANSLATE_TOKEN_TO_STR[self.type], 
+                        "libName": self.libName,
+                        "libObject": str(self.libObject)}
 
-        except ImportError as e:
-            Error(601, (self.libName, self.libObject)).as_string()
+        #except ImportError as e:
+        #    Error(601, (self.libName, self.libObject)).as_string()
             
 class RNG:
     def __init__(self, name, rngType, rngRange):
