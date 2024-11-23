@@ -60,6 +60,12 @@ default: lib
 LIB_FOLDER_NAME = "<libraryFolderName>"
 ```
 
+After running the file, a new file has been created: <fileName>.zsrc 
+its a Zephyr source file, it can be used to debug files more affective.
+And its formatted like a .json file.
+It can be run alone
+TODO: Add run .zsrc file in main.py
+
 
 ### Built-in Functions
 

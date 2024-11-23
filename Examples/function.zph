@@ -8,7 +8,7 @@ function ? call:;
 function # CT:PT;
 function ? push:;
 
-~~~~ FUNCTION 2
+
 
 function2 # FUNC:RES|~1;
 function2 ? ('a'+'b'):;

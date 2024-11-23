@@ -56,13 +56,13 @@
             ""
         ]
     },
-    "7::function2 # FUNC:RES|~0": {
+    "7::function2 # FUNC:RES|~1": {
         "name": "function2",
         "base": "#",
         "function": "FUNC",
         "paramsList": [
             "RES",
-            "~0"
+            "~1"
         ]
     },
     "8::function2 ? ('a'+'b'):": {

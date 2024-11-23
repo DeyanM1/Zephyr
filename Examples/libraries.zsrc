@@ -31,16 +31,16 @@
             "a"
         ]
     },
-    "4::moreMath # CT:PT": {
-        "name": "moreMath",
+    "4::a # CT:PT": {
+        "name": "a",
         "base": "#",
         "function": "CT",
         "paramsList": [
             "PT"
         ]
     },
-    "5::moreMath ? push:": {
-        "name": "moreMath",
+    "5::a ? push:": {
+        "name": "a",
         "base": "?",
         "function": "push",
         "paramsList": [
