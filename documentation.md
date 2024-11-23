@@ -41,6 +41,12 @@
 
 ---
 
+## Extensions:
+- **.zph**: The Zephyr code file                   (Zephyr code)
+- **.zsrc**: The Zephyr source file, for debugging (Zephyr source)
+- **.zpkg**: The Zephyr dumped variables file      (Zephyr package)
+
+
 ## Tutorials
 ### Run a file
 
@@ -337,6 +343,7 @@ __ ? predefVars:<filename>;
 
 **Predefined Variable File Structure:**
 
+The file extension is .zpkg
 ```json
 {
     "<Variable Name>": {
@@ -348,6 +355,8 @@ __ ? predefVars:<filename>;
 ```
 - Place predefined variable files in the `lib/` directory.
 
+
+!Without Extension!
 **Dump Variables used in code**
 ```zephyr
 __ ? dumpVars:<filename>;

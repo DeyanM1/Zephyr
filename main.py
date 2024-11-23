@@ -5,8 +5,8 @@ import json
 
 MEASURE_TIME = True
 LIB_FOLDER_NAME = "lib"
-FILE_LIBRARY = "Examples" # folder in current directory
-FILE_NAME = "MathObject"
+FILE_LIBRARY = "." # folder in current directory
+FILE_NAME = "code"
 
 
 
@@ -20,6 +20,8 @@ def lexer(filename: str):
         for line in file:
             line = line.lstrip()    # remove spaces from start
             for char in line:
+                if char == "~":
+                    continue
                 if char != ";":
                     if char in bannedChars:
                         continue
@@ -40,7 +42,7 @@ def lexer(filename: str):
             
             paramsList = params.split("|")
         except ValueError:
-            print(f"[{elem}]  missing semicolon")
+            print(f"[{elem +1}]  code structure is invalid")
             quit()
 
         data.update({f"{elem}::{code[elem]}": {"name": name,"base": base, "function": function, "paramsList": paramsList}})

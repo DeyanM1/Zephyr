@@ -518,7 +518,7 @@ class PredefVar:
         
     
     def read(self):
-        with open(f"lib/{self.fileName}.json", "r") as file:
+        with open(f"lib/{self.fileName}.zpkg", "r") as file:
             data = json.load(file)
             for var in data:
                 self.compile(data[var])
@@ -563,5 +563,5 @@ class PredefVar:
             
         
         #print(data)
-        with open(f"lib/{self.fileName}.json", "w") as file:
+        with open(f"lib/{self.fileName}.zpkg", "w") as file:
             json.dump(data, file, indent=4) 
