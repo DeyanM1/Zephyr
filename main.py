@@ -5,8 +5,8 @@ import json
 
 MEASURE_TIME = True
 LIB_FOLDER_NAME = "lib"
-FILE_LIBRARY = "Examples"
-FILE_NAME = "libraries"
+FILE_LIBRARY = "Examples" # folder in current directory
+FILE_NAME = "MathObject"
 
 
 
@@ -16,7 +16,7 @@ def lexer(filename: str):
     code = []
     
     bannedChars = ["\n", "\r", "\t"]
-    with open(f"{FILE_LIBRARY}/{filename}.lys", 'r') as file:
+    with open(f"{FILE_LIBRARY}/{filename}.zph", 'r') as file:
         for line in file:
             line = line.lstrip()    # remove spaces from start
             for char in line:
@@ -46,14 +46,14 @@ def lexer(filename: str):
         data.update({f"{elem}::{code[elem]}": {"name": name,"base": base, "function": function, "paramsList": paramsList}})
 
         
-    with open(f"{filename}.json", "w") as file:
+    with open(f"{FILE_LIBRARY}/{filename}.zsrc", "w") as file:
         json.dump(data, file, indent=4) 
     
     return data
 
 
 def compile(filename: str): 
-    with open(f"{FILE_LIBRARY}/{filename}.json", "r") as file:
+    with open(f"{FILE_LIBRARY}/{filename}.zsrc", "r") as file:
 
         code = json.load(file)
         

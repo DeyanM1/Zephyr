@@ -42,6 +42,24 @@
 ---
 
 ## Tutorials
+### Run a file
+
+To run a file, first specify the folder in the main.py file, it has to be in the current working directory, if nested directories: add the next name with a slash in between.
+!WITHOUT THE LAST SLASH!
+```python
+FILE_LIBRARY = "<FileLibrary>"
+```
+Now specify the file name in the main.py file, it has to be in the directory specified above
+!Without the .zph extension!
+```python
+FILE_NAME = "<fileName>"
+```
+Optional: Specify the library folder name in the main.py file
+default: lib
+```python
+LIB_FOLDER_NAME = "<libraryFolderName>"
+```
+
 
 ### Built-in Functions
 
@@ -219,7 +237,7 @@ Functions in Zephyr allow you to encapsulate logic and reuse it.
 ```
 
 - **Return Types**: `RES` (Result)
-- **~1/~0**: Indicates if the function's behavior changes based on external variable modifications.
+- **~ 1/~0**: Indicates if the function's behavior changes based on external variable modifications.
 
 **Pass an Equation to a Function:**
 
@@ -365,7 +383,7 @@ lib/
 └── exampleLibrary.py
 main.py
 functions.py
-code.lys
+code.zph
 ```
 
 **Library Code Structure:**
