@@ -1,7 +1,4 @@
-AaaA # PT:heyyyyyyyyyy;
+name # PT:Deyan;
+name ? push:;
 
-
-
-
-
-AaaA ? push:;
+__ ? dumpVars:myVars;

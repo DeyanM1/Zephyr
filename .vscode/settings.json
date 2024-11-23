@@ -1,0 +1,13 @@
+{
+    "material-icon-theme.files.associations": {
+      "*.zph": "../../icons/zph",
+      "*.zsrc": "../../icons/zsrc",
+      "*.zpkg": "../../icons/zpkg"
+
+    },
+    
+    "files.associations": {
+      "*.zsrc": "json",
+      "*.zpkg": "json"
+    },
+}

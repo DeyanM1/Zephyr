@@ -2,7 +2,6 @@
 lib/__pycache__
 /.fleet
 /.idea
-/.vscode
 /.venv
 /Tests
 OLD/

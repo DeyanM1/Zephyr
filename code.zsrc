@@ -1,18 +1,26 @@
 {
-    "0::AaaA # PT:heyyyyyyyyyy": {
-        "name": "AaaA",
+    "0::name # PT:Deyan": {
+        "name": "name",
         "base": "#",
         "function": "PT",
         "paramsList": [
-            "heyyyyyyyyyy"
+            "Deyan"
         ]
     },
-    "1::AaaA ? push:": {
-        "name": "AaaA",
+    "1::name ? push:": {
+        "name": "name",
         "base": "?",
         "function": "push",
         "paramsList": [
             ""
+        ]
+    },
+    "2::__ ? dumpVars:myVars": {
+        "name": "__",
+        "base": "?",
+        "function": "dumpVars",
+        "paramsList": [
+            "myVars"
         ]
     }
 }
