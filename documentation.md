@@ -1,4 +1,3 @@
-
 # Zephyr Documentation
 
 
@@ -7,7 +6,7 @@
 1. [Syntax Overview](#syntax-overview)  
 2. [Types](#types)  
 3. [Basic info](#basic-info)  
-4. [Types Explained](#types-explained) 
+4. [Types Explained](#types-explained)  
 -- [Variables](#variables)  
 -- [Built-in Functions](#built-in-functions)  
 -- [Math Object](#math-object)  
