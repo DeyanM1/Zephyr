@@ -4,10 +4,20 @@
 
 ---
 # Table of Contents
-#### 1. [Syntax Overview](#syntex-overview)
-#### 2. [Types](#types)
-3. [Third Example](#third-example)
-4. [Fourth Example](#fourth-examplehttpwwwfourthexamplecom)
+1. [Syntax Overview](#syntax-overview)
+2. [Types](#types)
+3. [Basic info](#basic-info)
+4. [Types Explained](#types-explained)
+-- [Variables](#variables)
+-- [Built-in Functions](#built-in-functions)
+-- [Math Object](#math-object)
+-- [Function](#function)
+-- [Conditional Object](#conditional-object)
+-- [Loop](#loop)
+-- [Random Number Generator](#random-number-generator)
+-- [Predefined Variables](#predefined-variables)
+-- [Libraries](#libraries)
+5. [Conclusion](#conclusion)
 
 
 
@@ -22,7 +32,9 @@
 
 
 - **variableName**: The name of the variable
-- **base**: The Base of the variable is used to define what is beeing done to th var ("#" or "?")
+- **base**: The Base of the variable is used to define what is being done to the var:
+**?**: Used for variable operations (e.g., modifying or retrieving values).
+**#**: Used for declaring variables or changing their types.
 - **function**: The function is the ht thing to be executed as the var (e.g. printing / defining a function, etc.)
 - **arguments**: The arguments are used to pass more information to the function
 - **command**: The entire thing combined is called command
@@ -30,31 +42,25 @@
 
 ## Types
 
-- **PT**: Printable Text
-- **INT**: Integer
-- **FLOAT**: Float
+- **Variable**: Simple variable Types: (INT, FLOAT, PT)
+- **__**: Built-in Functions
 - **MO**: Math Object
 - **FUNC**: Function
 - **CO**: Conditional Object
-- **LOOP**: Loops
+- **LOOP**: Loop
+- **RNG**: Random Number Generator
+- **PredefVar**: Predefined variable
 - **LIB**: Library
 
 ---
 
-## base
+## Basic Info
 
-- **?**: Used for variable operations (e.g., modifying or retrieving values).
-- **#**: Used for declaring variables or changing their types.
-
----
-
-## Extensions:
+### Extensions
 - **.zph**: The Zephyr code file                   (Zephyr code)
 - **.zsrc**: The Zephyr source file, for debugging (Zephyr source)
 - **.zpkg**: The Zephyr dumped variables file      (Zephyr package)
 
-
-## Tutorials
 ### Run a file
 
 To run a file, first specify the folder in the main.py file, it has to be in the current working directory, if nested directories: add the next name with a slash in between.
@@ -79,20 +85,8 @@ And its formatted like a .json file.
 It can be run alone
 TODO: Add run .zsrc file in main.py
 
-
-### Built-in Functions
-
-Zephyr comes with several built-in functions that can be used without prior definition.
-
-**Example:**
-
-```zephyr
-__ ? JUMP:<Line>;
-```
-- **JUMP**: Jumps to a specific function, not a line.
-- **DUMPING VARS** see below
-
----
+-----
+# Types Explained
 
 ## Variables
 
@@ -161,7 +155,7 @@ __ ? JUMP:<Line>;
   printableText after increment: HelloWorldHelloWorld
 
 
----
+
 
 ## Input and Output
 
@@ -188,32 +182,21 @@ __ ? JUMP:<Line>;
 
 ---
 
-## Random Number Generator
+## Built-in Functions
 
-- usage:
-```zephyr
-<VariableName> # RNG:<Random number type>|<range>;
-```
-
-- **Range**: Format `min->max`, inclusive.
+Zephyr comes with several built-in functions that can be used without prior definition.
 
 **Example:**
 
-- Generate a random number between 0 and 30:
-  ```zephyr
-  randomValue # RNG:INT|0->30;
-  ```
-
-### Changing Range
-
-- usage:
 ```zephyr
-<VariableName> ? CR:<range>;
+__ ? JUMP:<Line>;
 ```
+- **JUMP**: Jumps to a specific function, not a line.
+- **DUMPING VARS** see below
 
 ---
 
-## Math Objects
+## Math Object
 
 Math objects allow for complex calculations.
 
@@ -244,7 +227,7 @@ Math objects allow for complex calculations.
 
 ---
 
-## Functions
+## Function
 
 Functions in Zephyr allow you to encapsulate logic and reuse it.
 
@@ -281,11 +264,11 @@ Functions in Zephyr allow you to encapsulate logic and reuse it.
   addNumbers ? call:;
   ```
 
+
 ---
 
 
-
-## Conditional Objects
+## Conditional Object
 
 Conditional objects return boolean values (`~1` for true, `~0` for false) based on conditions.
 
@@ -306,7 +289,7 @@ Conditional objects return boolean values (`~1` for true, `~0` for false) based 
   isGreater # CO:('a' > 'b');
   ```
 
-## Loops
+## Loop
 
 Loops in Zephyr allow you to repeat actions.
 
@@ -334,9 +317,32 @@ Loops in Zephyr allow you to repeat actions.
   repeatLoop ? END:;
   ```
 
+----
 
+## Random Number Generator
 
+- usage:
+```zephyr
+<VariableName> # RNG:<Random number type>|<range>;
+```
 
+- **Range**: Format `min->max`, inclusive.
+
+**Example:**
+
+- Generate a random number between 0 and 30:
+  ```zephyr
+  randomValue # RNG:INT|0->30;
+  ```
+
+### Changing Range
+
+- usage:
+```zephyr
+<VariableName> ? CR:<range>;
+```
+
+-----
 
 ## Predefined Variables
 
