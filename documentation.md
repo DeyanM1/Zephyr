@@ -3,21 +3,21 @@
 
 
 ---
-# Table of Contents
-1. [Syntax Overview](#syntax-overview)
-2. [Types](#types)
-3. [Basic info](#basic-info)
-4. [Types Explained](#types-explained)
--- [Variables](#variables)
--- [Built-in Functions](#built-in-functions)
--- [Math Object](#math-object)
--- [Function](#function)
--- [Conditional Object](#conditional-object)
--- [Loop](#loop)
--- [Random Number Generator](#random-number-generator)
--- [Predefined Variables](#predefined-variables)
--- [Libraries](#libraries)
-5. [Conclusion](#conclusion)
+# Table of Contents  
+1. [Syntax Overview](#syntax-overview)  
+2. [Types](#types)  
+3. [Basic info](#basic-info)  
+4. [Types Explained](#types-explained) 
+-- [Variables](#variables)  
+-- [Built-in Functions](#built-in-functions)  
+-- [Math Object](#math-object)  
+-- [Function](#function)  
+-- [Conditional Object](#conditional-object)  
+-- [Loop](#loop)  
+-- [Random Number Generator](#random-number-generator)  
+-- [Predefined Variables](#predefined-variables)  
+-- [Libraries](#libraries)  
+5. [Conclusion](#conclusion)  
 
 
 
