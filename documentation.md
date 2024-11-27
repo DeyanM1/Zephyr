@@ -31,9 +31,9 @@
 
 
 - **variableName**: The name of the variable
-- **base**: The Base of the variable is used to define what is being done to the var:
-**?**: Used for variable operations (e.g., modifying or retrieving values).
-**#**: Used for declaring variables or changing their types.
+- **base**: The Base of the variable is used to define what is being done to the var:  
+**?**: Used for variable operations (e.g., modifying or retrieving values).  
+**#**: Used for declaring variables or changing their types.  
 - **function**: The function is the ht thing to be executed as the var (e.g. printing / defining a function, etc.)
 - **arguments**: The arguments are used to pass more information to the function
 - **command**: The entire thing combined is called command
@@ -62,7 +62,7 @@
 
 ### Run a file
 
-To run a file, first specify the folder in the main.py file, it has to be in the current working directory, if nested directories: add the next name with a slash in between.
+To run a file, first specify the folder in the main.py file, it has to be in the current working directory, if nested directories: add the next name with a slash in between.  
 !WITHOUT THE LAST SLASH!
 ```python
 FILE_LIBRARY = "<FileLibrary>"
