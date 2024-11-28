@@ -136,19 +136,17 @@ def assignType(type):
         case "INT": return Token.INT
         case "FLOAT": return Token.FLOAT
         case "PT": return Token.PT
-        case "MO": return Token.MO
 
 def changeType(var, vars, newType):
     checkVariableExistence(vars, var.name)
 
-    if not newType in TYPES:
+    if not newType in TYPES: # NOT A Real type
         Error(106, newType).as_string() 
 
-    if var.const:
+    if var.const: # Check if variable is constant
         Error(102, var.name).as_string()
 
     if var.type == Token.MO or var.type == Token.FUNC:
-        #print("type", assign_type(newType))
         Debug(var.name, f"{var.type} set to: {newType}").as_string()
         vars.update({var.name: Variable(name=var.name, type=newType, value=var.value, vars=vars, const=var.const)})
     

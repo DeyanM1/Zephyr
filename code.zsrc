@@ -1,26 +1,42 @@
 {
-    "0::name # PT:Deyan": {
-        "name": "name",
+    "0::a # INT:4": {
+        "name": "a",
         "base": "#",
-        "function": "PT",
+        "function": "INT",
         "paramsList": [
-            "Deyan"
+            "4"
         ]
     },
-    "1::name ? push:": {
-        "name": "name",
+    "1::b # INT:5": {
+        "name": "b",
+        "base": "#",
+        "function": "INT",
+        "paramsList": [
+            "5"
+        ]
+    },
+    "2::myMath # MO:('a'+'b')": {
+        "name": "myMath",
+        "base": "#",
+        "function": "MO",
+        "paramsList": [
+            "('a'+'b')"
+        ]
+    },
+    "3::myMath # CT:PT": {
+        "name": "myMath",
+        "base": "#",
+        "function": "CT",
+        "paramsList": [
+            "PT"
+        ]
+    },
+    "4::myMath ? push:": {
+        "name": "myMath",
         "base": "?",
         "function": "push",
         "paramsList": [
             ""
-        ]
-    },
-    "2::__ ? dumpVars:myVars": {
-        "name": "__",
-        "base": "?",
-        "function": "dumpVars",
-        "paramsList": [
-            "myVars"
         ]
     }
 }

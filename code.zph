@@ -1,4 +1,8 @@
-name # PT:Deyan;
-name ? push:;
+a # INT:4;
+b # INT:5;
 
-__ ? dumpVars:myVars;
+myMath # MO:('a'+'b');
+
+myMath # CT:PT;
+
+myMath ? push:;

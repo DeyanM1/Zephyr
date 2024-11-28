@@ -8,15 +8,15 @@
 2. [Types](#types)
 3. [Basic info](#basic-info)
 4. [Types Explained](#types-explained)
--- [Variables](#variables)
--- [Built-in Functions](#built-in-functions)
--- [Math Object](#math-object)
--- [Function](#function)
--- [Conditional Object](#conditional-object)
--- [Loop](#loop)
--- [Random Number Generator](#random-number-generator)
--- [Predefined Variables](#predefined-variables)
--- [Libraries](#libraries)
+4.1 [Variables](#variables)
+4.2 [Built-in Functions](#built-in-functions)
+4.3 [Math Object](#math-object)
+4.4 [Function](#function)
+4.5 [Conditional Object](#conditional-object)
+4.6 [Loop](#loop)
+4.7 [Random Number Generator](#random-number-generator)
+4.8 [Predefined Variables](#predefined-variables)
+4.9 [Libraries](#libraries)
 5. [Conclusion](#conclusion)
 
 
@@ -31,11 +31,11 @@
 ```
 
 
-- **variableName**: The name of the variable
-- **base**: The Base of the variable is used to define what is being done to the var:
+- **VariableName**: The name of the variable, it is user defined
+- **base**: The Base of the variable is used to define what is being done to the variable it is language construct:
 **?**: Used for variable operations (e.g., modifying or retrieving values).
 **#**: Used for declaring variables or changing their types.
-- **function**: The function is the ht thing to be executed as the var (e.g. printing / defining a function, etc.)
+- **function**: The function is the thing to be executed as the variable (e.g. printing / defining a function, etc.), its a language construct too
 - **arguments**: The arguments are used to pass more information to the function
 - **command**: The entire thing combined is called command
 ---
@@ -63,26 +63,22 @@
 
 ### Run a file
 
-To run a file, first specify the folder in the main.py file, it has to be in the current working directory, if nested directories: add the next name with a slash in between.
+1. Define the folder containing your Zephyr files in main.py. Ensure the folder is in the current working directory, if nested directories: add the next name with a slash in between.  
 !WITHOUT THE LAST SLASH!
 ```python
 FILE_LIBRARY = "<FileLibrary>"
 ```
-Now specify the file name in the main.py file, it has to be in the directory specified above
-!Without the .zph extension!
+2. Specify the file name (without the .zph extension) in main.py:
 ```python
 FILE_NAME = "<fileName>"
 ```
-Optional: Specify the library folder name in the main.py file
+3. Optional: If you are using a custom library folder, define it:
 default: lib
 ```python
 LIB_FOLDER_NAME = "<libraryFolderName>"
 ```
+4. Run the file. This will generate a .zsrc file (e.g., exampleFile.zsrc) for debugging. The file is formatted like JSON and can be executed directly.
 
-After running the file, a new file has been created: <fileName>.zsrc 
-its a Zephyr source file, it can be used to debug files more affective.
-And its formatted like a .json file.
-It can be run alone
 TODO: Add run .zsrc file in main.py
 
 -----
@@ -92,7 +88,7 @@ TODO: Add run .zsrc file in main.py
 
 ### Declaring Variables
 
-- usage
+- usage:
 ```zephyr
 <VariableName> # <Type>:<Value>(|<~1>/<~0>);
 ```
@@ -192,7 +188,7 @@ Zephyr comes with several built-in functions that can be used without prior defi
 __ ? JUMP:<Line>;
 ```
 - **JUMP**: Jumps to a specific function, not a line.
-- **DUMPING VARS** see below
+- **DUMPING VARIABLES** see below
 
 ---
 
