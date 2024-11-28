@@ -41,7 +41,7 @@
 
 ## Types
 
-- **Variable**: Simple variable Types: (INT, FLOAT, PT)
+- **Variable**: Simple variable Types: (INT, FLOAT, PT)  
 - **__**: Built-in Functions
 - **MO**: Math Object
 - **FUNC**: Function
@@ -59,7 +59,7 @@
 - **.zph**: The Zephyr code file                   (Zephyr code)
 - **.zsrc**: The Zephyr source file, for debugging (Zephyr source)
 - **.zpkg**: The Zephyr dumped variables file      (Zephyr package)
-  ![flowChart1](https://github.com/user-attachments/assets/b25a363b-ca94-4af4-a8cb-a9c3aa2841b8)
+  ![flowChart1](https://github.com/user-attachments/assets/fc8eac96-da37-4674-90fd-67ab8fddd65c)
   ![flowChart2](https://github.com/user-attachments/assets/332dac53-778b-4986-9fe6-67c22719c03e)
 
 ### Run a file
