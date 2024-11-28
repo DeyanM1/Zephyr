@@ -403,7 +403,7 @@ Libraries in Zephyr allow for the creation of custom functions that extend the l
 
 - Libraries are stored in the `lib/` directory.
 
-
+```plaintext
 lib/  
 ├── code.zpkg  
 └── exampleLibrary.py  
@@ -411,7 +411,7 @@ main.py
 functions.py  
 code.zsrc  
 code.zph  
-
+```
 
 **Library Code Structure:**
 
