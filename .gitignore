@@ -7,3 +7,5 @@ lib/__pycache__
 OLD/
 test.py
 build/
+main.spec
+ZephyrRun.spec

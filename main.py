@@ -3,7 +3,9 @@ import sys
 import time
 import json
 
-MEASURE_TIME = True
+MEASURE_TIME = False
+EXE_VERSION = True
+
 LIB_FOLDER_NAME = "lib"
 FILE_LIBRARY = "." # folder in current directory
 FILE_NAME = "code"
@@ -310,11 +312,33 @@ def compile(filename: str):
  
 
 if __name__ == "__main__":
-    if MEASURE_TIME: st = time.time()
-    
-    if len(sys.argv) > 1: lexer(sys.argv[1])
-    else: lexer(FILE_NAME)
-    
+    if EXE_VERSION:
+        args = sys.argv[1:]
+        options = {}
+        
+        for i in range(len(args)):
+            key = args[i][2:]
+
+            if i + 1 < len(args) and not args[i + 1].startswith("--"):
+                options[key] = args[i + 1]  # The value is the next argument
+            
+            else:
+                options[key] = True  # If no value, assume it's a flag
+        
+        try:
+            FILE_NAME = options["fileName"]
+        except KeyError:
+            print("Please provide a filename \nUsage: main.exe <filename>\n")
+            sys.exit()
+        try:
+            MEASURE_TIME = options.get("measureTime")
+        except KeyError:
+            pass
+            
+
+    if MEASURE_TIME: st = time.time()    
+
+    lexer(FILE_NAME)
     compile(FILE_NAME)
     
     if MEASURE_TIME: et = time.time(); elapsed_time = et - st; print(f"\n Elapsed time: {elapsed_time}s")

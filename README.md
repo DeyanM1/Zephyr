@@ -8,9 +8,9 @@ Zephyr is a variable-based programming language designed for simplicity and effi
 ## Installation
 
 ### Installation Guide
-1. Download ZephyrC.zip from releases tab
-2. Extract and run setup.py
-3. run ```zephyrC <filename>``` in new terminal to start compiler! 
+1. open main.exe file with these parameters:
+    --fileName <fileName>
+    --measureTime <True/False>   // optional
 
 ---
 
@@ -25,6 +25,8 @@ Zephyr is a variable-based programming language designed for simplicity and effi
 
 
 ---
+# Notes
 
+python -m PyInstaller main.py -F -n ZephyrRun  
 https://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=Zephyr%0A
 https://convertio.co/txt-png/
