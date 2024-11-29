@@ -12,13 +12,13 @@ FILE_NAME = "code"
 
 
 
-def lexer(filename: str):
+def lexer(filename: str, fileLibrary: str = "."):
     currentCommand = ""
     
     code = []
     
     bannedChars = ["\n", "\r", "\t"]
-    with open(f"{FILE_LIBRARY}/{filename}.zph", 'r') as file:
+    with open(f"{fileLibrary}/{filename}.zph", 'r') as file:
         for line in file:
             line = line.lstrip()    # remove spaces from start
             for char in line:
@@ -50,14 +50,14 @@ def lexer(filename: str):
         data.update({f"{elem}::{code[elem]}": {"name": name,"base": base, "function": function, "paramsList": paramsList}})
 
         
-    with open(f"{FILE_LIBRARY}/{filename}.zsrc", "w") as file:
+    with open(f"{fileLibrary}/{filename}.zsrc", "w") as file:
         json.dump(data, file, indent=4) 
     
     return data
 
 
-def compile(filename: str): 
-    with open(f"{FILE_LIBRARY}/{filename}.zsrc", "r") as file:
+def compile(filename: str, fileLibrary: str = "."): 
+    with open(f"{fileLibrary}/{filename}.zsrc", "r") as file:
 
         code = json.load(file)
         
@@ -130,7 +130,7 @@ def compile(filename: str):
                     vars.update({var.name: var})
                 
                 case "LIB":
-                    libPath = f"{FILE_LIBRARY}.{LIB_FOLDER_NAME}"
+                    libPath = f"{fileLibrary}.{LIB_FOLDER_NAME}"
                     var = Library(name, libPath, paramsList[0])
                     vars.update({var.name: var})
                 
@@ -338,7 +338,7 @@ if __name__ == "__main__":
 
     if MEASURE_TIME: st = time.time()    
 
-    lexer(FILE_NAME)
-    compile(FILE_NAME)
+    lexer(FILE_NAME, FILE_LIBRARY)
+    compile(FILE_NAME, FILE_LIBRARY)
     
     if MEASURE_TIME: et = time.time(); elapsed_time = et - st; print(f"\n Elapsed time: {elapsed_time}s")
