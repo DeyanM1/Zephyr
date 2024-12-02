@@ -4,21 +4,28 @@ import time
 import json
 
 MEASURE_TIME = False
-EXE_VERSION = True
 
-LIB_FOLDER_NAME = "lib"
-FILE_LIBRARY = "." # folder in current directory
+
+LIB_DIRECTORY = "lib"
+FILE_DIRECTORY = "." # folder in current directory
 FILE_NAME = "code"
 
 
 
-def lexer(filename: str, fileLibrary: str = "."):
+def lexer(filename: str, fileDirectory: str = "."):
     currentCommand = ""
     
     code = []
     
+    if filename.endswith(".zph"):
+        filename = filename[: -len(".zph")] 
+
+    elif filename.endswith(".zsrc") or filename.endswith(".zpkg"):
+        raise BaseException("File must be a .zph file, not a .zscr file")
+    
+    
     bannedChars = ["\n", "\r", "\t"]
-    with open(f"{fileLibrary}/{filename}.zph", 'r') as file:
+    with open(f"{fileDirectory}/{filename}.zph", 'r') as file:
         for line in file:
             line = line.lstrip()    # remove spaces from start
             for char in line:
@@ -50,15 +57,25 @@ def lexer(filename: str, fileLibrary: str = "."):
         data.update({f"{elem}::{code[elem]}": {"name": name,"base": base, "function": function, "paramsList": paramsList}})
 
         
-    with open(f"{fileLibrary}/{filename}.zsrc", "w") as file:
+    with open(f"{fileDirectory}/{filename}.zsrc", "w") as file:
         json.dump(data, file, indent=4) 
     
     return data
 
 
-def compile(filename: str, fileLibrary: str = "."): 
-    with open(f"{fileLibrary}/{filename}.zsrc", "r") as file:
+def compile(filename: str, libDirectory: str, fileDirectory: str = ".", measureTime:bool = False): 
 
+    if measureTime: st = time.time() 
+    
+    if filename.endswith(".zsrc"):
+        filename = filename[: -len(".zsrc")] 
+    elif filename.endswith(".zph"):
+        filename = filename[: -len(".zph")] 
+        print(f"[WARNING] Compiling file: {filename}.zsrc")
+    
+    
+    
+    with open(f"{fileDirectory}/{filename}.zsrc", "r") as file:
         code = json.load(file)
         
         
@@ -130,7 +147,7 @@ def compile(filename: str, fileLibrary: str = "."):
                     vars.update({var.name: var})
                 
                 case "LIB":
-                    libPath = f"{fileLibrary}.{LIB_FOLDER_NAME}"
+                    libPath = f"{fileDirectory}.{libDirectory}"
                     var = Library(name, libPath, paramsList[0])
                     vars.update({var.name: var})
                 
@@ -306,39 +323,13 @@ def compile(filename: str, fileLibrary: str = "."):
     
         index += 1
     print("\n", vars)
+    
+    if measureTime: et = time.time(); elapsed_time = et - st; print(f"\n Elapsed time: {elapsed_time}s")
         
     
 
  
 
 if __name__ == "__main__":
-    if EXE_VERSION:
-        args = sys.argv[1:]
-        options = {}
-        
-        for i in range(len(args)):
-            key = args[i][2:]
-
-            if i + 1 < len(args) and not args[i + 1].startswith("--"):
-                options[key] = args[i + 1]  # The value is the next argument
-            
-            else:
-                options[key] = True  # If no value, assume it's a flag
-        
-        try:
-            FILE_NAME = options["fileName"]
-        except KeyError:
-            print("Please provide a filename \nUsage: main.exe <filename>\n")
-            sys.exit()
-        try:
-            MEASURE_TIME = options.get("measureTime")
-        except KeyError:
-            pass
-            
-
-    if MEASURE_TIME: st = time.time()    
-
-    lexer(FILE_NAME, FILE_LIBRARY)
-    compile(FILE_NAME, FILE_LIBRARY)
-    
-    if MEASURE_TIME: et = time.time(); elapsed_time = et - st; print(f"\n Elapsed time: {elapsed_time}s")
+    lexer(filename=FILE_NAME, fileDirectory=FILE_DIRECTORY)
+    compile(filename=FILE_NAME, libDirectory=LIB_DIRECTORY, fileDirectory=FILE_DIRECTORY, measureTime=MEASURE_TIME)
