@@ -1,4 +1,7 @@
 import argparse
+import os
+import requests
+
 from main import *
 
 
@@ -14,7 +17,19 @@ def compileFunc(fileName: str, fileDirectory: str, libDirectory: str, measureTim
 def runFunc(fileName, fileDirectory, libDirectory, measureTime: bool):
     compile(fileName, libDirectory, fileDirectory, measureTime)
 
+def openInstaller():
+    file_url = r"https://github.com/username/repo/releases/download/v1.0.0/filename.ext"
+    output_path = r"C:\Program Files\ZephyrUpdate\ZephyrInstaller.exe"
+    
 
+    response = requests.get(file_url, stream=True)
+    response.raise_for_status()
+    
+    with open(output_path, "wb") as file:
+        for chunk in response.iter_content(chunk_size=8192):
+            file.write(chunk)
+            
+    os.system(output_path)
 
 
 
@@ -38,6 +53,8 @@ if __name__ == "__main__":
     runParser.add_argument("-l", "--lib", type=str, default="lib", help="Custom libraryDirectory; default: lib (Optional)")
     runParser.add_argument("-t", "--time", action="store_true", help="Boolean flag for exampleFunction")
 
+
+    updateParser = subparsers.add_parser("update", help="Opens the installer file")
 
     args = parser.parse_args()
 

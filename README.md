@@ -31,9 +31,9 @@ This language is intended for:
 ### Installation Guide
 1. download the ZephyrInstaller.exe from the [Releases tab](https://github.com/DeyanM1/Zephyr/releases)
 2. Open the exe file and proceed the installation
-3. Run this command in a administrative terminal:
+3. Run this command in a terminal:
     ZephyrRun compile <yourFileName>
----
+4. (For help execute: ZephyrRun -h)
 
 ## Write programs
 
