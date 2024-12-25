@@ -9,13 +9,15 @@
 4. [Types Explained](#types-explained)  
 4.1 [Variables](#variables)  
 4.2 [Built-in Functions](#built-in-functions)  
-4.3 [Math Object](#math-object)  
-4.4 [Function](#function)  
-4.5 [Conditional Object](#conditional-object)  
-4.6 [Loop](#loop)  
-4.7 [Random Number Generator](#random-number-generator)  
-4.8 [Predefined Variables](#predefined-variables)  
-4.9 [Libraries](#libraries)  
+4.3 [List](#lists)
+4.4 [AList](#alists)
+4.5 [Math Object](#math-object)  
+4.6 [Function](#function)  
+4.7 [Conditional Object](#conditional-object)  
+4.8 [Loop](#loop)  
+4.9 [Random Number Generator](#random-number-generator)  
+4.10 [Predefined Variables](#predefined-variables)  
+4.11 [Libraries](#libraries)  
 5. [Conclusion](#conclusion)  
 
 
@@ -43,6 +45,8 @@
 
 - **Variable**: Simple variable Types: (INT, FLOAT, PT)  
 - **__**: Built-in Functions
+- **LIST**: Lists
+- **ALIST**: Allocated Lists
 - **MO**: Math Object
 - **FUNC**: Function
 - **CO**: Conditional Object
@@ -195,6 +199,44 @@ __ ? JUMP:<Line>;
 
 ---
 
+## Lists
+
+Lists are variables that hold multiple values of the same type. It will fill spaces between values with null values.
+Lists don't support type changes
+
+POS = 1 to +Inf
+NEG-POS = -1 to -Inf
+
+OptionalData from 1 to +Inf
+
+Supported types: Variables
+**Declare a list:**
+
+- usage: 
+```zephyr
+myList # LIST:<ElementsType>|optionalData;
+myList ? SET:[POS]|Data;
+
+myList ? SET:'myPosVar'|'myPosValue';
+
+myNum # INT:0;
+myNum ? w:'myList<POS>';
+
+
+```
+optionalData Syntax: ..|5,1,5,2
+                     ..|test1,test2,test3
+
+---
+
+## ALIST
+A Allocated List is a list that does'nt fill spaces between values. It saves memory.
+The positioning an Commands are like a normal List.
+
+
+
+
+
 ## Math Object
 
 Math objects allow for complex calculations.
@@ -284,7 +326,6 @@ Conditional objects return boolean values (`~1` for true, `~0` for false) based 
 
 - Create a condition:
   ```zephyr
-  isGreater # ('a' > 'b'):;
   isGreater # CO:('a' > 'b');
   ```
 

@@ -114,6 +114,17 @@ def compile(filename: str, libDirectory: str, fileDirectory: str = ".", measureT
 
         elif function in TYPES:
             match function:
+                case "LIST":
+                    
+                    if len(paramsList) > 1:
+                        var = List(name, paramsList[0], paramsList[1])
+                    else:
+                        var = List(name, paramsList[0])
+                    vars.update({var.name: var})
+                
+                case "ALIST":
+                    pass
+                
                 case "MO":
                     var = MathObject(name)
                     vars.update({var.name: var})
@@ -225,6 +236,20 @@ def compile(filename: str, libDirectory: str, fileDirectory: str = ".", measureT
                         case _:
                             Error(501, ["Token.FLOAT", f"# {function}"]).as_string()
         
+        elif vars[name].type == Token.LIST:
+            match base:
+                case "?":
+                    match function:
+                        case "SET": 
+                            vars[name].set(paramsList[0], paramsList[1], vars)
+                case "#":
+                    match function:
+                        case _:
+                            Error(501, ["Token.LIST", f"# {function}"]).as_string()
+  
+        elif vars[name].type == Token.ALIST:
+            pass
+        
         elif vars[name].type == Token.RNG:
             match base:
                 case "?":
@@ -249,7 +274,7 @@ def compile(filename: str, libDirectory: str, fileDirectory: str = ".", measureT
                         case "w":
                             vars[name].setEquation(paramsList[0])
                         
-                        case function if function.startswith("("):
+                        case function if function.startswith(""):
                             vars[name].setEquation(function)
                             vars[name].prepare(vars)
 
@@ -323,6 +348,8 @@ def compile(filename: str, libDirectory: str, fileDirectory: str = ".", measureT
     
         index += 1
     print("\n", vars)
+    
+    afterCodeRun(vars=vars)
     
     if measureTime: et = time.time(); elapsed_time = et - st; print(f"\n Elapsed time: {elapsed_time}s")
         

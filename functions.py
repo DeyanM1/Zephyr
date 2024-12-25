@@ -5,6 +5,9 @@ TODO: FUNCTION
 DONE Var Reading: Variable, MO, CO, LOOP, LIB, RNG, 
 TODO: FUNCTION
 
+TODO:
+- Better Error Messages
+- Better Structure
 """
 
 
@@ -20,7 +23,7 @@ PT_reg = r"^'.*'$"
 DEBUG = False
 
 global DIGITS; DIGITS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
-global TYPES; TYPES = ["INT", "FLOAT", "PT", "MO", "FUNC", "LOOP", "CO", "LIB", "RNG", "PredefVar"]
+global TYPES; TYPES = ["INT", "FLOAT", "PT", "LIST", "ALIST","MO", "FUNC", "LOOP", "CO", "LIB", "RNG", "PredefVar"]
 global BOOL; BOOL = ["~1", "~0"]
 global CONDITIONS; CONDITIONS = [">", "<", "==", "!=", ">=", "<="]
 global TRANSLATE_BOOL; TRANSLATE_BOOL = {"~1":"True", "~0":"False"}
@@ -46,6 +49,12 @@ class Token:
 
     def PT(self):
         return self.type
+
+    def LIST(self):
+        return self.type
+    
+    def ALIST(self):
+        return self.type
     
     def MO(self):
         return self.type
@@ -68,7 +77,7 @@ class Token:
     def PredefVar(self):
         return self.type
      
-global TRANSLATE_TOKEN_TO_STR; TRANSLATE_TOKEN_TO_STR = {Token.INT: "INT", Token.PT: "PT", Token.FLOAT: "FLOAT", Token.MO: "MO", Token.FUNC: "FUNC", Token.LOOP: "LOOP", Token.CO: "CO", Token.Lib: "Lib", Token.RNG: "RNG", Token.PredefVar: "PredefVar"}
+global TRANSLATE_TOKEN_TO_STR; TRANSLATE_TOKEN_TO_STR = {Token.INT: "INT", Token.PT: "PT", Token.FLOAT: "FLOAT", Token.LIST: "LIST", Token.ALIST: "ALIST", Token.MO: "MO", Token.FUNC: "FUNC", Token.LOOP: "LOOP", Token.CO: "CO", Token.Lib: "Lib", Token.RNG: "RNG", Token.PredefVar: "PredefVar"}
 global NUMBERVARS; NUMBERVARS = [Token.INT, Token.FLOAT]
 global VAR_TYPES; VAR_TYPES = [Token.INT, "INT", Token.FLOAT, "FLOAT", Token.PT, "PT"]
 
@@ -166,6 +175,10 @@ def changeType(var, vars, newType):
 
 
 
+
+
+
+
 class Variable:
     def __init__(self, name, type, value, vars, const = False):
         value = str(value)
@@ -186,9 +199,16 @@ class Variable:
             return False
         if value.startswith("'"):
             var = value.replace("'", "")
-                
-                
-            self.value = str(vars.get(var).value)
+            if "<" in var and ">" in var:
+                varName, varIndex = var.split("<")
+                varIndex = varIndex.replace(">", "")
+                if vars[varName].type != Token.LIST:
+                    print(f"ERROR: unexpected positional value '{varIndex}' in {varName}")
+                    quit()
+                    
+                self.value = str(vars[varName].getValue(varIndex))
+            else:
+                self.value = str(vars.get(var).value)
 
             
         
@@ -223,6 +243,101 @@ class Variable:
     
     def setValueByInput(self, text):
         self.value = input(text)
+
+class List:
+    def __init__(self, name, elementsType, data=None):
+        self.name = name
+        self.type = Token.LIST
+        
+        self.elementsType = assignType(elementsType) 
+        
+        self.data = []
+        self.negData = []
+        
+        if data:
+            dataToAdd = data.split(",")
+            for pos in range(0, len(dataToAdd)):
+                    self.set(pos, dataToAdd[pos])
+        
+        
+        self.dumpConfig = {
+            "name": self.name, "type": TRANSLATE_TOKEN_TO_STR[self.type], "elementsType": TRANSLATE_TOKEN_TO_STR[self.elementsType], "data": self.data, "negData": self.negData
+        }
+        
+        
+    def set(self, pos, value, vars):
+        # Position is the element index, not the corresponding position! (pos = realPosition-1)
+        if checkTypeForValue(self.elementsType, value):
+            if pos.startswith("'"):
+                try:
+                    name = pos.replace("'", "")
+                    posVar = vars[name]
+                    pos = int(posVar.value)
+                except Exception as e:
+                    print(f"ERROR: Position variable {name} not found!")
+                    quit()
+            else:
+                pos = int(pos)
+            
+            pos = int(pos)
+            
+            Debug(self.name, f"set({pos}, {value})").as_string()
+            
+            if int(pos) == 0:
+                print("ERROR: Invalid position!")
+                quit()
+            elif pos >= 0:
+                pos = pos-1
+                # Treat as a positive index for self.data
+                if pos < len(self.data):
+                    self.data[pos] = value
+                else:
+                    self.data.extend([None] * (pos - len(self.data) + 1))
+                    self.data[pos] = value
+            else:
+                # Treat as a positive index for self.negData (remove negative sign)
+                pos = abs(pos+2)  # Convert negative index to positive index
+                if pos < len(self.negData):
+                    self.negData[pos] = value
+                else:
+                    self.negData.extend([None] * (pos - len(self.negData) + 1))
+                    self.negData[pos] = value
+            
+    def getValue(self, pos):
+        
+        # Position is the element index, not the corresponding position! (pos = realPosition-1)
+        if pos.startswith("'"):
+            try:
+                name = pos.replace("'", "")
+                posVar = vars[name]
+                pos = int(posVar.value)
+            except Exception as e:
+                print(f"ERROR: Position variable {name} not found!")
+                quit()
+        if int(pos) == 0:
+            print("ERROR: Invalid position!")
+            quit()
+        
+        elif int(pos) > 0:
+            pos = int(pos)-1
+            try:
+                return self.data[pos]
+            except IndexError:
+                print("ERROR: Index out of range")
+                quit()
+        
+        else:
+            pos = abs(int(pos)+1)
+            try:
+                return self.negData[pos]
+            except IndexError:
+                print("ERROR: Index out of range")
+                quit()
+                
+class ALIST:
+    pass
+            
+            
 
 class MathObject:
     def __init__(self, name, value = 0, equation = ()):
@@ -271,7 +386,6 @@ class MathObject:
 
 
             elif elem == "'": 
-                print("hlkhsfdg")
                 #varList.update({varStr: vars.get(varStr).value})
                 self.calculation += str(vars.get(varStr).value)
                 varStr, in_var = "", False
@@ -374,6 +488,7 @@ class ConditionObject:
 
         except Exception:
             print(f"ERROR: {self.condition} is not a valid condition!")
+            quit()
 
 class Loop:
     def __init__(self, name, startIndex, vars, conditionObject = None):
@@ -560,6 +675,28 @@ class PredefVar:
             data[name] = dump
             
         
-        #print(data)
-        with open(f"lib/{self.fileName}.zpkg", "w") as file:
-            json.dump(data, file, indent=4) 
+        file = open(f"lib/{self.fileName}.zpkg", "w")
+        json.dump(data, file, indent=4) 
+     
+def afterCodeRun(vars):
+    pass
+    #print(vars["list"].getValue("0"))
+     
+     
+        
+        
+if __name__ == "__main__":
+    import main
+    
+    MEASURE_TIME = False
+
+
+    LIB_DIRECTORY = "lib"
+    FILE_DIRECTORY = "." # folder in current directory
+    FILE_NAME = "code"
+    
+    
+    
+    
+    main.lexer(filename=FILE_NAME, fileDirectory=FILE_DIRECTORY)
+    main.compile(filename=FILE_NAME, libDirectory=LIB_DIRECTORY, fileDirectory=FILE_DIRECTORY, measureTime=MEASURE_TIME)
