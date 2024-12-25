@@ -1,0 +1,99 @@
+{
+    "0::list # LIST:INT": {
+        "name": "list",
+        "base": "#",
+        "function": "LIST",
+        "paramsList": [
+            "INT"
+        ]
+    },
+    "1::currentIndex # INT:1": {
+        "name": "currentIndex",
+        "base": "#",
+        "function": "INT",
+        "paramsList": [
+            "1"
+        ]
+    },
+    "2::maxIndex # INT:10": {
+        "name": "maxIndex",
+        "base": "#",
+        "function": "INT",
+        "paramsList": [
+            "10"
+        ]
+    },
+    "3::condition # CO:('currentIndex'<='maxIndex')": {
+        "name": "condition",
+        "base": "#",
+        "function": "CO",
+        "paramsList": [
+            "('currentIndex'<='maxIndex')"
+        ]
+    },
+    "4::LOOP # LOOP:condition": {
+        "name": "LOOP",
+        "base": "#",
+        "function": "LOOP",
+        "paramsList": [
+            "condition"
+        ]
+    },
+    "5::list ? SET:'currentIndex'|99": {
+        "name": "list",
+        "base": "?",
+        "function": "SET",
+        "paramsList": [
+            "'currentIndex'",
+            "99"
+        ]
+    },
+    "6::currentIndex ? w:++": {
+        "name": "currentIndex",
+        "base": "?",
+        "function": "w",
+        "paramsList": [
+            "++"
+        ]
+    },
+    "7::LOOP ? END:": {
+        "name": "LOOP",
+        "base": "?",
+        "function": "END",
+        "paramsList": [
+            ""
+        ]
+    },
+    "8::number # INT:3": {
+        "name": "number",
+        "base": "#",
+        "function": "INT",
+        "paramsList": [
+            "3"
+        ]
+    },
+    "9::string # PT:'list<4>'": {
+        "name": "string",
+        "base": "#",
+        "function": "PT",
+        "paramsList": [
+            "'list<4>'"
+        ]
+    },
+    "10::string ? push:": {
+        "name": "string",
+        "base": "?",
+        "function": "push",
+        "paramsList": [
+            ""
+        ]
+    },
+    "11::__ ? dumpVars:listVars": {
+        "name": "__",
+        "base": "?",
+        "function": "dumpVars",
+        "paramsList": [
+            "listVars"
+        ]
+    }
+}

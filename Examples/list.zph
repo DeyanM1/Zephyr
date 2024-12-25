@@ -1,0 +1,25 @@
+list # LIST:INT;
+
+currentIndex # INT:1;
+maxIndex # INT:10;
+
+condition # CO:('currentIndex'<='maxIndex');
+LOOP # LOOP:condition;
+
+list ? SET:'currentIndex'|99;
+
+
+currentIndex ? w:++;
+
+LOOP ? END:;
+
+
+number # INT:3;
+string # PT:'list<4>';
+
+string ? push:;
+
+
+
+
+__ ? dumpVars:listVars;
