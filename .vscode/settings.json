@@ -1,18 +1,19 @@
 {
-    "material-icon-theme.files.associations": {
-      "*.zph": "../../icons/zph",
-      "*.zsrc": "../../icons/zsrc",
-      "*.zpkg": "../../icons/zpkg"
+  "material-icon-theme.files.associations": {
+    "*.zph": "../../icons/zph",
+    "*.zsrc": "../../icons/zsrc",
+    "*.zpkg": "../../icons/zpkg"
 
-    },
-    
-    "files.associations": {
-      "*.zsrc": "json",
-      "*.zpkg": "json"
-    },
-    "cSpell.words": [
-      "zpkg",
-      "zscr",
-      "zsrc"
-    ],
+  },
+  
+  "files.associations": {
+    "*.zsrc": "json",
+    "*.zpkg": "json"
+  },
+  "cSpell.words": [
+    "ALIST",
+    "zpkg",
+    "zscr",
+    "zsrc"
+  ],
 }
