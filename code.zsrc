@@ -1,62 +1,102 @@
 {
-    "0::list # LIST:INT": {
-        "name": "list",
+    "0::number # RNG:INT|1->9": {
+        "name": "number",
         "base": "#",
-        "function": "LIST",
+        "function": "RNG",
+        "paramsList": [
+            "INT",
+            "1->9"
+        ]
+    },
+    "1::number # CT:INT": {
+        "name": "number",
+        "base": "#",
+        "function": "CT",
         "paramsList": [
             "INT"
         ]
     },
-    "1::currentIndex # INT:1": {
-        "name": "currentIndex",
+    "2::tries # INT:0": {
+        "name": "tries",
         "base": "#",
         "function": "INT",
         "paramsList": [
-            "1"
+            "0"
         ]
     },
-    "2::maxIndex # INT:10": {
-        "name": "maxIndex",
+    "3::guess # INT:0": {
+        "name": "guess",
         "base": "#",
         "function": "INT",
         "paramsList": [
-            "10"
+            "0"
         ]
     },
-    "3::condition # CO:('currentIndex'<='maxIndex')": {
-        "name": "condition",
+    "4::guess ? INPUT:Enter Guess> ": {
+        "name": "guess",
+        "base": "?",
+        "function": "INPUT",
+        "paramsList": [
+            "Enter Guess> "
+        ]
+    },
+    "5::looseMessage # PT:Sorry, wrong number, try again!": {
+        "name": "looseMessage",
+        "base": "#",
+        "function": "PT",
+        "paramsList": [
+            "Sorry, wrong number, try again!"
+        ]
+    },
+    "6::winMessage # PT:Congratulations, you won! With tries> ": {
+        "name": "winMessage",
+        "base": "#",
+        "function": "PT",
+        "paramsList": [
+            "Congratulations, you won! With tries> "
+        ]
+    },
+    "7::mainCondition # CO:('number'!='guess')": {
+        "name": "mainCondition",
         "base": "#",
         "function": "CO",
         "paramsList": [
-            "('currentIndex'<='maxIndex')"
+            "('number'!='guess')"
         ]
     },
-    "4::LOOP # LOOP:condition": {
+    "8::LOOP # LOOP:mainCondition": {
         "name": "LOOP",
         "base": "#",
         "function": "LOOP",
         "paramsList": [
-            "condition"
+            "mainCondition"
         ]
     },
-    "5::list ? SET:'currentIndex'|99": {
-        "name": "list",
+    "9::looseMessage ? push:": {
+        "name": "looseMessage",
         "base": "?",
-        "function": "SET",
+        "function": "push",
         "paramsList": [
-            "'currentIndex'",
-            "99"
+            ""
         ]
     },
-    "6::currentIndex ? w:++": {
-        "name": "currentIndex",
+    "10::tries ? w:++": {
+        "name": "tries",
         "base": "?",
         "function": "w",
         "paramsList": [
             "++"
         ]
     },
-    "7::LOOP ? END:": {
+    "11::guess ? INPUT:Enter Guess> ": {
+        "name": "guess",
+        "base": "?",
+        "function": "INPUT",
+        "paramsList": [
+            "Enter Guess> "
+        ]
+    },
+    "12::LOOP ? END:": {
         "name": "LOOP",
         "base": "?",
         "function": "END",
@@ -64,36 +104,44 @@
             ""
         ]
     },
-    "8::number # INT:3": {
-        "name": "number",
-        "base": "#",
-        "function": "INT",
+    "13::tries ? w:++": {
+        "name": "tries",
+        "base": "?",
+        "function": "w",
         "paramsList": [
-            "3"
+            "++"
         ]
     },
-    "9::string # PT:'list<4>'": {
-        "name": "string",
+    "14::mainCondition # CT:PT": {
+        "name": "mainCondition",
         "base": "#",
-        "function": "PT",
+        "function": "CT",
         "paramsList": [
-            "'list<4>'"
+            "PT"
         ]
     },
-    "10::string ? push:": {
-        "name": "string",
+    "15::winMessage ? push:": {
+        "name": "winMessage",
         "base": "?",
         "function": "push",
         "paramsList": [
             ""
         ]
     },
-    "11::__ ? dumpVars:usedVars": {
-        "name": "__",
-        "base": "?",
-        "function": "dumpVars",
+    "16::tries # CT:PT": {
+        "name": "tries",
+        "base": "#",
+        "function": "CT",
         "paramsList": [
-            "usedVars"
+            "PT"
+        ]
+    },
+    "17::tries ? push:": {
+        "name": "tries",
+        "base": "?",
+        "function": "push",
+        "paramsList": [
+            ""
         ]
     }
 }

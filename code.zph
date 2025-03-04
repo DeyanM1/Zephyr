@@ -1,25 +1,27 @@
-list # LIST:INT;
+number # RNG:INT|1->9;
+number # CT:INT;
 
-currentIndex # INT:1;
-maxIndex # INT:10;
+tries # INT:0;
+guess # INT:0;
+guess ? INPUT:Enter Guess> ;
 
-condition # CO:('currentIndex'<='maxIndex');
-LOOP # LOOP:condition;
+looseMessage # PT:Sorry, wrong number, try again!;
+winMessage # PT:Congratulations, you won! With tries> ;
 
-list ? SET:'currentIndex'|99;
+mainCondition # CO:('number'!='guess');
+LOOP # LOOP:mainCondition;
+    looseMessage ? push:;
+    tries ? w:++;
 
-
-currentIndex ? w:++;
+    guess ? INPUT:Enter Guess> ;
 
 LOOP ? END:;
+tries ? w:++;
 
+mainCondition # CT:PT;
+~mainCondition ? push:;
 
-number # INT:3;
-string # PT:'list<4>';
+winMessage ? push:;
 
-string ? push:;
-
-
-
-
-__ ? dumpVars:usedVars;
+tries # CT:PT;
+tries ? push:;
