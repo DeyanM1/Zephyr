@@ -28,9 +28,9 @@ def lexer(filename: str, fileDirectory: str = "."):
     with open(f"{fileDirectory}/{filename}.zph", 'r') as file:
         for line in file:
             line = line.lstrip()    # remove spaces from start
+            if line.startswith("~"):
+                continue
             for char in line:
-                if char == "~":
-                    continue
                 if char != ";":
                     if char in bannedChars:
                         continue
@@ -191,7 +191,7 @@ def compile(filename: str, libDirectory: str, fileDirectory: str = ".", measureT
                             vars[name].changeValue(paramsList[0], vars)
                             
                         case "INPUT":
-                            vars[name].setValueByInput(paramsList[0])
+                            vars[name].setValueByInput(paramsList[0], vars)
                         
                         case _:
                             Error(501, ["Token.PT", f"? {function}"]).as_string()
@@ -208,6 +208,9 @@ def compile(filename: str, libDirectory: str, fileDirectory: str = ".", measureT
                     match function:
                         case "w":
                             vars[name].changeValue(paramsList[0], vars)
+                            
+                        case "INPUT":
+                            vars[name].setValueByInput(paramsList[0], vars)
 
                         case _:
                             Error(501, ["Token.INT", f"? {function}"]).as_string()

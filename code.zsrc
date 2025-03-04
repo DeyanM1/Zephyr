@@ -1,18 +1,158 @@
 {
-    "0::zahl # PT:Hallo": {
-        "name": "zahl",
+    "0::number # RNG:INT|1->9": {
+        "name": "number",
+        "base": "#",
+        "function": "RNG",
+        "paramsList": [
+            "INT",
+            "1->9"
+        ]
+    },
+    "1::number # CT:INT": {
+        "name": "number",
+        "base": "#",
+        "function": "CT",
+        "paramsList": [
+            "INT"
+        ]
+    },
+    "2::tries # INT:0": {
+        "name": "tries",
+        "base": "#",
+        "function": "INT",
+        "paramsList": [
+            "0"
+        ]
+    },
+    "3::guess # INT:0": {
+        "name": "guess",
+        "base": "#",
+        "function": "INT",
+        "paramsList": [
+            "0"
+        ]
+    },
+    "4::guess ? INPUT:Enter Guess> ": {
+        "name": "guess",
+        "base": "?",
+        "function": "INPUT",
+        "paramsList": [
+            "Enter Guess> "
+        ]
+    },
+    "5::looseMessage # PT:Sorry, wrong number, try again!": {
+        "name": "looseMessage",
         "base": "#",
         "function": "PT",
         "paramsList": [
-            "Hallo"
+            "Sorry, wrong number, try again!"
         ]
     },
-    "1::zahl ? push:": {
-        "name": "zahl",
+    "6::winMessage # PT:Congratulations, you won! With tries> ": {
+        "name": "winMessage",
+        "base": "#",
+        "function": "PT",
+        "paramsList": [
+            "Congratulations, you won! With tries> "
+        ]
+    },
+    "7::mainCondition # CO:('number'!='guess')": {
+        "name": "mainCondition",
+        "base": "#",
+        "function": "CO",
+        "paramsList": [
+            "('number'!='guess')"
+        ]
+    },
+    "8::LOOP # LOOP:mainCondition": {
+        "name": "LOOP",
+        "base": "#",
+        "function": "LOOP",
+        "paramsList": [
+            "mainCondition"
+        ]
+    },
+    "9::looseMessage ? push:": {
+        "name": "looseMessage",
         "base": "?",
         "function": "push",
         "paramsList": [
             ""
         ]
+    },
+    "10::tries ? w:++": {
+        "name": "tries",
+        "base": "?",
+        "function": "w",
+        "paramsList": [
+            "++"
+        ]
+    },
+    "11::guess ? INPUT:Enter Guess> ": {
+        "name": "guess",
+        "base": "?",
+        "function": "INPUT",
+        "paramsList": [
+            "Enter Guess> "
+        ]
+    },
+    "12::LOOP ? END:": {
+        "name": "LOOP",
+        "base": "?",
+        "function": "END",
+        "paramsList": [
+            ""
+        ]
+    },
+    "13::tries ? w:++": {
+        "name": "tries",
+        "base": "?",
+        "function": "w",
+        "paramsList": [
+            "++"
+        ]
+    },
+    "14::mainCondition # CT:PT": {
+        "name": "mainCondition",
+        "base": "#",
+        "function": "CT",
+        "paramsList": [
+<<<<<<< HEAD
+            "Hallo"
+        ]
+    },
+    "1::zahl ? push:": {
+        "name": "zahl",
+=======
+            "PT"
+        ]
+    },
+    "15::winMessage ? push:": {
+        "name": "winMessage",
+>>>>>>> ea8484ae64c7cef7666c764fb270d258356876b3
+        "base": "?",
+        "function": "push",
+        "paramsList": [
+            ""
+        ]
+<<<<<<< HEAD
+=======
+    },
+    "16::tries # CT:PT": {
+        "name": "tries",
+        "base": "#",
+        "function": "CT",
+        "paramsList": [
+            "PT"
+        ]
+    },
+    "17::tries ? push:": {
+        "name": "tries",
+        "base": "?",
+        "function": "push",
+        "paramsList": [
+            ""
+        ]
+>>>>>>> ea8484ae64c7cef7666c764fb270d258356876b3
     }
 }

@@ -8,11 +8,11 @@
 3. [Basic info](#basic-info)
 4. [Types Explained](#types-explained)  
 4.1 [Variables](#variables)  
-4.2 [Built-in Functions](#built-in-functions)  
-4.3 [List](#lists)
-4.4 [AList](#alists)
-4.5 [Math Object](#math-object)  
-4.6 [Function](#function)  
+4.2 [Built-in Functions](#built-in-functions)   
+4.3 [List](#lists)  
+4.4 [AList](#alists)  
+4.5 [Math Object](#math-object)    
+4.6 [Function](#function)    
 4.7 [Conditional Object](#conditional-object)  
 4.8 [Loop](#loop)  
 4.9 [Random Number Generator](#random-number-generator)  
@@ -65,7 +65,7 @@
 - **.zpkg**: The Zephyr dumped variables file      (Zephyr package)
 
   ![](https://github.com/user-attachments/assets/58b3cce4-7ca9-4432-8cd0-45dfd3cda824#gh-dark-mode-only)
-  ![](ttps://github.com/user-attachments/assets/6c7fc8b9-c8f1-450f-bda8-6863f83aa567#gh-light-mode-only)
+  ![](https://github.com/user-attachments/assets/6c7fc8b9-c8f1-450f-bda8-6863f83aa567#gh-light-mode-only)
   ![flowChart2](https://github.com/user-attachments/assets/332dac53-778b-4986-9fe6-67c22719c03e)
 
 ### Run a file
