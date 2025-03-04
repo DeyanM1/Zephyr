@@ -102,6 +102,7 @@ TODO: Add run .zsrc file in main.py
 
 - **Type**: The data type of the variable.
 - **Value**: The initial value of the variable.
+
 - **~1/~0**: Optional flags for constants.
 
 **Examples:**

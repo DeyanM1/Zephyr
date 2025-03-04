@@ -78,7 +78,7 @@ class Token:
         return self.type
      
 global TRANSLATE_TOKEN_TO_STR; TRANSLATE_TOKEN_TO_STR = {Token.INT: "INT", Token.PT: "PT", Token.FLOAT: "FLOAT", Token.LIST: "LIST", Token.ALIST: "ALIST", Token.MO: "MO", Token.FUNC: "FUNC", Token.LOOP: "LOOP", Token.CO: "CO", Token.Lib: "Lib", Token.RNG: "RNG", Token.PredefVar: "PredefVar"}
-global NUMBERVARS; NUMBERVARS = [Token.INT, Token.FLOAT]
+global NUMBERVARS; NUMBERVARS = [Token.INT, Token.FLOAT, Token.LIST]
 global VAR_TYPES; VAR_TYPES = [Token.INT, "INT", Token.FLOAT, "FLOAT", Token.PT, "PT"]
 
 class Error:
@@ -367,7 +367,7 @@ class MathObject:
 
 
         for elem in self.equation:
-            if elem in DIGITS: Error(301, self.equation).as_string()
+            if elem in DIGITS: self.calculation += elem
             elif elem == "+": self.calculation += "+"
             elif elem == "-": self.calculation += "-"
             elif elem == "*": self.calculation += "*"

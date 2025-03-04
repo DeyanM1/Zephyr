@@ -7,8 +7,8 @@ MEASURE_TIME = False
 
 
 LIB_DIRECTORY = "lib"
-FILE_DIRECTORY = "./Examples" # folder in current directory
-FILE_NAME = "list.zph"
+FILE_DIRECTORY = "." # folder in current directory
+FILE_NAME = "code.zph"
 
 
 
@@ -45,14 +45,14 @@ def lexer(filename: str, fileDirectory: str = "."):
     data = {}
     
     for elem in range(len(code)):
-        try:
-            command, params = code[elem].split(":")
-            name, base, function = command.split(" ")
+        #try:
+        command, params = code[elem].split(":")
+        name, base, function = command.split(" ")
             
-            paramsList = params.split("|")
-        except ValueError:
-            print(f"[{elem +1}]  code structure is invalid")
-            quit()
+        paramsList = params.split("|")
+        #except ValueError:
+        #    print(f"[{elem +1}]  code structure is invalid")
+        #    quit()
 
         data.update({f"{elem}::{code[elem]}": {"name": name,"base": base, "function": function, "paramsList": paramsList}})
 
