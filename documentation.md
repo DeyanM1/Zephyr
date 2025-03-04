@@ -116,6 +116,8 @@ TODO: Add run .zsrc file in main.py
   message # PT:"Hello World"|~1;
   ```
 
+Variables **cant** have numbers in them!!
+
 ### Changing Type
 
 - usage:
@@ -329,6 +331,32 @@ Conditional objects return boolean values (`~1` for true, `~0` for false) based 
   ```zephyr
   isGreater # CO:('a' > 'b');
   ```
+
+
+## IF statement
+
+If statements are used to add logic to your program. 
+
+**Declare a IF statement**
+```zephyr
+statement # IF:<conditionalObjectName>|<commandsInIF>;
+
+statement # END:;
+```
+
+commandsInIF is the count of commands in IF statement
+
+**Example:**
+```
+conditionalObject # CO:('a' > 'b')
+
+statement # IF:conditionalObject|1;
+~ A is greater than b
+statement # END:;
+
+~ B is greater than A
+```
+
 
 ## Loop
 

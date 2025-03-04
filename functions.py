@@ -23,7 +23,7 @@ PT_reg = r"^'.*'$"
 DEBUG = False
 
 global DIGITS; DIGITS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
-global TYPES; TYPES = ["INT", "FLOAT", "PT", "LIST", "ALIST","MO", "FUNC", "LOOP", "CO", "LIB", "RNG", "PredefVar"]
+global TYPES; TYPES = ["INT", "FLOAT", "PT", "LIST", "ALIST","MO", "FUNC", "LOOP", "CO", "IF", "LIB", "RNG", "PredefVar"]
 global BOOL; BOOL = ["~1", "~0"]
 global CONDITIONS; CONDITIONS = [">", "<", "==", "!=", ">=", "<="]
 global TRANSLATE_BOOL; TRANSLATE_BOOL = {"~1":"True", "~0":"False"}
@@ -60,6 +60,9 @@ class Token:
         return self.type
     
     def CO(self):
+        return self.type
+    
+    def IF(self):
         return self.type
     
     def FUNC(self):
@@ -457,7 +460,7 @@ class ConditionObject:
 
 
         for elem in self.condition:
-            if elem in DIGITS: Error(301, self.condition).as_string()
+            if elem in DIGITS and not in_var: Error(301, self.condition).as_string()
             elif elem == '>': self.edit_condition += elem
             elif elem == '<': self.edit_condition += elem
             elif elem == '!': self.edit_condition += elem
@@ -491,6 +494,26 @@ class ConditionObject:
         except Exception:
             print(f"ERROR: {self.condition} is not a valid condition!")
             quit()
+
+class IF:
+    def __init__(self, name, startIndex, commandsInIF, conditionObjectName):
+        self.name = name
+        self.type = Token.IF # For consistency
+        
+        self.startIndex = startIndex
+        self.commandsInIF = commandsInIF
+        
+        self.conditionObjectName = conditionObjectName 
+        
+    def checkCondition(self, vars):
+        Debug(self.name, f"checkCondition with {self.conditionObjectName}").as_string()
+        if vars.get(self.conditionObjectName).value == "~1":
+            Debug(self.name, "Condition is met").as_string()
+            return self.startIndex
+        else:
+            Debug(self.name, "Condition is not met").as_string()
+            return int(self.startIndex)+int(self.commandsInIF)+1
+        
 
 class Loop:
     def __init__(self, name, startIndex, vars, conditionObject = None):

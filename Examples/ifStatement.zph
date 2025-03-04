@@ -3,8 +3,7 @@ b # INT:2;
 
 msg1 # PT:TRUE;
 
-
-
+ 
 condition # CO:('A'>'b');
 statement # IF:condition|1;
 
