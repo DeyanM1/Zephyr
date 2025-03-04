@@ -118,7 +118,7 @@ class Debug:
 def checkTypeForValue(type, value):
     match type:
         case "INT" | Token.INT:
-            if value.startswith(''):
+            if str(value).startswith(''):
                 return Token.FLOAT
             if not re.search(int_reg, value):
                 return False
@@ -241,8 +241,10 @@ class Variable:
     def push(self):
         print("PUSH: ", self.value)
     
-    def setValueByInput(self, text):
-        self.value = input(text)
+    def setValueByInput(self, text, vars):
+        value = input(text)
+        self.changeValue(value, vars)
+
 
 class List:
     def __init__(self, name, elementsType, data=None):
