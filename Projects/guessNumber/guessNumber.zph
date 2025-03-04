@@ -1,0 +1,27 @@
+number # RNG:INT|1->9;
+number # CT:INT;
+
+tries # INT:0;
+guess # INT:0;
+guess ? INPUT:Enter Guess> ;
+
+looseMessage # PT:Sorry, wrong number, try again!;
+winMessage # PT:Congratulations, you won! With tries> ;
+
+mainCondition # CO:('number'!='guess');
+LOOP # LOOP:mainCondition;
+    looseMessage ? push:;
+    tries ? w:++;
+
+    guess ? INPUT:Enter Guess> ;
+
+LOOP ? END:;
+tries ? w:++;
+
+mainCondition # CT:PT;
+~mainCondition ? push:;
+
+winMessage ? push:;
+
+tries # CT:PT;
+tries ? push:;

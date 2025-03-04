@@ -7,8 +7,8 @@ MEASURE_TIME = False
 
 
 LIB_DIRECTORY = "lib"
-FILE_DIRECTORY = "." # folder in current directory
-FILE_NAME = "code.zph"
+FILE_DIRECTORY = "./Projects/guessNumber" # folder in current directory
+FILE_NAME = "guessNumber.zph"
 
 
 
