@@ -1,13 +1,3 @@
-A # INT:2;
-b # INT:2;
+a # PT:123;
 
-msg1 # PT:TRUE;
-
-
-
-condition # CO:('A'>'b');
-statement # IF:condition|1;
-
-msg1 ? push:;
-
-statement ? END:;
+a ? push:;

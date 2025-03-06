@@ -502,17 +502,21 @@ class IF:
         
         self.startIndex = startIndex
         self.commandsInIF = commandsInIF
+        self.commandsInELSE = 0
         
+        self.value = False
         self.conditionObjectName = conditionObjectName 
         
     def checkCondition(self, vars):
         Debug(self.name, f"checkCondition with {self.conditionObjectName}").as_string()
         if vars.get(self.conditionObjectName).value == "~1":
             Debug(self.name, "Condition is met").as_string()
+            self.value = True
             return self.startIndex
         else:
             Debug(self.name, "Condition is not met").as_string()
-            return int(self.startIndex)+int(self.commandsInIF)+1
+            self.value = False
+            return int(self.startIndex)+int(self.commandsInIF)
         
 
 class Loop:

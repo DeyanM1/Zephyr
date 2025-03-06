@@ -1,57 +1,16 @@
 {
-    "0::A # INT:2": {
-        "name": "A",
-        "base": "#",
-        "function": "INT",
-        "paramsList": [
-            "2"
-        ]
-    },
-    "1::b # INT:2": {
-        "name": "b",
-        "base": "#",
-        "function": "INT",
-        "paramsList": [
-            "2"
-        ]
-    },
-    "2::msg1 # PT:TRUE": {
-        "name": "msg1",
+    "0::a # PT:123": {
+        "name": "a",
         "base": "#",
         "function": "PT",
         "paramsList": [
-            "TRUE"
+            "123"
         ]
     },
-    "3::condition # CO:('A'>'b')": {
-        "name": "condition",
-        "base": "#",
-        "function": "CO",
-        "paramsList": [
-            "('A'>'b')"
-        ]
-    },
-    "4::statement # IF:condition|1": {
-        "name": "statement",
-        "base": "#",
-        "function": "IF",
-        "paramsList": [
-            "condition",
-            "1"
-        ]
-    },
-    "5::msg1 ? push:": {
-        "name": "msg1",
+    "1::a ? push:": {
+        "name": "a",
         "base": "?",
         "function": "push",
-        "paramsList": [
-            ""
-        ]
-    },
-    "6::statement ? END:": {
-        "name": "statement",
-        "base": "?",
-        "function": "END",
         "paramsList": [
             ""
         ]

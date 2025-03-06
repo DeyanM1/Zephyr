@@ -71,7 +71,7 @@ def compile(filename: str, libDirectory: str, fileDirectory: str = ".", measureT
         filename = filename[: -len(".zsrc")] 
     elif filename.endswith(".zph"):
         filename = filename[: -len(".zph")] 
-        print(f"[WARNING] Compiling file: {filename}.zsrc")
+        #print(f"[WARNING] Compiling file: {filename}.zsrc")
     
     
     
@@ -308,14 +308,14 @@ def compile(filename: str, libDirectory: str, fileDirectory: str = ".", measureT
                             vars[name].call(vars)
                             
                         case _:
-                            Error(501, ["Token.MO", f"? {function}"]).as_string()
+                            Error(501, ["Token.FUNC", f"? {function}"]).as_string()
                             
                 case "#":
                     match function:
                         case "CT":
                             vars = changeType(vars[name], vars, paramsList[0]) # [0] = Type to change
                         case _:
-                            Error(501, ["Token.PT", f"# {function}"]).as_string()
+                            Error(501, ["Token.FUNC", f"# {function}"]).as_string()
         
         elif vars[name].type == Token.LOOP:
             match base:
@@ -346,7 +346,30 @@ def compile(filename: str, libDirectory: str, fileDirectory: str = ".", measureT
                         case "CT":
                             vars = changeType(vars[name], vars, paramsList[0]) # [0] = Type to change
                         case _:
-                            Error(501, ["Token.PT", f"# {function}"]).as_string()
+                            Error(501, ["Token.CO", f"# {function}"]).as_string()
+    
+        elif vars[name].type == Token.IF:
+            match base:
+                case "?":
+                    match function:
+                        case "ELSE":
+                            vars[name].commandsInELSE = paramsList[0]
+                            if vars[name].value == False: 
+                                pass
+                            elif vars[name].value == True:
+                                index = index + int(vars[name].commandsInELSE)
+                                
+                        case "END":
+                            pass
+                            
+                        case _:
+                            Error(501, ["Token.IF", f"? {function}"]).as_string()
+                
+                case "#":
+                    match function:
+                        case _:
+                            Error(501, ["Token.IF", f"# {function}"]).as_string()
+                            
     
         elif vars[name].type == Token.Lib:
             vars = vars[name].libObject.search(name=name, base=base, function=function, paramsList=paramsList, vars=vars)
