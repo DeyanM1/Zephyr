@@ -378,9 +378,8 @@ def compile(filename: str, libDirectory: str, fileDirectory: str = ".", measureT
             pass
     
         index += 1
-    print("\n", vars)
-    
-    afterCodeRun(vars=vars)
+    #print("\n", vars)
+
     
     if measureTime: et = time.time(); elapsed_time = et - st; print(f"\n Elapsed time: {elapsed_time}s")
         

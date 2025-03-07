@@ -372,7 +372,7 @@ class MathObject:
 
 
         for elem in self.equation:
-            if elem in DIGITS: self.calculation += elem
+            if elem in DIGITS and in_var == False: self.calculation += elem
             elif elem == "+": self.calculation += "+"
             elif elem == "-": self.calculation += "-"
             elif elem == "*": self.calculation += "*"
@@ -381,11 +381,14 @@ class MathObject:
             elif elem == ")": self.calculation += ")"
             elif elem == "'": 
                 if in_var:
-                    if vars.get(varStr).type not in NUMBERVARS:
-                        Error(106, vars.get(varStr).name).as_string()
-                        
-                    self.calculation += str(vars.get(varStr).value)
-                    varStr, in_var = "", False
+                    try:
+                        if vars.get(varStr).type not in NUMBERVARS:
+                            Error(106, vars.get(varStr).name).as_string()
+                            
+                        self.calculation += str(vars.get(varStr).value)
+                        varStr, in_var = "", False
+                    except Exception as e:
+                        Error(105, varStr).as_string()
                 else:
                     in_var = True
 
@@ -395,7 +398,7 @@ class MathObject:
                 self.calculation += str(vars.get(varStr).value)
                 varStr, in_var = "", False
 
-            elif elem.isalpha(): 
+            elif elem.isalpha() or isinstance(int(elem), int):
                 if in_var: varStr += elem
         
         self.calculate()
@@ -706,10 +709,7 @@ class PredefVar:
         
         file = open(f"lib/{self.fileName}.zpkg", "w")
         json.dump(data, file, indent=4) 
-     
-def afterCodeRun(vars):
-    pass
-    #print(vars["list"].getValue("0"))
+
      
      
         
