@@ -410,7 +410,7 @@ class MathObject:
   
 class Function:
     def __init__(self, name, return_func, call_const = False, function="",  value = 0):
-        return_func_commands = ["RES"]
+        return_func_commands = ["RES", "VC"]
 
         self.name = name
         self.type = Token.FUNC # >> For Consistency
@@ -427,6 +427,11 @@ class Function:
         self.MO_equation = MathObject(name = self.name, equation=function)
         self.MO_equation.prepare(vars=vars)
         
+    def VC(self, variables):
+        Debug(self.name, "VC is called").as_string()
+        self.MO_equation.prepare(vars=variables)
+        self.value = self.MO_equation.value
+
 
     def call(self, vars):
         Debug(self.name, "is called").as_string()
