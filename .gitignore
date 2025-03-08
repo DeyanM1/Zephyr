@@ -9,3 +9,4 @@ test.py
 build/
 main.spec
 ZephyrRun.spec
+/cupy

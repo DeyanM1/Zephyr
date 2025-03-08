@@ -16,4 +16,7 @@
     "zscr",
     "zsrc"
   ],
+  "code-runner.executorMapByGlob": {
+    "*.zph": "python3.13 c:/Users/deyan/OneDrive/Projects/Zephyr/main.py $fileName",
+  },
 }

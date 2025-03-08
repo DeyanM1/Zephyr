@@ -15,8 +15,9 @@ import re
 import importlib
 import json
 import numpy as np
+import sys
 
-int_reg = r"^\d+$"
+INT_REG = r"^\d+$"
 FLOAT_reg = r'^\d+\.\d+$'
 PT_reg = r"^'.*'$"
 
@@ -116,14 +117,12 @@ class Debug:
             print(f"{self.name}: {self.description}")
 
 
-
-
 def checkTypeForValue(type, value):
     match type:
         case "INT" | Token.INT:
             if str(value).startswith(''):
                 return Token.FLOAT
-            if not re.search(int_reg, value):
+            if not re.search(INT_REG, value):
                 return False
             return Token.INT
         case "FLOAT" | Token.FLOAT:
