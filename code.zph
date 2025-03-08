@@ -1,3 +1,16 @@
-a # PT:123;
+~ Das ist ein Kommentar
 
-a ? push:;
+~ Definiere die Variablen
+name # PT:Deyan;
+age # INT:14;
+float # FLOAT:3.14;
+
+
+~ Ändere Typ der Variablen
+age # CT:PT;
+float # CT:PT;
+
+~ Drucke die Werte auf die Kommandozeile
+name ? push:;
+age ? push:;
+float ? push:;

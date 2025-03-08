@@ -1,14 +1,62 @@
 {
-    "0::a # PT:123": {
-        "name": "a",
+    "0::name # PT:Deyan": {
+        "name": "name",
         "base": "#",
         "function": "PT",
         "paramsList": [
-            "123"
+            "Deyan"
         ]
     },
-    "1::a ? push:": {
-        "name": "a",
+    "1::age # INT:14": {
+        "name": "age",
+        "base": "#",
+        "function": "INT",
+        "paramsList": [
+            "14"
+        ]
+    },
+    "2::float # FLOAT:3.14": {
+        "name": "float",
+        "base": "#",
+        "function": "FLOAT",
+        "paramsList": [
+            "3.14"
+        ]
+    },
+    "3::age # CT:PT": {
+        "name": "age",
+        "base": "#",
+        "function": "CT",
+        "paramsList": [
+            "PT"
+        ]
+    },
+    "4::float # CT:PT": {
+        "name": "float",
+        "base": "#",
+        "function": "CT",
+        "paramsList": [
+            "PT"
+        ]
+    },
+    "5::name ? push:": {
+        "name": "name",
+        "base": "?",
+        "function": "push",
+        "paramsList": [
+            ""
+        ]
+    },
+    "6::age ? push:": {
+        "name": "age",
+        "base": "?",
+        "function": "push",
+        "paramsList": [
+            ""
+        ]
+    },
+    "7::float ? push:": {
+        "name": "float",
         "base": "?",
         "function": "push",
         "paramsList": [

@@ -388,5 +388,9 @@ def compile(filename: str, libDirectory: str, fileDirectory: str = ".", measureT
  
 
 if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        FILE_NAME = sys.argv[1]
+    if len(sys.argv) > 2:
+        FILE_DIRECTORY = sys.argv[2]
     lexer(filename=FILE_NAME, fileDirectory=FILE_DIRECTORY)
     compile(filename=FILE_NAME, libDirectory=LIB_DIRECTORY, fileDirectory=FILE_DIRECTORY, measureTime=MEASURE_TIME)
