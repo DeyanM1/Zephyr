@@ -1,0 +1,60 @@
+{
+    "0::rng # RNG:INT|0->20": {
+        "name": "rng",
+        "base": "#",
+        "function": "RNG",
+        "paramsList": [
+            "INT",
+            "0->20"
+        ]
+    },
+    "1::rng2 # RNG:INT|0->20": {
+        "name": "rng2",
+        "base": "#",
+        "function": "RNG",
+        "paramsList": [
+            "INT",
+            "0->20"
+        ]
+    },
+    "2::rng # CT:PT": {
+        "name": "rng",
+        "base": "#",
+        "function": "CT",
+        "paramsList": [
+            "PT"
+        ]
+    },
+    "3::rng ? push:": {
+        "name": "rng",
+        "base": "?",
+        "function": "push",
+        "paramsList": [
+            ""
+        ]
+    },
+    "4::rng2 ? CR:30->40": {
+        "name": "rng2",
+        "base": "?",
+        "function": "CR",
+        "paramsList": [
+            "30->40"
+        ]
+    },
+    "5::rng2 # CT:PT": {
+        "name": "rng2",
+        "base": "#",
+        "function": "CT",
+        "paramsList": [
+            "PT"
+        ]
+    },
+    "6::rng2 ? push:": {
+        "name": "rng2",
+        "base": "?",
+        "function": "push",
+        "paramsList": [
+            ""
+        ]
+    }
+}

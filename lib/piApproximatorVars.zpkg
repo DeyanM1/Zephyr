@@ -1,0 +1,58 @@
+{
+    "pi": {
+        "name": "pi",
+        "type": "FLOAT",
+        "value": "3.1415093063653887",
+        "const": false
+    },
+    "divisor": {
+        "name": "divisor",
+        "type": "FLOAT",
+        "value": "23997.0",
+        "const": false
+    },
+    "four": {
+        "name": "four",
+        "type": "FLOAT",
+        "value": "4.0",
+        "const": false
+    },
+    "two": {
+        "name": "two",
+        "type": "FLOAT",
+        "value": "2.0",
+        "const": false
+    },
+    "iterations": {
+        "name": "iterations",
+        "type": "INT",
+        "value": "6000",
+        "const": false
+    },
+    "iteration": {
+        "name": "iteration",
+        "type": "INT",
+        "value": "6000",
+        "const": false
+    },
+    "iLoopCO": {
+        "name": "iLoopCO",
+        "type": "CO",
+        "value": "~0",
+        "condition": "('iteration' < 'iterations')"
+    },
+    "iLoop": {
+        "name": "iLoop",
+        "type": "LOOP",
+        "startIndex": 7,
+        "endIndex": 18,
+        "CO name": "~1",
+        "infinite": false
+    },
+    "piMO": {
+        "name": "piMO",
+        "type": "PT",
+        "value": "3.1415093063653887",
+        "const": false
+    }
+}

@@ -15,18 +15,18 @@
             "1"
         ]
     },
-    "2::moreMath ? add10:a": {
+    "2::moreMath ? add5:a": {
         "name": "moreMath",
         "base": "?",
-        "function": "add10",
+        "function": "add5",
         "paramsList": [
             "a"
         ]
     },
-    "3::moreMath ? add5:a": {
+    "3::moreMath ? add10:a": {
         "name": "moreMath",
         "base": "?",
-        "function": "add5",
+        "function": "add10",
         "paramsList": [
             "a"
         ]

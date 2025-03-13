@@ -7,12 +7,12 @@
             "0"
         ]
     },
-    "1::n # INT:50": {
+    "1::n # INT:5000000": {
         "name": "n",
         "base": "#",
         "function": "INT",
         "paramsList": [
-            "50"
+            "5000000"
         ]
     },
     "2::one # INT:1": {
@@ -31,12 +31,12 @@
             "2"
         ]
     },
-    "4::MO # MO:(('n'*('n'+'one'))/'two')": {
+    "4::MO # MO:(('n'*('n'+1))/2)": {
         "name": "MO",
         "base": "#",
         "function": "MO",
         "paramsList": [
-            "(('n'*('n'+'one'))/'two')"
+            "(('n'*('n'+1))/2)"
         ]
     },
     "5::MO # CT:PT": {

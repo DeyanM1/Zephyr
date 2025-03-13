@@ -31,12 +31,12 @@
             "2.0"
         ]
     },
-    "4::iterations # INT:50000": {
+    "4::iterations # INT:600000": {
         "name": "iterations",
         "base": "#",
         "function": "INT",
         "paramsList": [
-            "50000"
+            "600000"
         ]
     },
     "5::iteration # INT:1": {

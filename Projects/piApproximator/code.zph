@@ -11,14 +11,14 @@ four # FLOAT:4.0;
 two # FLOAT:2.0;
 
 
-iterations # INT:50000;
+iterations # INT:600000;
 iteration # INT:1;
 
 iLoopCO # CO:('iteration' < 'iterations');
 iLoop # LOOP:iLoopCO;
 
 piMO # MO:;
-    piMO ? ('pi'+'four'/'divisor'-'four'/('divisor'+'two')):;
+    piMO ? ('pi'+4/'divisor'-4/('divisor'+2)):;
 
     pi ? w:'piMO';
 

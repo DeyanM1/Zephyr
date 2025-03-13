@@ -7,12 +7,12 @@
             "HEY"
         ]
     },
-    "1::max # INT:5": {
+    "1::max # INT:6": {
         "name": "max",
         "base": "#",
         "function": "INT",
         "paramsList": [
-            "5"
+            "6"
         ]
     },
     "2::index # INT:1": {

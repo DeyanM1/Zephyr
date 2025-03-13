@@ -1,0 +1,18 @@
+{
+    "0::a # PT:Text1": {
+        "name": "a",
+        "base": "#",
+        "function": "PT",
+        "paramsList": [
+            "Text1"
+        ]
+    },
+    "1::__ ? dumpVars:myVars": {
+        "name": "__",
+        "base": "?",
+        "function": "dumpVars",
+        "paramsList": [
+            "myVars"
+        ]
+    }
+}

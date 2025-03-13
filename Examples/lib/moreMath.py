@@ -1,9 +1,9 @@
 def search(name, base, function, paramsList, vars):
-    match function:
+    match base:
         case "?":
-            match base:
+            match function:
                 case "add5":
-                    vars = add10(vars, vars[paramsList[0]])
+                    vars = add5(vars, vars[paramsList[0]])
                     
                 case "add10":
                     vars = add10(vars, vars[paramsList[0]])
@@ -18,7 +18,7 @@ def add5(vars, var):
 
 def add10(vars, var):
     a = int(var.value)
-    b = a + 5
+    b = a + 10
     var.value = str(b)
     vars.update({var.name: var})
     return vars

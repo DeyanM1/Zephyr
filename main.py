@@ -5,13 +5,21 @@ import json
 
 MEASURE_TIME = False
 
-EXAMPLE_NAMES = ["variables.zph", "buildInFunctions.zph", "list.zph", "MathObject.zph", "function.zph", "conditionalObject.zph", "ifStatement.zph", "ifElseStatement.zph", "loop.zph", "rng.zph", "predefVars1.zph", "predefVars2.zph", "libraris.zph", "libraries.zph"]
-CURRENT_EXAMPLE = 3
 
 LIB_DIRECTORY = "lib"
-FILE_DIRECTORY = "./Examples" # folder in current directory
-#FILE_NAME = "code.zph"
-FILE_NAME = EXAMPLE_NAMES[CURRENT_EXAMPLE-1]
+
+EXAMPLE_NAMES = ["variables.zph", "buildInFunctions.zph", "list.zph", "MathObject.zph", "function.zph", "conditionalObject.zph", "ifStatement.zph", "ifElseStatement.zph", "loop.zph", "rng.zph", "predefVars1.zph", "predefVars2.zph", "libraries.zph"]
+PROJECT_NAMES = ["guessNumber", "piApproximator", "sumCalculator"]
+CURRENT_ELEMENT = 1
+
+
+#FILE_DIRECTORY = "Examples" 
+#FILE_NAME = EXAMPLE_NAMES[CURRENT_ELEMENT-1]
+
+
+#FILE_DIRECTORY = f"Projects/{PROJECT_NAMES[CURRENT_ELEMENT-1]}/" 
+#FILE_NAME = "code"
+
 
 
 def lexer(filename: str, fileDirectory: str = "."):
@@ -375,7 +383,7 @@ def compile(filename: str, libDirectory: str, fileDirectory: str = ".", measureT
     
         elif vars[name].type == Token.Lib:
             vars = vars[name].libObject.search(name=name, base=base, function=function, paramsList=paramsList, vars=vars)
-            print(vars["a"].name, vars["a"].value)
+            #print(vars["a"].name, vars["a"].value)
         else:
             pass
     

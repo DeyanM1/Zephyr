@@ -1,0 +1,18 @@
+{
+    "0::__ ? predefVars:myVars": {
+        "name": "__",
+        "base": "?",
+        "function": "predefVars",
+        "paramsList": [
+            "myVars"
+        ]
+    },
+    "1::a ? push:": {
+        "name": "a",
+        "base": "?",
+        "function": "push",
+        "paramsList": [
+            ""
+        ]
+    }
+}

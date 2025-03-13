@@ -1,17 +1,17 @@
 a # INT:5;
-b # INT:2;
+b # INT:5;
 
 msg1 # PT:SAME OR BIGGER;
-~msg2 # PT:BIGGER;
+msg2 # PT:BIGGER;
 msg3 # PT:FALSE;
 
 
-~condition2 # CO:('a'>'b');
+condition2 # CO:('a'>'b');
 condition # CO:('a'>='b');
 statement # IF:condition|1;
     msg1 ? push:;
-~    statement2 # IF:condition2|1;
-~        msg2 ? push:;
+    statement2 # IF:condition2|1;
+        msg2 ? push:;
     statement2 ? END:;
 statement ? ELSE:1;
     msg2 ? push:;
