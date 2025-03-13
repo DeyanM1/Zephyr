@@ -1,0 +1,9 @@
+rng # RNG:INT|0->20;
+rng2 # RNG:INT|0->20;
+
+rng # CT:PT;
+rng ? push:;
+
+rng2 # CR:30->40;
+rng2 # CT:PT;
+rng2 ? push:;

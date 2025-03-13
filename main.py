@@ -5,11 +5,13 @@ import json
 
 MEASURE_TIME = False
 
+EXAMPLE_NAMES = ["variables.zph", "buildInFunctions.zph", "list.zph", "MathObject.zph", "function.zph", "conditionalObject.zph", "ifStatement.zph", "ifElseStatement.zph", "loop.zph", "rng.zph", "predefVars1.zph", "predefVars2.zph", "libraris.zph", "libraries.zph"]
+CURRENT_EXAMPLE = 3
 
 LIB_DIRECTORY = "lib"
-FILE_DIRECTORY = "./" # folder in current directory
-FILE_NAME = "code.zph"
-
+FILE_DIRECTORY = "./Examples" # folder in current directory
+#FILE_NAME = "code.zph"
+FILE_NAME = EXAMPLE_NAMES[CURRENT_EXAMPLE-1]
 
 
 def lexer(filename: str, fileDirectory: str = "."):

@@ -1,16 +1,19 @@
-~ Das ist ein Kommentar
 
-~ Definiere die Variablen
-name # PT:Deyan;
-age # INT:14;
-float # FLOAT:3.14;
+----------------                            ------------>
+lib/                                                     
+├── code.zpkg  
+└── exampleLibrary.py  
 
 
-~ Ändere Typ der Variablen
-age # CT:PT;
-float # CT:PT;
 
-~ Drucke die Werte auf die Kommandozeile
-name ? push:;
-age ? push:;
-float ? push:;
+lib # LIB:<library file name>;                           
+
+
+
+lib # LIB:maths;
+
+
+myVar # INT:1;
+myLib ? add10:myVar;
+
+

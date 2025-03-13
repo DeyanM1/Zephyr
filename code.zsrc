@@ -1,66 +1,18 @@
 {
-    "0::name # PT:Deyan": {
-        "name": "name",
+    "0::a # PT:Text1": {
+        "name": "a",
         "base": "#",
         "function": "PT",
         "paramsList": [
-            "Deyan"
+            "Text1"
         ]
     },
-    "1::age # INT:14": {
-        "name": "age",
-        "base": "#",
-        "function": "INT",
-        "paramsList": [
-            "14"
-        ]
-    },
-    "2::float # FLOAT:3.14": {
-        "name": "float",
-        "base": "#",
-        "function": "FLOAT",
-        "paramsList": [
-            "3.14"
-        ]
-    },
-    "3::age # CT:PT": {
-        "name": "age",
-        "base": "#",
-        "function": "CT",
-        "paramsList": [
-            "PT"
-        ]
-    },
-    "4::float # CT:PT": {
-        "name": "float",
-        "base": "#",
-        "function": "CT",
-        "paramsList": [
-            "PT"
-        ]
-    },
-    "5::name ? push:": {
-        "name": "name",
+    "1::__ ? dumpVars:myVars": {
+        "name": "__",
         "base": "?",
-        "function": "push",
+        "function": "dumpVars",
         "paramsList": [
-            ""
-        ]
-    },
-    "6::age ? push:": {
-        "name": "age",
-        "base": "?",
-        "function": "push",
-        "paramsList": [
-            ""
-        ]
-    },
-    "7::float ? push:": {
-        "name": "float",
-        "base": "?",
-        "function": "push",
-        "paramsList": [
-            ""
+            "myVars"
         ]
     }
 }

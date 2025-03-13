@@ -1,0 +1,58 @@
+{
+    "0::a # PT:Message1": {
+        "name": "a",
+        "base": "#",
+        "function": "PT",
+        "paramsList": [
+            "Message1"
+        ]
+    },
+    "1::b # PT:Message2": {
+        "name": "b",
+        "base": "#",
+        "function": "PT",
+        "paramsList": [
+            "Message2"
+        ]
+    },
+    "2::c # PT:Message3": {
+        "name": "c",
+        "base": "#",
+        "function": "PT",
+        "paramsList": [
+            "Message3"
+        ]
+    },
+    "3::a ? push:": {
+        "name": "a",
+        "base": "?",
+        "function": "push",
+        "paramsList": [
+            ""
+        ]
+    },
+    "4::__ ? JUMP:7": {
+        "name": "__",
+        "base": "?",
+        "function": "JUMP",
+        "paramsList": [
+            "7"
+        ]
+    },
+    "5::b ? push:": {
+        "name": "b",
+        "base": "?",
+        "function": "push",
+        "paramsList": [
+            ""
+        ]
+    },
+    "6::c ? push:": {
+        "name": "c",
+        "base": "?",
+        "function": "push",
+        "paramsList": [
+            ""
+        ]
+    }
+}
