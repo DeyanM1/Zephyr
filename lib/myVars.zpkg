@@ -1,8 +1,0 @@
-{
-    "a": {
-        "name": "a",
-        "type": "PT",
-        "value": "Text1",
-        "const": false
-    }
-}

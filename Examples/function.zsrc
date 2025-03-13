@@ -32,20 +32,20 @@
             ""
         ]
     },
-    "4::function ? call:": {
-        "name": "function",
-        "base": "?",
-        "function": "call",
-        "paramsList": [
-            ""
-        ]
-    },
-    "5::a ? w:++": {
+    "4::a ? w:++": {
         "name": "a",
         "base": "?",
         "function": "w",
         "paramsList": [
             "++"
+        ]
+    },
+    "5::function ? call:": {
+        "name": "function",
+        "base": "?",
+        "function": "call",
+        "paramsList": [
+            ""
         ]
     },
     "6::function # CT:PT": {

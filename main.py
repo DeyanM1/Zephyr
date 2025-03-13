@@ -10,15 +10,16 @@ LIB_DIRECTORY = "lib"
 
 EXAMPLE_NAMES = ["variables.zph", "buildInFunctions.zph", "list.zph", "MathObject.zph", "function.zph", "conditionalObject.zph", "ifStatement.zph", "ifElseStatement.zph", "loop.zph", "rng.zph", "predefVars1.zph", "predefVars2.zph", "libraries.zph"]
 PROJECT_NAMES = ["guessNumber", "piApproximator", "sumCalculator"]
-CURRENT_ELEMENT = 1
+CURRENT_ELEMENT = 13
 
 
-#FILE_DIRECTORY = "Examples" 
-#FILE_NAME = EXAMPLE_NAMES[CURRENT_ELEMENT-1]
+FILE_DIRECTORY = "Examples" 
+FILE_NAME = EXAMPLE_NAMES[CURRENT_ELEMENT-1]
 
 
 #FILE_DIRECTORY = f"Projects/{PROJECT_NAMES[CURRENT_ELEMENT-1]}/" 
 #FILE_NAME = "code"
+
 
 
 
@@ -104,7 +105,6 @@ def compile(filename: str, libDirectory: str, fileDirectory: str = ".", measureT
     
         
 
-        
         if name == "__":
             match base:
                 case "?":
@@ -114,11 +114,11 @@ def compile(filename: str, libDirectory: str, fileDirectory: str = ".", measureT
                             continue
                         
                         case "predefVars":
-                            var = PredefVar(name, paramsList[0], vars)
+                            var = PredefVar(name, paramsList[0], vars, fileDirectory)
                             vars = var.read()
                         
                         case "dumpVars":
-                            var = PredefVar(name, paramsList[0], vars)
+                            var = PredefVar(name, paramsList[0], vars, fileDirectory)
                             var.dump()
 
 

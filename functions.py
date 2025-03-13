@@ -658,16 +658,18 @@ class RNG:
 
     
 class PredefVar:
-    def __init__(self, name, fileName, vars):
+    def __init__(self, name, fileName, vars, fileDirectory):
         self.name = name
         self.type = Token.PredefVar
         
         self.fileName = fileName
+        self.fileDirectory = fileDirectory
         self.vars = vars
         
     
     def read(self):
-        with open(f"lib/{self.fileName}.zpkg", "r") as file:
+        
+        with open(f"{self.fileDirectory}/lib/{self.fileName}.zpkg", "r") as file:
             data = json.load(file)
             for var in data:
                 self.compile(data[var])
@@ -709,9 +711,10 @@ class PredefVar:
             dump = var.dumpConfig
             
             data[name] = dump
-            
         
-        file = open(f"lib/{self.fileName}.zpkg", "w")
+        
+        file = open(f"{self.fileDirectory}/lib/{self.fileName}.zpkg", "w")
+        print(f"{self.fileDirectory}/lib/{self.fileName}.zpkg")
         json.dump(data, file, indent=4) 
 
      

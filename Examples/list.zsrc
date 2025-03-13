@@ -1,99 +1,51 @@
 {
-    "0::list # LIST:INT": {
-        "name": "list",
+    "0::myList # LIST:INT": {
+        "name": "myList",
         "base": "#",
         "function": "LIST",
         "paramsList": [
             "INT"
         ]
     },
-    "1::currentIndex # INT:1": {
-        "name": "currentIndex",
-        "base": "#",
-        "function": "INT",
-        "paramsList": [
-            "1"
-        ]
-    },
-    "2::maxIndex # INT:10": {
-        "name": "maxIndex",
-        "base": "#",
-        "function": "INT",
-        "paramsList": [
-            "10"
-        ]
-    },
-    "3::condition # CO:('currentIndex'<='maxIndex')": {
-        "name": "condition",
-        "base": "#",
-        "function": "CO",
-        "paramsList": [
-            "('currentIndex'<='maxIndex')"
-        ]
-    },
-    "4::LOOP # LOOP:condition": {
-        "name": "LOOP",
-        "base": "#",
-        "function": "LOOP",
-        "paramsList": [
-            "condition"
-        ]
-    },
-    "5::list ? SET:'currentIndex'|99": {
-        "name": "list",
+    "1::myList ? SET:2|5": {
+        "name": "myList",
         "base": "?",
         "function": "SET",
         "paramsList": [
-            "'currentIndex'",
-            "99"
+            "2",
+            "5"
         ]
     },
-    "6::currentIndex ? w:++": {
-        "name": "currentIndex",
-        "base": "?",
-        "function": "w",
-        "paramsList": [
-            "++"
-        ]
-    },
-    "7::LOOP ? END:": {
-        "name": "LOOP",
-        "base": "?",
-        "function": "END",
-        "paramsList": [
-            ""
-        ]
-    },
-    "8::number # INT:3": {
-        "name": "number",
+    "2::myNum # INT:0": {
+        "name": "myNum",
         "base": "#",
         "function": "INT",
         "paramsList": [
-            "3"
+            "0"
         ]
     },
-    "9::string # PT:'list<4>'": {
-        "name": "string",
-        "base": "#",
-        "function": "PT",
+    "3::myNum ? w:'myList<2>'": {
+        "name": "myNum",
+        "base": "?",
+        "function": "w",
         "paramsList": [
-            "'list<4>'"
+            "'myList<2>'"
         ]
     },
-    "10::string ? push:": {
-        "name": "string",
+    "4::myNum # CT:PT": {
+        "name": "myNum",
+        "base": "#",
+        "function": "CT",
+        "paramsList": [
+            "PT"
+        ]
+    },
+    "5::myNum ? push:": {
+        "name": "myNum",
         "base": "?",
         "function": "push",
         "paramsList": [
             ""
-        ]
-    },
-    "11::__ ? dumpVars:listVars": {
-        "name": "__",
-        "base": "?",
-        "function": "dumpVars",
-        "paramsList": [
-            "listVars"
         ]
     }
 }

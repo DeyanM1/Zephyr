@@ -1,25 +1,11 @@
-list # LIST:INT;
+myList # LIST:INT;
+myList ? SET:2|5;
 
-currentIndex # INT:1;
-maxIndex # INT:10;
+myNum # INT:0;
+myNum ? w:'myList<2>';
 
-condition # CO:('currentIndex'<='maxIndex');
-LOOP # LOOP:condition;
-
-list ? SET:'currentIndex'|99;
-
-
-currentIndex ? w:++;
-
-LOOP ? END:;
+myNum # CT:PT;
+myNum ? push:;
 
 
-number # INT:3;
-string # PT:'list<4>';
-
-string ? push:;
-
-
-
-
-__ ? dumpVars:listVars;
+~__ ? dumpVars:listVars;

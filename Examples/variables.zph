@@ -1,6 +1,6 @@
-string # PT:Hello, World;
-number # INT:5;
-decimal # FLOAT:5.3;
+string # PT:Hallo;
+number # INT:55;
+decimal # FLOAT:3.14;
 
 
 string ? push:;
@@ -10,3 +10,11 @@ number ? push:;
 
 decimal # CT:PT;
 decimal ? push:;
+
+
+
+number # CT:INT;
+number ? w:++;
+
+number # CT:PT;
+number ? push:;

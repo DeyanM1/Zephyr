@@ -3,14 +3,17 @@ b # INT:6;
 
 function # FUNC:RES|~1;
 function ? ('a'+'b'):;
-function ? call:;
 
 a ? w:++;
+
+function ? call:;
+
 
 function # CT:PT;
 function ? push:;
 
 
+~ No Variable change
 
 function2 # FUNC:RES|~0;
 function2 ? ('a'+'b'):;

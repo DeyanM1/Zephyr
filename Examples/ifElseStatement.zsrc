@@ -39,15 +39,7 @@
             "FALSE"
         ]
     },
-    "5::condition2 # CO:('a'>'b')": {
-        "name": "condition2",
-        "base": "#",
-        "function": "CO",
-        "paramsList": [
-            "('a'>'b')"
-        ]
-    },
-    "6::condition # CO:('a'>='b')": {
+    "5::condition # CO:('a'>='b')": {
         "name": "condition",
         "base": "#",
         "function": "CO",
@@ -55,7 +47,7 @@
             "('a'>='b')"
         ]
     },
-    "7::statement # IF:condition|1": {
+    "6::statement # IF:condition|1": {
         "name": "statement",
         "base": "#",
         "function": "IF",
@@ -64,7 +56,7 @@
             "1"
         ]
     },
-    "8::msg1 ? push:": {
+    "7::msg1 ? push:": {
         "name": "msg1",
         "base": "?",
         "function": "push",
@@ -72,32 +64,7 @@
             ""
         ]
     },
-    "9::statement2 # IF:condition2|1": {
-        "name": "statement2",
-        "base": "#",
-        "function": "IF",
-        "paramsList": [
-            "condition2",
-            "1"
-        ]
-    },
-    "10::msg2 ? push:": {
-        "name": "msg2",
-        "base": "?",
-        "function": "push",
-        "paramsList": [
-            ""
-        ]
-    },
-    "11::statement2 ? END:": {
-        "name": "statement2",
-        "base": "?",
-        "function": "END",
-        "paramsList": [
-            ""
-        ]
-    },
-    "12::statement ? ELSE:1": {
+    "8::statement ? ELSE:1": {
         "name": "statement",
         "base": "?",
         "function": "ELSE",
@@ -105,7 +72,7 @@
             "1"
         ]
     },
-    "13::msg2 ? push:": {
+    "9::msg2 ? push:": {
         "name": "msg2",
         "base": "?",
         "function": "push",
@@ -113,7 +80,7 @@
             ""
         ]
     },
-    "14::statement ? END:": {
+    "10::statement ? END:": {
         "name": "statement",
         "base": "?",
         "function": "END",

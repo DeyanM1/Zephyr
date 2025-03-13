@@ -1,14 +1,9 @@
-text # PT:HEY;
+a # INT:5;
+b # INT:1;
 
-max # INT:6;
-index # INT:1;
-
-
-co # CO:('index'<='max');
-loop # LOOP:co;
-
-
-text ? push:;
-index ? w:++;
-
+message # PT:Condition True;
+condition # CO:('a'>='b');
+loop # LOOP:condition;
+    message ? push:;
+    b ? w:++;
 loop ? END:;

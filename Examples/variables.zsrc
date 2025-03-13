@@ -1,26 +1,26 @@
 {
-    "0::string # PT:Hello, World": {
+    "0::string # PT:Hallo": {
         "name": "string",
         "base": "#",
         "function": "PT",
         "paramsList": [
-            "Hello, World"
+            "Hallo"
         ]
     },
-    "1::number # INT:5": {
+    "1::number # INT:55": {
         "name": "number",
         "base": "#",
         "function": "INT",
         "paramsList": [
-            "5"
+            "55"
         ]
     },
-    "2::decimal # FLOAT:5.3": {
+    "2::decimal # FLOAT:3.14": {
         "name": "decimal",
         "base": "#",
         "function": "FLOAT",
         "paramsList": [
-            "5.3"
+            "3.14"
         ]
     },
     "3::string ? push:": {
@@ -57,6 +57,38 @@
     },
     "7::decimal ? push:": {
         "name": "decimal",
+        "base": "?",
+        "function": "push",
+        "paramsList": [
+            ""
+        ]
+    },
+    "8::number # CT:INT": {
+        "name": "number",
+        "base": "#",
+        "function": "CT",
+        "paramsList": [
+            "INT"
+        ]
+    },
+    "9::number ? w:++": {
+        "name": "number",
+        "base": "?",
+        "function": "w",
+        "paramsList": [
+            "++"
+        ]
+    },
+    "10::number # CT:PT": {
+        "name": "number",
+        "base": "#",
+        "function": "CT",
+        "paramsList": [
+            "PT"
+        ]
+    },
+    "11::number ? push:": {
+        "name": "number",
         "base": "?",
         "function": "push",
         "paramsList": [
