@@ -40,15 +40,7 @@
             "Enter Guess> "
         ]
     },
-    "5::looseMessage # PT:Sorry, wrong number, try again!": {
-        "name": "looseMessage",
-        "base": "#",
-        "function": "PT",
-        "paramsList": [
-            "Sorry, wrong number, try again!"
-        ]
-    },
-    "6::winMessage # PT:Congratulations, you won! With tries> ": {
+    "5::winMessage # PT:Congratulations, you won! With tries> ": {
         "name": "winMessage",
         "base": "#",
         "function": "PT",
@@ -56,7 +48,56 @@
             "Congratulations, you won! With tries> "
         ]
     },
-    "7::mainCondition # CO:('number'!='guess')": {
+    "6::higherMessage # PT:The Number is higher! try again!": {
+        "name": "higherMessage",
+        "base": "#",
+        "function": "PT",
+        "paramsList": [
+            "The Number is higher! try again!"
+        ]
+    },
+    "7::lowerMessage # PT:The Number is lower! try again!": {
+        "name": "lowerMessage",
+        "base": "#",
+        "function": "PT",
+        "paramsList": [
+            "The Number is lower! try again!"
+        ]
+    },
+    "8::winCO # CO:('number'=='guess')": {
+        "name": "winCO",
+        "base": "#",
+        "function": "CO",
+        "paramsList": [
+            "('number'=='guess')"
+        ]
+    },
+    "9::winIF # IF:winCO|1": {
+        "name": "winIF",
+        "base": "#",
+        "function": "IF",
+        "paramsList": [
+            "winCO",
+            "1"
+        ]
+    },
+    "10::__ ? JUMP:24": {
+        "name": "__",
+        "base": "?",
+        "function": "JUMP",
+        "paramsList": [
+            "24"
+        ]
+    },
+    "11::winIF ? END:": {
+        "name": "winIF",
+        "base": "?",
+        "function": "END",
+        "paramsList": [
+            ""
+        ]
+    },
+    "12::mainCondition # CO:('number'!='guess')": {
         "name": "mainCondition",
         "base": "#",
         "function": "CO",
@@ -64,7 +105,7 @@
             "('number'!='guess')"
         ]
     },
-    "8::LOOP # LOOP:mainCondition": {
+    "13::LOOP # LOOP:mainCondition": {
         "name": "LOOP",
         "base": "#",
         "function": "LOOP",
@@ -72,15 +113,56 @@
             "mainCondition"
         ]
     },
-    "9::looseMessage ? push:": {
-        "name": "looseMessage",
+    "14::higherCondition # CO:('number'>'guess')": {
+        "name": "higherCondition",
+        "base": "#",
+        "function": "CO",
+        "paramsList": [
+            "('number'>'guess')"
+        ]
+    },
+    "15::higherIF # IF:higherCondition|1": {
+        "name": "higherIF",
+        "base": "#",
+        "function": "IF",
+        "paramsList": [
+            "higherCondition",
+            "1"
+        ]
+    },
+    "16::higherMessage ? push:": {
+        "name": "higherMessage",
         "base": "?",
         "function": "push",
         "paramsList": [
             ""
         ]
     },
-    "10::tries ? w:++": {
+    "17::higherIF ? ELSE:1": {
+        "name": "higherIF",
+        "base": "?",
+        "function": "ELSE",
+        "paramsList": [
+            "1"
+        ]
+    },
+    "18::lowerMessage ? push:": {
+        "name": "lowerMessage",
+        "base": "?",
+        "function": "push",
+        "paramsList": [
+            ""
+        ]
+    },
+    "19::higherIF ? END:": {
+        "name": "higherIF",
+        "base": "?",
+        "function": "END",
+        "paramsList": [
+            ""
+        ]
+    },
+    "20::tries ? w:++": {
         "name": "tries",
         "base": "?",
         "function": "w",
@@ -88,7 +170,7 @@
             "++"
         ]
     },
-    "11::guess ? INPUT:Enter Guess> ": {
+    "21::guess ? INPUT:Enter Guess> ": {
         "name": "guess",
         "base": "?",
         "function": "INPUT",
@@ -96,7 +178,7 @@
             "Enter Guess> "
         ]
     },
-    "12::LOOP ? END:": {
+    "22::LOOP ? END:": {
         "name": "LOOP",
         "base": "?",
         "function": "END",
@@ -104,7 +186,7 @@
             ""
         ]
     },
-    "13::tries ? w:++": {
+    "23::tries ? w:++": {
         "name": "tries",
         "base": "?",
         "function": "w",
@@ -112,15 +194,7 @@
             "++"
         ]
     },
-    "14::mainCondition # CT:PT": {
-        "name": "mainCondition",
-        "base": "#",
-        "function": "CT",
-        "paramsList": [
-            "PT"
-        ]
-    },
-    "15::winMessage ? push:": {
+    "24::winMessage ? push:": {
         "name": "winMessage",
         "base": "?",
         "function": "push",
@@ -128,7 +202,7 @@
             ""
         ]
     },
-    "16::tries # CT:PT": {
+    "25::tries # CT:PT": {
         "name": "tries",
         "base": "#",
         "function": "CT",
@@ -136,7 +210,7 @@
             "PT"
         ]
     },
-    "17::tries ? push:": {
+    "26::tries ? push:": {
         "name": "tries",
         "base": "?",
         "function": "push",
