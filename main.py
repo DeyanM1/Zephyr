@@ -9,16 +9,16 @@ MEASURE_TIME = False
 LIB_DIRECTORY = "lib"
 
 EXAMPLE_NAMES = ["variables.zph", "buildInFunctions.zph", "list.zph", "MathObject.zph", "function.zph", "conditionalObject.zph", "ifStatement.zph", "ifElseStatement.zph", "loop.zph", "rng.zph", "predefVars1.zph", "predefVars2.zph", "libraries.zph"]
-PROJECT_NAMES = ["guessNumber", "piApproximator", "sumCalculator"]
-CURRENT_ELEMENT = 13
+PROJECT_NAMES = ["sumCalculator", "guessNumber", "piApproximator"]
+CURRENT_ELEMENT = 2     
 
 
-FILE_DIRECTORY = "Examples" 
-FILE_NAME = EXAMPLE_NAMES[CURRENT_ELEMENT-1]
+#FILE_DIRECTORY = "Examples" 
+#FILE_NAME = EXAMPLE_NAMES[CURRENT_ELEMENT-1]
 
 
-#FILE_DIRECTORY = f"Projects/{PROJECT_NAMES[CURRENT_ELEMENT-1]}/" 
-#FILE_NAME = "code"
+FILE_DIRECTORY = f"Projects/{PROJECT_NAMES[CURRENT_ELEMENT-1]}/" 
+FILE_NAME = "code.zph"
 
 
 
@@ -38,7 +38,7 @@ def lexer(filename: str, fileDirectory: str = "."):
     bannedChars = ["\n", "\r", "\t"]
     with open(f"{fileDirectory}/{filename}.zph", 'r') as file:
         for line in file:
-            line = line.lstrip()    # remove spaces from start
+            line = line.lstrip().rstrip()    # remove spaces from start
             if line.startswith("~"):
                 continue
             for char in line:
@@ -395,7 +395,6 @@ def compile(filename: str, libDirectory: str, fileDirectory: str = ".", measureT
         
     
 
- 
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:

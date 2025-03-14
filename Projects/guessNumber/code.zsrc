@@ -1,11 +1,11 @@
 {
-    "0::number # RNG:INT|1->9": {
+    "0::number # RNG:INT|1->10": {
         "name": "number",
         "base": "#",
         "function": "RNG",
         "paramsList": [
             "INT",
-            "1->9"
+            "1->10"
         ]
     },
     "1::number # CT:INT": {

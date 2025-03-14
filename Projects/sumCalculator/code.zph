@@ -1,7 +1,7 @@
 sum # INT:0;
 n # INT:5000000;
 
-
+                            
 MO # MO:(('n'*('n'+1))/2);
 
 MO # CT:PT;

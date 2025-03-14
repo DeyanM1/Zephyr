@@ -71,10 +71,10 @@
             ""
         ]
     },
-    "9::piMO ? ('pi'+'four'/'divisor'-'four'/('divisor'+'two')):": {
+    "9::piMO ? ('pi'+4/'divisor'-4/('divisor'+2)):": {
         "name": "piMO",
         "base": "?",
-        "function": "('pi'+'four'/'divisor'-'four'/('divisor'+'two'))",
+        "function": "('pi'+4/'divisor'-4/('divisor'+2))",
         "paramsList": [
             ""
         ]

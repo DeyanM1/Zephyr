@@ -4,11 +4,7 @@
 
 
 pi # FLOAT:0.0;
-divisor # FLOAT:1.0;
-
-
-four # FLOAT:4.0;
-two # FLOAT:2.0;
+divisor # FLOAT:1.0;                                         
 
 
 iterations # INT:600000;

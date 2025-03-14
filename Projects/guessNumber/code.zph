@@ -1,4 +1,4 @@
-number # RNG:INT|1->9;
+number # RNG:INT|1->10;
 number # CT:INT;
 
 tries # INT:0;
