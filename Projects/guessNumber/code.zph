@@ -5,18 +5,15 @@ tries # INT:0;
 guess # INT:0;
 guess ? INPUT:Enter Guess> ;
 
-
 winMessage # PT:Congratulations, you won! With tries> ;
 
 higherMessage # PT:The Number is higher! try again!;
 lowerMessage # PT:The Number is lower! try again!;                                                          
 
-
 winCO # CO:('number'=='guess');
 winIF # IF:winCO|1;
     __ ? JUMP:24;
 winIF ? END:;
-
 
 mainCondition # CO:('number'!='guess');
 LOOP # LOOP:mainCondition;
@@ -27,7 +24,6 @@ LOOP # LOOP:mainCondition;
     higherIF ? ELSE:1;
         lowerMessage ? push:;
     higherIF ? END:;
-
 
     tries ? w:++;
 
