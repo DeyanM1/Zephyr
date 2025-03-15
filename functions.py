@@ -1,281 +1,214 @@
-"""
-Done Var dumping: Variable, MO, CO, LOOP, LIB, RNG
-TODO: FUNCTION
-
-DONE Var Reading: Variable, MO, CO, LOOP, LIB, RNG, 
-TODO: FUNCTION
-
-TODO:
-- Better Error Messages
-- Better Structure
-"""
-
-
 import re
-import importlib
 import json
 import numpy as np
-import sys
 
-INT_REG = r"^\d+$"
+INT_reg = r"^\d+$"
 FLOAT_reg = r'^\d+\.\d+$'
 PT_reg = r"^'.*'$"
 
-DEBUG = False
-
-global DIGITS; DIGITS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
-global TYPES; TYPES = ["INT", "FLOAT", "PT", "LIST", "ALIST","MO", "FUNC", "LOOP", "CO", "IF", "LIB", "RNG", "PredefVar"]
-global BOOL; BOOL = ["~1", "~0"]
-global CONDITIONS; CONDITIONS = [">", "<", "==", "!=", ">=", "<="]
-global TRANSLATE_BOOL; TRANSLATE_BOOL = {"~1":"True", "~0":"False"}
-
-global TRANSLATE_BOOL_TO_JSON; TRANSLATE_BOOL_TO_JSON = {"True":"true", "False":"false"}
 
 
+TYPES = ["PT", "INT", "FLOAT", "LIST", "MO", "FUNC", "CO", "IF", "LOOP", "RNG", "PredefVar"]
+DIGITS = "123456789"
 
-class Token:
-    def __init__(self, type_):
-        self.type = assignType(type_) if assignType(type_) else Error(105, type_).as_string()
-        self.value = None
-    
-    def __repr__(self):
-        if self.value: return f'{self.type}:{self.value}'
-        return f'{self.type}'
-    
-    def INT(self):
-        return self.type
-    
-    def FLOAT(self):
-        return self.type
+RETURN_FUNCION_COMMANDS = ["RES", "VC"]
+RANDOM_NUMBER_TYPES = ["INT"]
 
-    def PT(self):
-        return self.type
-
-    def LIST(self):
-        return self.type
-    
-    def ALIST(self):
-        return self.type
-    
-    def MO(self):
-        return self.type
-    
-    def CO(self):
-        return self.type
-    
-    def IF(self):
-        return self.type
-    
-    def FUNC(self):
-        return self.type
-
-    def LOOP(self):
-        return self.type
-    
-    def Lib(self):
-        return self.type
-    
-    def RNG(self):
-        return self.type
-     
-    def PredefVar(self):
-        return self.type
-     
-global TRANSLATE_TOKEN_TO_STR; TRANSLATE_TOKEN_TO_STR = {Token.INT: "INT", Token.PT: "PT", Token.FLOAT: "FLOAT", Token.LIST: "LIST", Token.ALIST: "ALIST", Token.MO: "MO", Token.FUNC: "FUNC", Token.LOOP: "LOOP", Token.CO: "CO", Token.Lib: "Lib", Token.RNG: "RNG", Token.PredefVar: "PredefVar"}
-global NUMBERVARS; NUMBERVARS = [Token.INT, Token.FLOAT, Token.LIST]
-global VAR_TYPES; VAR_TYPES = [Token.INT, "INT", Token.FLOAT, "FLOAT", Token.PT, "PT"]
-
-class Error:
-    def __init__(self, exception_code:int, details):
-        self.exception_code = exception_code
-        self.details = details
-    
-    def as_string(self):
-        match self.exception_code:
-            case 101: print("ERROR: Value not accepted | Variable: %s" % self.details)
-            case 102: print("ERROR: Variable is constant | Variable: %s" % self.details)
-            case 103: print("ERROR: Result Variable must be int or float | Variable: %s" % self.details)
-            case 104: print("ERROR: Value not a printable Text | Value: %s" % self.details)
-            case 105: print("ERROR: Unknown variable | Variable: %s" % self.details)
-            case 106: print("ERROR: Variable type not supported | Value: %s" % self.details)
-            case 107: print("ERROR: Variable Value inappropriate for changing to: |  %s" % self.details)
-            case 201: print("ERROR: Unknown Function | Name: %s" % self.details)
-            case 301: print("ERROR: No Digits in Math equations | Value: %s" % self.details)
-            case 401: print("ERROR: Unknown Return function | Function: %s" % self.details)
-            case 501: print(f"ERROR: Type {self.details[0]} has no function: {self.details[1]}")
-            case 601: print(f"ERROR: Unknown library name: {self.details[0]} in variable: {self.details[1]}")
-            case 701: print(f"ERROR: RNG range not accepted: {self.details[0]} in variable: {self.details[1]}")
-        quit()
-
-class Debug:
-    def __init__(self, name, description):
-        self.name = name
-        self.description = description
-    
-    def as_string(self):
-        if DEBUG:
-            print(f"{self.name}: {self.description}")
+BOOL_TRANSFORM = {"~0": False, "~1": True}
 
 
-def checkTypeForValue(type, value):
+
+def checkValueForType(value, type):
+    """
+    This function checks if a value can be set to a specific type
+    """
+    
     match type:
-        case "INT" | Token.INT:
-            if str(value).startswith(''):
-                return Token.FLOAT
-            if not re.search(INT_REG, value):
-                return False
-            return Token.INT
-        case "FLOAT" | Token.FLOAT:
-            if value.startswith(''):
-                return Token.FLOAT
-            if not re.search(FLOAT_reg, value):
-                return False
-            return Token.FLOAT
-        case "PT" | Token.PT:
-            if str(value).startswith(''):
-                return Token.FLOAT
-            return Token.PT
-        case _:
-            return False
-        
-def checkVariableExistence(vars, name):
-    if name not in vars.keys():
-        Error(105, name).as_string()
-
-def assignType(type):
-    match type:
-        case "INT": return Token.INT
-        case "FLOAT": return Token.FLOAT
-        case "PT": return Token.PT
-
-def changeType(var, vars, newType):
-    checkVariableExistence(vars, var.name)
-
-    if not newType in TYPES: # NOT A Real type
-        Error(106, newType).as_string() 
-
-    if var.const: # Check if variable is constant
-        Error(102, var.name).as_string()
-
-    if var.type == Token.MO or var.type == Token.FUNC:
-        Debug(var.name, f"{var.type} set to: {newType}").as_string()
-        vars.update({var.name: Variable(name=var.name, type=newType, value=var.value, vars=vars, const=var.const)})
+        case "PT":
+            return value
+        case "INT":
+            if re.search(INT_reg, value) != None:
+                return value
+        case "FLOAT":
+            if re.search(FLOAT_reg, value):
+                return value
     
-    if var.type == Token.RNG:
-        vars.update({var.name: Variable(name=var.name, type=newType, value=var.value, vars=vars, const=var.const)})
-        
-    if var.type == Token.CO:
-        vars.update({var.name: Variable(name=var.name, type=newType, value=var.value, vars=vars, const=var.const)})
-        
-    elif checkTypeForValue(newType, var.value):
-        Debug(var.name, f"{var.type} set to: {newType}").as_string()
-        var.type = assignType(newType) 
-    else:
-        Error(107, newType).as_string()
-
-    return vars
+    return False
 
 
+def changeType(name, newType, variables):
+    match variables[name].type:
+        case "MO"|"FUNC"|"CO"|"RNG":
+            compatibleTypes = ["PT", "INT", "FLOAT"]
+            if newType not in compatibleTypes:
+                print(f"ERROR: {variables[name].name} CT -> new Type not supported   | {variables[name].name} {variables[name].base} {variables[name].function} ")        # ERROR-MESSAGE-HERE
+                quit()
+                
+            var = Variable(variables[name].name, variables[name].base, newType, [variables[name].value, False], variables)
+            variables.update({variables[name].name: var})
+    
+    return variables
+    
+    
 
-
-
+    
 
 
 class Variable:
-    def __init__(self, name, type, value, vars, const = False):
-        value = str(value)
-        self.dumpConfig = {}
-          
+    def __init__(self, name, base, function, paramsList, variables):
+        self.const = paramsList[1] if len(paramsList) < 1 else False
         self.name = name
-        self.type = assignType(type) if checkTypeForValue(type, str(value)) else Error(101, self.name).as_string()
-        self.const = const
-        self.value = ""
-        self.changeValue(str(value), vars)
+        self.type = function
+        self.value = None
         
-    
-    def getType(self):
-        return self.type
+        self.base = base    # FOR ERRORS
+        self.function = function    # FOR ERRORS
+        
+        self.write(paramsList[0], variables)
+        
+        self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "const: ": self.const}
+        
+        
+    def matchFunction(self, base, function, paramsList, variables):
+        self.base = base
+        self.function = function
+        
+        match base:
+            case "#":
+                match function:
+                    case "CT":
+                        self.changeType(paramsList[0])
+                    case _:
+                        print(f"ERROR: {self.name} has no function # {function}! ({self.type})   | {self.name} {self.base} {self.function}")
+                        quit()
+            case "?":
+                match function:
+                    case "push":
+                        self.push()
+                    
+                    case "INPUT":
+                        self.INPUT(paramsList[0])
+                        
+                    case "w":
+                        self.write(paramsList[0], variables)
+                    case _:
+                        print(f"ERROR: {self.name} has no function ? {function}! ({self.type})   | {self.name} {self.base} {self.function}")
+                        quit()
+       
+    def changeType(self, newType):
+        compatibleTypes = ["PT", "INT", "FLOAT"]
 
-    def changeValue(self, value, vars):
+        if newType not in compatibleTypes:
+            print(f"ERROR: {self.name} CT -> new Type not supported   | {self.name} {self.base} {self.function} ")        # ERROR-MESSAGE-HERE
+            quit()
+   
+        if checkValueForType(self.value, newType) == False:
+            print(f"ERROR: {self.name} CT -> Current Value no compatible with new Type!   | {self.name} {self.base} {self.function} ")        # ERROR-MESSAGE-HERE
+            quit()
+        self.type = newType
+            
+    def push(self):
+        if self.type == "PT":
+            print(f"PUSH: {self.value}")
+        else:
+            print(f"ERROR: {self.name} -> Only type 'PT' is pushable!   | {self.name} {self.base} {self.function} ")        # ERROR-MESSAGE-HERE
+            quit()
+ 
+    def write(self, newValue, variables):
+        newValue = str(newValue)
         if self.const:
             return False
-        if value.startswith("'"):
-            var = value.replace("'", "")
+        
+        if newValue.startswith("'"):
+            var = newValue.replace("'", "")
             if "<" in var and ">" in var:
                 varName, varIndex = var.split("<")
                 varIndex = varIndex.replace(">", "")
-                if vars[varName].type != Token.LIST:
-                    print(f"ERROR: unexpected positional value '{varIndex}' in {varName}")
+                if variables[varName].type != "LIST":
+                    print(f"ERROR: {self.name} w -> Unexpected positional value! {varIndex} in {varName}  | {self.name} {self.base} {self.function} ")        # ERROR-MESSAGE-HERE
                     quit()
-                    
-                self.value = str(vars[varName].getValue(varIndex))
-            else:
-                self.value = str(vars.get(var).value)
-
-            
-        
-        elif value == "++":
-            match self.type:
-                case Token.INT:
-                    self.value = str(int(self.value) + 1)
-                case Token.FLOAT:
-                    self.value = str(float(self.value) + 1.0)
-                case Token.PT:
-                    self.value = self.value + self.value
-        elif value == "++":
-            match self.type:
-                case Token.INT:
-                    self.value = str(int(self.value) - 1)
-                case Token.FLOAT:
-                    self.value = str(float(self.value) - 1.0)
-
                 
-        else:  
-            if checkTypeForValue(self.type, value):
-                self.value = value
+                self.value = str(variables[varName].getValue(varIndex, variables))
+                self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "const: ": self.const}
             else:
-                Error(101, self.name).as_string()	
-
-
-        self.dumpConfig = {"name": self.name, "type": TRANSLATE_TOKEN_TO_STR[self.type], "value": self.value, "const": self.const}
-        return True
-
-    def push(self):
-        print("PUSH: ", self.value)
-    
-    def setValueByInput(self, text, vars):
-        value = input(text)
-        self.changeValue(value, vars)
-
-
-class List:
-    def __init__(self, name, elementsType, data=None):
-        self.name = name
-        self.type = Token.LIST
+                self.value = str(variables.get(var).value)
+                self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "const: ": self.const}
         
-        self.elementsType = assignType(elementsType) 
+        elif newValue == "++":
+            match self.type:
+                case "INT":
+                    self.value = str(int(self.value) + 1)
+                case "FLOAT":
+                    self.value = str(float(self.value) + 1.0)
+                case "PT":
+                    self.value = self.value + self.value
+            self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "const: ": self.const}
+
+        elif newValue == "--":
+            match self.type:
+                case "INT":
+                    self.value = str(int(self.value) - 1)
+                case "FLOAT":
+                    self.value = str(float(self.value) - 1.0)
+            self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "const: ": self.const}
+
+        
+        else:  
+            if checkValueForType(newValue, self.type) != False:
+                self.value = newValue
+                self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "const: ": self.const}
+
+            else:
+                print(f"ERROR: {self.name} -> new Value incompatible with type ({self.type})!   | {self.name} {self.base} {self.function} ")        # ERROR-MESSAGE-HERE
+                quit()
+
+    def INPUT(self, message):
+        value = input(message)
+        self.write(value)
+          
+class List:
+    def __init__(self, name, base, function, paramsList, variables):
+        self.name = name
+        self.type = function
+        
+        self.elementsType = paramsList[0]
         
         self.data = []
         self.negData = []
         
-        if data:
-            dataToAdd = data.split(",")
+        if len(paramsList) > 1:
+            dataToAdd = paramsList[1].split(",")
             for pos in range(0, len(dataToAdd)):
-                    self.set(pos, dataToAdd[pos])
+                self.setValue(pos+1, dataToAdd[pos], variables)
         
+        self.dumpConfig = {"name": self.name, "type": self.type, "elementsType": self.elementsType, "data": self.data, "negData: ": self.negData}
+
+
+    def matchFunction(self, base, function, paramsList, variables):
+        self.base = base
+        self.function = function
         
-        self.dumpConfig = {
-            "name": self.name, "type": TRANSLATE_TOKEN_TO_STR[self.type], "elementsType": TRANSLATE_TOKEN_TO_STR[self.elementsType], "data": self.data, "negData": self.negData
-        }
-        
-        
-    def set(self, pos, value, vars):
-        # Position is the element index, not the corresponding position! (pos = realPosition-1)
-        if checkTypeForValue(self.elementsType, value):
+        match base:
+            case "#":
+                match function:
+                    case _:
+                        print(f"ERROR: {self.name} has no function # {function}! ({self.type})   | {self.name} {self.base} {self.function}")
+                        quit()
+            case "?":
+                match function:
+                    case "SET":
+                        self.setValue(paramsList[0], paramsList[1], variables)
+                    case _:
+                        print(f"ERROR: {self.name} has no function ? {function}! ({self.type})   | {self.name} {self.base} {self.function}")
+                        quit()
+
+    def setValue(self, pos, value, variables):
+        pos = str(pos)
+        if checkValueForType(value, self.elementsType) != False:
             if pos.startswith("'"):
                 try:
                     name = pos.replace("'", "")
-                    posVar = vars[name]
+                    posVar = variables[name]
                     pos = int(posVar.value)
                 except Exception as e:
                     print(f"ERROR: Position variable {name} not found!")
@@ -284,8 +217,7 @@ class List:
                 pos = int(pos)
             
             pos = int(pos)
-            
-            Debug(self.name, f"set({pos}, {value})").as_string()
+
             
             if int(pos) == 0:
                 print("ERROR: Invalid position!")
@@ -306,14 +238,15 @@ class List:
                 else:
                     self.negData.extend([None] * (pos - len(self.negData) + 1))
                     self.negData[pos] = value
-            
-    def getValue(self, pos):
-        
-        # Position is the element index, not the corresponding position! (pos = realPosition-1)
+    
+        self.dumpConfig = {"name": self.name, "type": self.type, "elementsType": self.elementsType, "data": self.data, "negData: ": self.negData}
+
+    
+    def getValue(self, pos, variables):
         if pos.startswith("'"):
             try:
                 name = pos.replace("'", "")
-                posVar = vars[name]
+                posVar = variables[name]
                 pos = int(posVar.value)
             except Exception as e:
                 print(f"ERROR: Position variable {name} not found!")
@@ -326,6 +259,7 @@ class List:
             pos = int(pos)-1
             try:
                 return self.data[pos]
+
             except IndexError:
                 print("ERROR: Index out of range")
                 quit()
@@ -334,40 +268,71 @@ class List:
             pos = abs(int(pos)+1)
             try:
                 return self.negData[pos]
+
             except IndexError:
                 print("ERROR: Index out of range")
-                quit()
-                
-class ALIST:
-    pass
-            
-            
-
-class MathObject:
-    def __init__(self, name, value = 0, equation = ()):
+                quit()            
+                             
+class MO:
+    def __init__(self, name, base, function, paramsList, variables):
+        """
+        name = name
+        base = base
+        function = Type
+        paramsList[0] = equation
+        
+        """
+        self.const = False
         self.name = name
-        self.type = Token.MO  # >> For Consistency
-        self.const = False # >> For Consistency
-        self.value = value
-
-        self.equation = equation
+        self.type = function
+        self.value = 0
+        
+        self.equation = ""
         self.calculation = ""
         
-        self.dumpConfig = {"name": self.name, "type": TRANSLATE_TOKEN_TO_STR[self.type], "value": self.value, "equation": self.equation, "calculation": "None"}
 
+        if len(paramsList) == 1:
+            if paramsList[0] != "":
+                self.equation = paramsList[0]
+                self.prepare(variables)
+            
+   
+        
+        self.base = base    # FOR ERRORS
+        self.function = function    # FOR ERRORS
+        
+        self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "equation": self.equation, "calculation": self.calculation}
 
-
+        
     
+    def matchFunction(self, base, function, paramsList, variables):
+        self.base = base
+        self.function = function
+        
+        match base:
+            case "#":
+                match function:
+                    case _:
+                        print(f"ERROR: {self.name} has no function # {function}! ({self.type})   | {self.name} {self.base} {self.function}")
+                        quit()
+            case "?":
+                match function:
+                    case function if function.startswith("("):
+                        
+                        self.setEquation(function)
+                        self.prepare(variables)
+                    case _:
+                        print(f"ERROR: {self.name} has no function ? {function}! ({self.type})   | {self.name} {self.base} {self.function}")
+                        quit()
+                
     def setEquation(self, equation):
-        Debug(self.name, "equation set to %s" % equation)
         self.equation = equation
-
-    def prepare(self, vars):
-        Debug(self.name, "prepare with calculation: %s" % self.calculation).as_string()
-
+        self.dumpConfig = {self.name: {"name": self.name, "type": self.type, "value": self.value, "equation": self.equation, "calculation": "None"}}
+        
+    def prepare(self, variables):
         self.calculation = ""
         in_var = False
-        varStr = ""
+        variablestr = ""
 
 
         for elem in self.equation:
@@ -381,358 +346,432 @@ class MathObject:
             elif elem == "'": 
                 if in_var:
                     try:
-                        if vars.get(varStr).type not in NUMBERVARS:
-                            Error(106, vars.get(varStr).name).as_string()
+                        if variables.get(variablestr).type not in ["INT", "FLOAT"]:
+                            print(f"ERROR: {self.name} -> incompatible variable for calculation! ({variablestr})  | {self.name} {self.base} {self.function} ")        # ERROR-MESSAGE-HERE
+                            quit()
                             
-                        self.calculation += str(vars.get(varStr).value)
-                        varStr, in_var = "", False
+                        self.calculation += str(variables.get(variablestr).value)
+                        variablestr, in_var = "", False
                     except Exception as e:
-                        Error(105, varStr).as_string()
+                        print(f"ERROR: {self.name} -> Unknown Variable! ({variablestr})")        # ERROR-MESSAGE-HERE
+                        quit()
                 else:
                     in_var = True
 
 
             elif elem == "'": 
-                #varList.update({varStr: vars.get(varStr).value})
-                self.calculation += str(vars.get(varStr).value)
-                varStr, in_var = "", False
+                #varList.update({variablestr: variables.get(variablestr).value})
+                self.calculation += str(variables.get(variablestr).value)
+                variablestr, in_var = "", False
 
             elif elem.isalpha() or isinstance(int(elem), int):
-                if in_var: varStr += elem
+                if in_var: variablestr += elem
         
         self.calculate()
-
+        
     def calculate(self):
         # TODO: make better calculation, because very unsafe: https://stackoverflow.com/questions/9685946/math-operations-from-string
-        Debug(self.name, ("calculating: %s" % self.calculation)).as_string()
         self.value = eval(self.calculation)
-        self.dumpConfig = {"name": self.name, "type": TRANSLATE_TOKEN_TO_STR[self.type], "value": self.value, "equation": self.equation, "calculation": self.calculation}
-  
-class Function:
-    def __init__(self, name, return_func, call_const = False, function="",  value = 0):
-        return_func_commands = ["RES", "VC"]
+        self.dumpConfig = {self.name: {"name": self.name, "type": self.type, "value": self.value, "equation": self.equation, "calculation": "None"}}
+            
+class FUNC:
+    def __init__(self, name, base, function, paramsList, variables):
+        self.const = paramsList[1] if len(paramsList) < 1 else False
 
+        self.const = False
         self.name = name
-        self.type = Token.FUNC # >> For Consistency
-        self.const = False # >> For Consistency
-        self.value = value
+        self.type = function
+        self.value = 0
+        
+        if len(paramsList) == 2:
+            if paramsList[1] != "": 
+                self.const = BOOL_TRANSFORM[paramsList[1]]
+        
 
-        self.call_const = call_const
+        self.return_func = paramsList[0] if paramsList[0] in RETURN_FUNCION_COMMANDS else print(f"ERROR: {self.name} Unknown return function command {paramsList[0]}!   | {self.name} {self.base} {self.function}")
+        self.MathObject = None
+        
+        self.base = base    # FOR ERRORS
+        self.function = function    # FOR ERRORS
+        
+        self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "const": self.const, "MO": "None"}
+    
+    def matchFunction(self, base, function, paramsList, variables):
+        self.base = base
         self.function = function
-        self.MO_equation = None
-        self.return_func = return_func if return_func in return_func_commands else Error(401, self.name).as_string()
+        
+        match base:
+            case "#":
+                match function:
+                    case _:
+                        print(f"ERROR: {self.name} has no function # {function}! ({self.type})   | {self.name} {self.base} {self.function}")
+                        quit()
+            case "?":
+                match function:
+                    case function if function.startswith("("):
+                        self.setEquation(function, variables)
 
-    def setFunction(self, function, vars):
-        Debug(self.name, ("Function set to %s" % function)).as_string()
-        self.MO_equation = MathObject(name = self.name, equation=function)
-        self.MO_equation.prepare(vars=vars)
+                        
+                    case "call":
+                        self.call(variables)
+                    case _:
+                        print(f"ERROR: {self.name} has no function ? {function}! ({self.type})   | {self.name} {self.base} {self.function}")
+                        quit()
+
+
+    def setEquation(self, equation, variables):
+        self.MathObject = MO(self.name, "#", "MO", [equation], variables)
+        self.MathObject.prepare(variables=variables)
+        self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "const": self.const, "MO": {"name": self.MathObject.name, "type": self.MathObject.type, "value": self.MathObject.value, "equation": self.MathObject.equation, "calculation": self.MathObject.calculation}}
         
     def VC(self, variables):
-        Debug(self.name, "VC is called").as_string()
-        self.MO_equation.prepare(vars=variables)
-        self.value = self.MO_equation.value
+        self.MathObject.prepare(variables=variables)
+        self.value = self.MathObject.value
+        self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "const": self.const, "MO": {"name": self.MathObject.name, "type": self.MathObject.type, "value": self.MathObject.value, "equation": self.MathObject.equation, "calculation": self.MathObject.calculation}}
 
 
-    def call(self, vars):
-        Debug(self.name, "is called").as_string()
-        if not self.call_const:
-            Debug(self.name, "isn't const").as_string()
-            self.MO_equation.prepare(vars=vars)
-            self.value = self.MO_equation.value
+    def call(self, variables):
+        if not self.const:
+            self.MathObject.prepare(variables=variables)
+            self.value = self.MathObject.value
         else:
-            Debug(self.name, "is const") .as_string()
-            self.value = self.MO_equation.value
+            self.value = self.MathObject.value
+        self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "const": self.const, "MO": {"name": self.MathObject.name, "type": self.MathObject.type, "value": self.MathObject.value, "equation": self.MathObject.equation, "calculation": self.MathObject.calculation}}
 
-class ConditionObject:
-    def __init__(self, name, value = 0):
+
+class CO:
+    def __init__(self, name, base, function, paramsList, variables):
         self.name = name
-        self.type = Token.CO
-        self.const = False
-        self.value = value
+        self.type = function
+        self.value = None
         
-        self.edit_condition = ""
+        self.rawCondition = ""
+        self.condition = None
+        
+        self.base = base    # FOR ERRORS
+        self.function = function    # FOR ERRORS
         
 
-        
-    def setCondition(self, condition):
-        self.condition = condition
-        self.dumpConfig = {"name": self.name, "type": TRANSLATE_TOKEN_TO_STR[self.type], "value": self.value, "condition": self.condition}
-
-        
+        if paramsList[0] != "":
+            self.setCondition(paramsList[0], variables)
             
-    def prepare(self, vars):
-        self.edit_condition = ""
+        self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "condition": self.condition}
+        
+    def matchFunction(self, base, function, paramsList, variables):
+        self.base = base
+        self.function = function
+        
+        match base:
+            case "#":
+                match function:
+                    case _:
+                        print(f"ERROR: {self.name} has no function # {function}! ({self.type})   | {self.name} {self.base} {self.function}")
+                        quit()
+            case "?":
+                match function:
+                    case function if function.startswith("("):
+                        self.setCondition(function, variables)
+                    case _:
+                        print(f"ERROR: {self.name} has no function ? {function}! ({self.type})   | {self.name} {self.base} {self.function}")
+                        quit()
+
+    def setCondition(self, condition, variables):
+        self.rawCondition = condition
+        self.prepare(variables)
+        
+    def prepare(self, variables):
+        editCondition = ""
         in_var = False
-        varstr = ""
+        variablestr = ""
 
 
-        for elem in self.condition:
-            if elem in DIGITS and not in_var: Error(301, self.condition).as_string()
-            elif elem == '>': self.edit_condition += elem
-            elif elem == '<': self.edit_condition += elem
-            elif elem == '!': self.edit_condition += elem
-            elif elem == '=': self.edit_condition += elem
-            elif elem == '>': self.edit_condition += elem
+        for elem in self.rawCondition:
+            if elem in DIGITS and in_var == False: self.calculation += elem
+            elif elem == '>': editCondition += elem
+            elif elem == '<': editCondition += elem
+            elif elem == '!': editCondition += elem
+            elif elem == '=': editCondition += elem
+            elif elem == '>': editCondition += elem
             elif elem == "'": 
                 if in_var:
-                    if vars.get(varstr).type != Token.INT and vars.get(varstr).type != Token.FLOAT:
-                        Error(106, vars.get(varstr).name).as_string()
-                    self.edit_condition += str(vars.get(varstr).value)
-                    varstr, in_var = "", False
+                    if variables[variablestr].type != "INT" and variables[variablestr].type != "FLOAT":
+                        print(f"ERROR: {self.name} -> incompatible variable for condition! ({variablestr})  | {self.name} {self.base} {self.function} ")        # ERROR-MESSAGE-HERE
+                        quit()
+                    editCondition += str(variables[variablestr].value)
+                    variablestr, in_var = "", False
                     
                 else:
                     in_var = True
 
             elif elem.isalpha(): 
-                if in_var: varstr += elem
+                if in_var: variablestr += elem
 
-    
+        self.condition = editCondition
         self.checkCondition()
     
     def checkCondition(self):
         try:
-            if eval(f"{self.edit_condition}"):
+            if eval(f"{self.condition}"):
                 self.value = "~1"
             else:
                 self.value = "~0"
+                
+            self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "condition": self.condition}
             
-            self.dumpConfig = {"name": self.name, "type": TRANSLATE_TOKEN_TO_STR[self.type], "value": self.value, "condition": self.condition}
 
         except Exception:
             print(f"ERROR: {self.condition} is not a valid condition!")
             quit()
-
+  
 class IF:
-    def __init__(self, name, startIndex, commandsInIF, conditionObjectName):
+    def __init__(self, name, base, function, paramsList, variables, startIndex):
+        """
+        paramsList[0] = conditionObjectName
+        paramsList[1] = commandsInIF
+        """
+
         self.name = name
-        self.type = Token.IF # For consistency
+        self.type = function
+        self.value = None
+        
         
         self.startIndex = startIndex
-        self.commandsInIF = commandsInIF
+        
+        self.conditionObjectName = paramsList[0] 
+        self.commandsInIF = paramsList[1]
         self.commandsInELSE = 0
         
-        self.value = False
-        self.conditionObjectName = conditionObjectName 
         
-    def checkCondition(self, vars):
-        Debug(self.name, f"checkCondition with {self.conditionObjectName}").as_string()
-        if vars.get(self.conditionObjectName).value == "~1":
-            Debug(self.name, "Condition is met").as_string()
+        self.base = base    # FOR ERRORS
+        self.function = function    # FOR ERRORS
+        
+        self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "conditionalObjectName": self.conditionObjectName, "commandsInIF": self.commandsInIF, "self.commandsInELSE": self.commandsInELSE}
+        
+    def matchFunction(self, base, function, paramsList, variables, currentIndex):
+        self.base = base
+        self.function = function
+        
+        match base:
+            case "#":
+                match function:
+
+                    case _:
+                        print(f"ERROR: {self.name} has no function # {function}! ({self.type})   | {self.name} {self.base} {self.function}")
+                        quit()
+            case "?":
+                match function:
+                    case "ELSE":
+                        self.commandsInELSE = paramsList[0]
+                        if self.value == False: 
+                            pass
+                        elif self.value == True:
+                            currentIndex = currentIndex + int(self.commandsInELSE)
+                        return currentIndex
+                                
+                    case "END":
+                        return currentIndex
+                    case _:
+                        print(f"ERROR: {self.name} has no function ? {function}! ({self.type})   | {self.name} {self.base} {self.function}")
+                        quit()
+
+    def checkCondition(self, variables):
+        if variables.get(self.conditionObjectName).value == "~1":
             self.value = True
+            self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "conditionalObjectName": self.conditionObjectName, "commandsInIF": self.commandsInIF, "self.commandsInELSE": self.commandsInELSE}
             return self.startIndex
         else:
-            Debug(self.name, "Condition is not met").as_string()
             self.value = False
+            self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "conditionalObjectName": self.conditionObjectName, "commandsInIF": self.commandsInIF, "self.commandsInELSE": self.commandsInELSE}
             return int(self.startIndex)+int(self.commandsInIF)
-        
 
-class Loop:
-    def __init__(self, name, startIndex, vars, conditionObject = None):
+class LOOP:
+    def __init__(self, name, base, function, paramsList, variables, startIndex):
         self.name = name
-        self.type = Token.LOOP # For consistency
-        self.const = False # >> For Consistency
+        self.type = function
+        self.value = None
+        
         self.startIndex = startIndex
         self.endIndex = False
         
+        self.conditionObject = None
+        
         self.infinite = False
+                
+        self.setCondition(paramsList[0], variables)
         
-        if conditionObject.isalpha(): 
-            self.condition = vars[conditionObject]; 
-            self.condition.prepare(vars)
-            
-            self.dumpConfig = {"name": self.name, 
-                           "type": TRANSLATE_TOKEN_TO_STR[self.type], 
-                           "startIndex": self.startIndex, 
-                           "CO name": str(vars[conditionObject].name),
-                           "CO condition": str(vars[conditionObject].condition), 
-                           "CO value": str(vars[conditionObject].value)}
-
-            
-        elif conditionObject in BOOL:
+        
+        self.base = base    # FOR ERRORS
+        self.function = function    # FOR ERRORS
+        
+        self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "startIndex": self.startIndex, "EndIndex": self.endIndex, "Infinite": self.infinite, "conditionObject": self.conditionObject}
+        
+    def matchFunction(self, base, function, paramsList, variables, currentIndex):
+        self.base = base
+        self.function = function
+        
+        match base:
+            case "#":
+                match function:
+                    case _:
+                        print(f"ERROR: {self.name} has no function # {function}! ({self.type})   | {self.name} {self.base} {self.function}")
+                        quit()
+            case "?":
+                match function:
+                    case "END":
+                        index = self.loopEnd(currentIndex, variables)
+                        return index
+                    case _:
+                        print(f"ERROR: {self.name} has no function ? {function}! ({self.type})   | {self.name} {self.base} {self.function}")
+                        quit()
+    
+    def setCondition(self, conditionObjectName, variables):
+        if conditionObjectName.isalpha():
+            self.conditionObject = variables[conditionObjectName]
+        elif conditionObjectName in BOOL_TRANSFORM.keys():
             self.infinite = True
+        self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "startIndex": self.startIndex, "EndIndex": self.endIndex, "Infinite": self.infinite, "conditionObject": self.conditionObject}
             
-        
-            self.dumpConfig = {"name": self.name, 
-                           "type": TRANSLATE_TOKEN_TO_STR[self.type], 
-                           "startIndex": self.startIndex, 
-                           "CO name": self.infinite,
-                           "infinite": self.infinite}
-        
-        self.repeat_count = 0
-        
-    def loopEnd(self, endIndex, vars):
+    def loopEnd(self, endIndex, variables):
         if not self.endIndex:
             self.endIndex = endIndex
         
         if self.infinite:
-            if not self.repeat_count >= 65536:
-                self.repeat_count += 1
-                index = self.startIndex
-                return index
-            else:
-                return endIndex  
+            index = self.startIndex
+            self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "startIndex": self.startIndex, "EndIndex": self.endIndex, "Infinite": self.infinite, "conditionObject": self.conditionObject}
+            return index
+
             
-        self.condition.prepare(vars)
-        if self.condition.value != "~1":
+        self.conditionObject.prepare(variables)
+        if self.conditionObject.value != "~1":
+            self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "startIndex": self.startIndex, "EndIndex": self.endIndex, "Infinite": self.infinite, "conditionObject": self.conditionObject}
             return endIndex
-        
-        self.dumpConfig = {"name": self.name, 
-                           "type": TRANSLATE_TOKEN_TO_STR[self.type], 
-                           "startIndex": self.startIndex, 
-                           "endIndex": endIndex, 
-                           "CO name": self.condition.value,
-                           "infinite": self.infinite}
+
+
 
         index = self.startIndex
+        self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "startIndex": self.startIndex, "EndIndex": self.endIndex, "Infinite": self.infinite, "conditionObject": self.conditionObject}
         return index
 
-class Library:
-    def __init__(self, name, libPath, libName):
-        self.name = name
-        self.type = Token.Lib
-        self.value = 0
-        
-        self.libPath = libPath
-        self.libName = libName
-        self.libObject = None
-        
-        self.dumpConfig = {"name": self.name, 
-                           "type": TRANSLATE_TOKEN_TO_STR[self.type], 
-                           "libFolderName": self.libPath,
-                           "libName": self.libName,
-                           "libObject": self.libObject}
-
-        self.setLib()
-    
-    def setLib(self):
-        #try:
-        module = importlib.import_module(f"{self.libPath}.{self.libName}")
-        self.libObject = module
-        self.dumpConfig = {"name": self.name, 
-                        "type": TRANSLATE_TOKEN_TO_STR[self.type], 
-                        "libName": self.libName,
-                        "libObject": str(self.libObject)}
-
-        #except ImportError as e:
-        #    Error(601, (self.libName, self.libObject)).as_string()
-            
 class RNG:
-    def __init__(self, name, rngType, rngRange):
+    def __init__(self, name, base, function, paramsList, variables):
         self.name = name
-        self.type = Token.RNG
-        self.value = 0
-        self.const = False
+        self.type = function
+        self.value = None
         
-        self.rngType = rngType
-        self.rngRangeCompiled = []
-        self.rngRange = self.setRange(rngRange)
+        self.rngType = paramsList[0]
+        self.rngRange = None
         
-        self.dumpConfig = {"name": self.name, 
-                           "type": TRANSLATE_TOKEN_TO_STR[self.type], 
-                           "value": self.value,
-                           "rngType": self.rngType,
-                           "rngRangeMin": self.rngRangeCompiled[0],
-                           "rngRangeMax": self.rngRangeCompiled[1]}
+        self.base = base    # FOR ERRORS
+        self.function = function  # FOR ERRORS
+       
+        self.setRange(paramsList[1])
+        self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "rngType": self.rngType, "rngRange": self.rngRange}
+    
+    def matchFunction(self, base, function, paramsList, variables):
+        self.base = base
+        self.function = function
         
-        
-        
+        match base:
+            case "#":
+                match function:
+                    case _:
+                        print(f"ERROR: {self.name} has no function # {function}! ({self.type})   | {self.name} {self.base} {self.function}")
+                        quit()
+            case "?":
+                match function:
+                    case "CR":
+                        self.setRange(paramsList[0])
+                    case _:
+                        print(f"ERROR: {self.name} has no function ? {function}! ({self.type})   | {self.name} {self.base} {self.function}")
+                        quit()
+    
     def setRange(self, rngRange):
         try:
             rangeMin, rangeMax = rngRange.replace(" ", "").split("->")
             rangeMin, rangeMax = int(rangeMin), int(rangeMax)
-            self.rngRangeCompiled = [rangeMin, rangeMax]
+            self.rngRange = [rangeMin, rangeMax]
         except Exception as e:
-            Error(701, (rngRange, self.name)).as_string()
+            print(f"ERROR: {self.name} RNG-Range not accepted! ({rngRange})   | {self.name} {self.base} {self.function}")
+            quit()
+
         
         self.generateRNG()
         
-        
     def generateRNG(self):
-        self.value = np.random.randint(self.rngRangeCompiled[0], self.rngRangeCompiled[1], size=1).item()
-        self.dumpConfig = {"name": self.name, 
-                           "type": TRANSLATE_TOKEN_TO_STR[self.type], 
-                           "value": self.value,
-                           "rngType": self.rngType,
-                           "rngRangeMin": self.rngRangeCompiled[0],
-                           "rngRangeMax": self.rngRangeCompiled[1]}
-
-    
+        self.value = np.random.randint(self.rngRange[0], self.rngRange[1], size=1).item()
+        self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "rngType": self.rngType, "rngRange": self.rngRange}
+        
 class PredefVar:
-    def __init__(self, name, fileName, vars, fileDirectory):
+    def __init__(self, name, base, function, paramsList, fileDirectory, variables):
         self.name = name
-        self.type = Token.PredefVar
-        
-        self.fileName = fileName
+        self.type = function
+        self.value = None
+
+        self.fileName = paramsList[0]
         self.fileDirectory = fileDirectory
-        self.vars = vars
         
-    
+        self.variablesDump = variables
+        self.variablesRead = {}
+        
+        self.base = base    # FOR ERRORS
+        self.function = function  # FOR ERRORS
+        
     def read(self):
-        
         with open(f"{self.fileDirectory}/lib/{self.fileName}.zpkg", "r") as file:
             data = json.load(file)
             for var in data:
                 self.compile(data[var])
         
-        return self.vars
+
+        return self.variablesRead
+
     
-    def compile(self, variableRaw):
-        type = variableRaw.get('type')
+    def compile(self, data):
+        name = data["name"]
+        base = "#"
+        function = data["type"]
+        paramsList = [data["value"], ""]
+        variables = self.variablesRead
         
-        if type in VAR_TYPES:
-            var = Variable(name=variableRaw.get("name"), type=variableRaw.get("type"), value=variableRaw.get("value"), vars=self.vars, const=variableRaw.get("const"))
-            self.vars.update({variableRaw.get("name"): var})
         
-        match type:
+        match function:
+            case "INT"|"PT"|"FLOAT":
+                var = Variable(name, base, function, paramsList, variables)
+                self.variablesRead.update({var.name: var})
+                
+            case "LIST":
+                var = List(name, base, function, paramsList, variables)
+                self.variablesRead.update({var.name: var})
+            
             case "MO":
-                var = MathObject(variableRaw.get("name"), variableRaw.get("value"), variableRaw.get("equation"))
-                self.vars.update({variableRaw.get("name"): var})
-            
+                var = MO(name, base, function, paramsList, variables)
+                self.variablesRead.update({var.name: var})
+                
+            case "FUNC":
+                var = FUNC(name, base, function, paramsList, variables)
+                self.variablesRead.update({var.name: var})
+                
             case "CO":
-                var = ConditionObject(variableRaw.get("name"), variableRaw.get("condition"))
-                self.vars.update({variableRaw.get("name"): var})
-            
-            case "LOOP":
-                var = Loop(variableRaw.get("name"), variableRaw.get("startIndex"), vars, variableRaw.get("CO name"))
-                self.vars.update({variableRaw.get("name"): var})
-            
-            case "Lib":
-                var = Library(variableRaw.get("name"), variableRaw.get("libName"))
-                self.vars.update({variableRaw.get("name"): var})
-            
+                var = CO(name, base, function, paramsList, variables)
+                self.variablesRead.update({var.name: var})
+                
             case "RNG":
-                var = RNG(variableRaw.get("name"), variableRaw.get("rngType"), f"{variableRaw.get('rngRangeMin')} -> {variableRaw.get('rngRangeMax')}")
-                self.vars.update({variableRaw.get("name"): var})
-    
+                paramsList[1] = f"{data["rngRange"][0]}->{data["rngRange"][1]}"
+                var = RNG(name, base, function, paramsList, variables)
+                self.variablesRead.update({var.name: var})
+        
     def dump(self):
         data = {}
-        for var in self.vars.values():
+
+        for var in self.variablesDump.values():
             name = var.dumpConfig["name"]
             dump = var.dumpConfig
             
             data[name] = dump
+
         
         
         file = open(f"{self.fileDirectory}/lib/{self.fileName}.zpkg", "w")
-        print(f"{self.fileDirectory}/lib/{self.fileName}.zpkg")
+        #print(f"{self.fileDirectory}/lib/{self.fileName}.zpkg")
         json.dump(data, file, indent=4) 
-
-     
-     
-        
-        
-if __name__ == "__main__":
-    import main
-    
-    MEASURE_TIME = False
-
-
-    LIB_DIRECTORY = "lib"
-    FILE_DIRECTORY = "." # folder in current directory
-    FILE_NAME = "code"
-    
-    
-    
-    
-    main.lexer(filename=FILE_NAME, fileDirectory=FILE_DIRECTORY)
-    main.compile(filename=FILE_NAME, libDirectory=LIB_DIRECTORY, fileDirectory=FILE_DIRECTORY, measureTime=MEASURE_TIME)
+            

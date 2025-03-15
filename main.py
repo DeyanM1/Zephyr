@@ -1,7 +1,9 @@
-from functions import *
-import sys
-import time
+#TODO: Libraries
+
+
 import json
+from functions import *
+
 
 MEASURE_TIME = False
 
@@ -10,17 +12,16 @@ LIB_DIRECTORY = "lib"
 
 EXAMPLE_NAMES = ["variables.zph", "buildInFunctions.zph", "list.zph", "MathObject.zph", "function.zph", "conditionalObject.zph", "ifStatement.zph", "ifElseStatement.zph", "loop.zph", "rng.zph", "predefVars1.zph", "predefVars2.zph", "libraries.zph"]
 PROJECT_NAMES = ["sumCalculator", "guessNumber", "piApproximator"]
-CURRENT_ELEMENT = 2     
+CURRENT_ELEMENT = 13 
 
 
-#FILE_DIRECTORY = "Examples" 
-#FILE_NAME = EXAMPLE_NAMES[CURRENT_ELEMENT-1]
+FILE_DIRECTORY = "Examples" 
+FILE_NAME = EXAMPLE_NAMES[CURRENT_ELEMENT-1]
 
 
-FILE_DIRECTORY = f"Projects/{PROJECT_NAMES[CURRENT_ELEMENT-1]}/" 
-FILE_NAME = "code.zph"
-
-
+#FILE_DIRECTORY = f"Projects/{PROJECT_NAMES[CURRENT_ELEMENT-1]}/" 
+#FILE_DIRECTORY = f"." 
+#FILE_NAME = "code.zph"
 
 
 def lexer(filename: str, fileDirectory: str = "."):
@@ -74,332 +75,105 @@ def lexer(filename: str, fileDirectory: str = "."):
     return data
 
 
-def compile(filename: str, libDirectory: str, fileDirectory: str = ".", measureTime:bool = False): 
-
-    if measureTime: st = time.time() 
+def compiler(filename: str, fileDirectory: str = ".",):
     
     if filename.endswith(".zsrc"):
         filename = filename[: -len(".zsrc")] 
     elif filename.endswith(".zph"):
         filename = filename[: -len(".zph")] 
-        #print(f"[WARNING] Compiling file: {filename}.zsrc")
-    
-    
     
     with open(f"{fileDirectory}/{filename}.zsrc", "r") as file:
         code = json.load(file)
         
         
-    vars = {}
-    libs = {}
-    index = 0
+    currentIndex = 0
+    maxIndex = len(code)    
     
+    variables = {}
     
-    while index <= len(code)-1:
-        currentCmdName = code.get(list(code)[index])
+    while currentIndex < maxIndex:
+        currentCmdName = code.get(list(code)[currentIndex])
         
         name = currentCmdName.get('name')
         base = currentCmdName.get('base')
         function = currentCmdName.get('function')
         paramsList = currentCmdName.get('paramsList')
-    
         
-
-        if name == "__":
+        
+        
+        
+        if function in TYPES:
+            match function:
+                case "INT"|"PT"|"FLOAT":
+                    var = Variable(name, base, function, paramsList, variables)
+                    variables.update({var.name: var})
+                    
+                case "LIST":
+                    var = List(name, base, function, paramsList, variables)
+                    variables.update({var.name: var})
+                
+                case "MO":
+                    var = MO(name, base, function, paramsList, variables)
+                    variables.update({var.name: var})
+                    
+                case "FUNC":
+                    var = FUNC(name, base, function, paramsList, variables)
+                    variables.update({var.name: var})
+                    
+                case "CO":
+                    var = CO(name, base, function, paramsList, variables)
+                    variables.update({var.name: var})
+                    
+                case "IF":
+                    var = IF(name, base, function, paramsList, variables, currentIndex)
+                    variables.update({var.name: var})
+                    currentIndex = var.checkCondition(variables)
+                    
+                case "LOOP":
+                    var = LOOP(name, base, function, paramsList, variables, currentIndex)
+                    variables.update({var.name: var})
+                    
+                case "RNG":
+                    var = RNG(name, base, function, paramsList, variables)
+                    variables.update({var.name: var})
+            
+        
+        elif name == "__":
             match base:
                 case "?":
                     match function:
                         case "JUMP":
-                            index = int(paramsList[0]) -1
+                            currentIndex = int(paramsList[0]) -1
                             continue
-                        
                         case "predefVars":
-                            var = PredefVar(name, paramsList[0], vars, fileDirectory)
-                            vars = var.read()
+                            var = PredefVar(name, base, function, paramsList, fileDirectory, variables)
+                            variables = var.read()
                         
                         case "dumpVars":
-                            var = PredefVar(name, paramsList[0], vars, fileDirectory)
+                            var = PredefVar(name, base, function, paramsList, fileDirectory, variables)
                             var.dump()
-
-
-        elif function in TYPES:
-            match function:
-                case "LIST":
-                    
-                    if len(paramsList) > 1:
-                        var = List(name, paramsList[0], paramsList[1])
-                    else:
-                        var = List(name, paramsList[0])
-                    vars.update({var.name: var})
-                
-                case "ALIST":
-                    pass
-                
-                case "MO":
-                    var = MathObject(name)
-                    vars.update({var.name: var})
-                    
-                    if len(paramsList) == 1:
-                        if paramsList[0].startswith("("):
-                            vars[name].setEquation(paramsList[0])
-                            vars[name].prepare(vars)
-                    
-                
-                case "LOOP":
-                    var = Loop(name=name, startIndex=index, vars=vars, conditionObject=paramsList[0])
-                        
-                    vars.update({var.name: var})
-                
-                case "FUNC":
-                    if len(paramsList) == 2:
-                        if paramsList[1] == "~1":
-                            var = Function(name, paramsList[0], True)
-                        else:
-                            var = Function(name, paramsList[0], False)
-                    else:
-                        var = Function(name, False)
-
-                    vars.update({var.name: var})
-                
-                case "CO":
-                    var = ConditionObject(name)
-                    var.setCondition(paramsList[0])
-                    var.prepare(vars)
-                    vars.update({var.name: var})
-                
-                case "IF":
-                    var = IF(name, index, paramsList[1], paramsList[0])
-                    vars.update({var.name: var})
-                    index = var.checkCondition(vars)
-                
-                case "LIB":
-                    libPath = f"{fileDirectory}.{libDirectory}"
-                    var = Library(name, libPath, paramsList[0])
-                    vars.update({var.name: var})
-                
-                case  "RNG":
-                    var = RNG(name, paramsList[0], paramsList[1])
-                    vars.update({var.name:var})
-                
-                    
-                
-                case _:
-
-                    if 0 <= 1 < len(paramsList):
-                        if paramsList[1] == "~1":
-                            var = Variable(name, function, paramsList[0], vars, True)
-                        else:
-                            var = Variable(name, function, paramsList[0], vars, False)
-                    else:
-                        var = Variable(name, function, paramsList[0], vars, False)
-
-                        vars.update({var.name: var})
-
-
-        elif vars[name].type == Token.PT:
-            match base:
-                case "?":
-                    match function:
-                        case "push": 
-                            vars[name].push()
-                        case "w":
-                            vars[name].changeValue(paramsList[0], vars)
-                            
-                        case "INPUT":
-                            vars[name].setValueByInput(paramsList[0], vars)
-                        
                         case _:
-                            Error(501, ["Token.PT", f"? {function}"]).as_string()
-                case "#":
-                    match function:
-                        case "CT":
-                            vars = changeType(vars[name], vars, paramsList[0]) # [0] = Type to change
-                        case _:
-                            Error(501, ["Token.PT", f"# {function}"]).as_string()
-
-        elif vars[name].type == Token.INT:
-            match base:
-                case "?":
-                    match function:
-                        case "w":
-                            vars[name].changeValue(paramsList[0], vars)
-                            
-                        case "INPUT":
-                            vars[name].setValueByInput(paramsList[0], vars)
-
-                        case _:
-                            Error(501, ["Token.INT", f"? {function}"]).as_string()
-                            
-                case "#":
-                    match function:
-                        case "CT":
-                            vars = changeType(vars[name], vars, paramsList[0]) # [0] = Type to change
-                        case _:
-                            Error(501, ["Token.INT", f"# {function}"]).as_string()
-                            
-        elif vars[name].type == Token.FLOAT:
-            match base:
-                case "?":
-                    match function:
-                        case "w":
-                            vars[name].changeValue(paramsList[0], vars)
-
-                        case _:
-                            Error(501, ["Token.FLOAT", f"? {function}"]).as_string()
-                            
-                case "#":
-                    match function:
-                        case "CT":
-                            vars = changeType(vars[name], vars, paramsList[0]) # [0] = Type to change
-                        case _:
-                            Error(501, ["Token.FLOAT", f"# {function}"]).as_string()
+                            print(f"ERROR: {name} has no function # {function}! | {name} {base} {function}")
+                            quit()
         
-        elif vars[name].type == Token.LIST:
-            match base:
-                case "?":
-                    match function:
-                        case "SET": 
-                            vars[name].set(paramsList[0], paramsList[1], vars)
-                case "#":
-                    match function:
-                        case _:
-                            Error(501, ["Token.LIST", f"# {function}"]).as_string()
-  
-        elif vars[name].type == Token.ALIST:
-            pass
-        
-        elif vars[name].type == Token.RNG:
-            match base:
-                case "?":
-                    match function:
-                        case "CR":
-                            vars[name].setRange(paramsList[0])
 
-                        case _:
-                            Error(501, ["Token.RNG", f"? {function}"]).as_string()
-                            
-                case "#":
-                    match function:
-                        case "CT":
-                            vars = changeType(vars[name], vars, paramsList[0]) # [0] = Type to change
-                        case _:
-                            Error(501, ["Token.RNG", f"# {function}"]).as_string()
-                        
-        elif vars[name].type == Token.MO:
-            match base:
-                case "?":
-                    match function:
-                        case "w":
-                            vars[name].setEquation(paramsList[0])
-                        
-                        case function if function.startswith(""):
-                            vars[name].setEquation(function)
-                            vars[name].prepare(vars)
+        elif function == "CT" and variables[name].type not in ["INT", "PT", "FLOAT"]:
+            variables = changeType(name, paramsList[0], variables)
+            
+        else:               
+            match variables[name].type:
+                case "INT"|"PT"|"FLOAT"|"LIST"|"MO"|"FUNC"|"CO"|"RNG":
+                    variables[name].matchFunction(base, function, paramsList, variables)
+                case "IF"|"LOOP":
+                    currentIndex = variables[name].matchFunction(base, function, paramsList, variables, currentIndex)
 
-                        case _:
-                            Error(501, ["Token.MO", f"? {function}"]).as_string()
-                            
-                case "#":
-                    match function:
-                        case "CT":
-                            vars = changeType(vars[name], vars, paramsList[0]) # [0] = Type to change
-                        case _:
-                            Error(501, ["Token.PT", f"# {function}"]).as_string()
         
-        elif vars[name].type == Token.FUNC:
-            match base:
-                case "?":
-                    match function:                        
-                        case function if function.startswith("("):
-                            if vars[name].type == Token.FUNC:
-                                vars[name].setFunction(function, vars)
-                        
-                        case "call":
-                            vars[name].call(vars)
-                            
-                        case _:
-                            Error(501, ["Token.FUNC", f"? {function}"]).as_string()
-                            
-                case "#":
-                    match function:
-                        case "CT":
-                            vars = changeType(vars[name], vars, paramsList[0]) # [0] = Type to change
-                        case _:
-                            Error(501, ["Token.FUNC", f"# {function}"]).as_string()
         
-        elif vars[name].type == Token.LOOP:
-            match base:
-                case "?":
-                    match function:
-                        case "END":
-                            index = vars[name].loopEnd(index, vars)
-                        case _:
-                            Error(501, ["Token.LOOP", f"? {function}"]).as_string()          
-                case "#":
-                    match function:
-                        case _:
-                            Error(501, ["Token.LOOP", f"# {function}"]).as_string()
-    
-        elif vars[name].type == Token.CO:
-            match base:
-                case "?":
-                    match function:
-                        case function if function.startswith("("):
-                            if vars[name].type == Token.CO:
-                                vars[name].setCondition(function)
-                            
-                        case _:
-                            Error(501, ["Token.CO", f"? {function}"]).as_string()
-                
-                case "#":
-                    match function:
-                        case "CT":
-                            vars = changeType(vars[name], vars, paramsList[0]) # [0] = Type to change
-                        case _:
-                            Error(501, ["Token.CO", f"# {function}"]).as_string()
-    
-        elif vars[name].type == Token.IF:
-            match base:
-                case "?":
-                    match function:
-                        case "ELSE":
-                            vars[name].commandsInELSE = paramsList[0]
-                            if vars[name].value == False: 
-                                pass
-                            elif vars[name].value == True:
-                                index = index + int(vars[name].commandsInELSE)
-                                
-                        case "END":
-                            pass
-                            
-                        case _:
-                            Error(501, ["Token.IF", f"? {function}"]).as_string()
-                
-                case "#":
-                    match function:
-                        case _:
-                            Error(501, ["Token.IF", f"# {function}"]).as_string()
-                            
-    
-        elif vars[name].type == Token.Lib:
-            vars = vars[name].libObject.search(name=name, base=base, function=function, paramsList=paramsList, vars=vars)
-            #print(vars["a"].name, vars["a"].value)
-        else:
-            pass
-    
-        index += 1
-    #print("\n", vars)
-
-    
-    if measureTime: et = time.time(); elapsed_time = et - st; print(f"\n Elapsed time: {elapsed_time}s")
         
-    
+        currentIndex += 1
+    print("\n\n", variables)
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        FILE_NAME = sys.argv[1]
-    if len(sys.argv) > 2:
-        FILE_DIRECTORY = sys.argv[2]
-    lexer(filename=FILE_NAME, fileDirectory=FILE_DIRECTORY)
-    compile(filename=FILE_NAME, libDirectory=LIB_DIRECTORY, fileDirectory=FILE_DIRECTORY, measureTime=MEASURE_TIME)
+    lexer(FILE_NAME, FILE_DIRECTORY)
+    compiler(FILE_NAME, FILE_DIRECTORY)
