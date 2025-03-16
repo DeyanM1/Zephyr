@@ -2,6 +2,7 @@ import re
 import json
 import numpy as np
 import os
+import importlib
 
 INT_reg = r"^\d+$"
 FLOAT_reg = r'^\d+\.\d+$'
@@ -9,7 +10,7 @@ PT_reg = r"^'.*'$"
 
 
 
-TYPES = ["PT", "INT", "FLOAT", "LIST", "MO", "FUNC", "CO", "IF", "LOOP", "RNG", "PredefVar"]
+TYPES = ["PT", "INT", "FLOAT", "LIST", "MO", "FUNC", "CO", "IF", "LOOP", "RNG", "PredefVar", "LIB"]
 DIGITS = "123456789"
 
 RETURN_FUNCION_COMMANDS = ["RES", "VC"]
@@ -21,7 +22,7 @@ BOOL_TRANSFORM = {"~0": False, "~1": True}
 
 def checkValueForType(value, type):
     """
-    This function checks if a value can be set to a specific type
+    This function checks if a value is compatible specific type
     """
     
     match type:
@@ -31,7 +32,7 @@ def checkValueForType(value, type):
             if re.search(INT_reg, value) != None:
                 return value
         case "FLOAT":
-            if re.search(FLOAT_reg, value):
+            if re.search(FLOAT_reg, value) != None:
                 return value
     
     return False
@@ -167,7 +168,7 @@ class Variable:
         value = input(message)
         self.write(value, variables)
           
-class List:
+class LIST:
     def __init__(self, name, base, function, paramsList, variables):
         self.name = name
         self.type = function
@@ -438,7 +439,6 @@ class FUNC:
         else:
             self.value = self.MathObject.value
         self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "const": self.const, "MO": {"name": self.MathObject.name, "type": self.MathObject.type, "value": self.MathObject.value, "equation": self.MathObject.equation, "calculation": self.MathObject.calculation}}
-
 
 class CO:
     def __init__(self, name, base, function, paramsList, variables):
@@ -752,7 +752,7 @@ class PredefVar:
                 self.variablesRead.update({var.name: var})
                 
             case "LIST":
-                var = List(name, base, function, paramsList, variables)
+                var = LIST(name, base, function, paramsList, variables)
                 self.variablesRead.update({var.name: var})
             
             case "MO":
@@ -785,4 +785,52 @@ class PredefVar:
         os.makedirs(os.path.dirname(f"{self.fileDirectory}/lib/"), exist_ok=True)
         file = open(f"{self.fileDirectory}/lib/{self.fileName}.zpkg", "w")
         json.dump(data, file, indent=4) 
-            
+
+class LIB:
+    def __init__(self, name, base, function, paramsList, libPath, variables):
+        self.const = paramsList[1] if len(paramsList) < 1 else False
+        self.name = name
+        self.type = function
+        self.value = None
+        
+        self.libPath = libPath
+        self.libName = paramsList[0]
+        self.libObject = None
+        
+        self.base = base    # FOR ERRORS
+        self.function = function    # FOR ERRORS
+        
+        self.setLib()
+
+    def matchFunction(self, base, function, paramsList, variables):
+        self.base = base
+        self.function = function
+        
+        return self.libObject.search(self.name, base, function, paramsList, variables)
+        
+        match base:
+            case "#":
+                match function:
+                    
+                    case _:
+                        print(f"ERROR: {self.name} has no function # {function}! ({self.type})   | {self.name} {self.base} {self.function}")
+                        quit()
+            case "?":
+                match function:
+
+                    case _:
+                        print(f"ERROR: {self.name} has no function ? {function}! ({self.type})   | {self.name} {self.base} {self.function}")
+                        quit()
+    
+    def setLib(self):
+        try:
+            module = importlib.import_module(f"{self.libPath}.{self.libName}")
+            self.libObject = module
+            self.dumpConfig = {"name": self.name, 
+                            "type": self.type, 
+                            "libFolderName": self.libPath,
+                            "libName": self.libName}
+
+        except ImportError as e:
+            print(f"ERROR: {self.name} cant import library! ({self.libPath}.{self.libName})   | {self.name} {self.base} {self.function}")
+            quit()

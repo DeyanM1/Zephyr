@@ -13,7 +13,7 @@ LIB_DIRECTORY = "lib"
 
 EXAMPLE_NAMES = ["variables.zph", "buildInFunctions.zph", "list.zph", "MathObject.zph", "function.zph", "conditionalObject.zph", "ifStatement.zph", "ifElseStatement.zph", "loop.zph", "rng.zph", "predefVars1.zph", "predefVars2.zph", "libraries.zph"]
 PROJECT_NAMES = ["sumCalculator", "guessNumber", "piApproximator"]
-CURRENT_ELEMENT = 1
+CURRENT_ELEMENT = 13
 
 
 FILE_DIRECTORY = "Examples" 
@@ -110,7 +110,7 @@ def compiler(filename: str, fileDirectory: str = ".",):
                     variables.update({var.name: var})
                     
                 case "LIST":
-                    var = List(name, base, function, paramsList, variables)
+                    var = LIST(name, base, function, paramsList, variables)
                     variables.update({var.name: var})
                 
                 case "MO":
@@ -136,6 +136,11 @@ def compiler(filename: str, fileDirectory: str = ".",):
                     
                 case "RNG":
                     var = RNG(name, base, function, paramsList, variables)
+                    variables.update({var.name: var})
+                    
+                case "LIB":
+                    libPath = f"{FILE_DIRECTORY}.{LIB_DIRECTORY}"
+                    var = LIB(name, base, function, paramsList, libPath, variables)
                     variables.update({var.name: var})
             
         
@@ -170,6 +175,8 @@ def compiler(filename: str, fileDirectory: str = ".",):
                     variables[name].matchFunction(base, function, paramsList, variables)
                 case "IF"|"LOOP":
                     currentIndex = variables[name].matchFunction(base, function, paramsList, variables, currentIndex)
+                case "LIB":
+                    variables = variables[name].matchFunction(base, function, paramsList, variables)
 
         
         

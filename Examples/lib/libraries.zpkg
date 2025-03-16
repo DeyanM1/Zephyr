@@ -1,0 +1,14 @@
+{
+    "moreMath": {
+        "name": "moreMath",
+        "type": "LIB",
+        "libFolderName": "Examples.lib",
+        "libName": "moreMath"
+    },
+    "a": {
+        "name": "a",
+        "type": "INT",
+        "value": "1",
+        "const: ": false
+    }
+}

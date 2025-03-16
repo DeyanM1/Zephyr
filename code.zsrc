@@ -1,18 +1,10 @@
 {
-    "0::a # PT:Text1": {
-        "name": "a",
+    "0::lib # LIB:moreMath": {
+        "name": "lib",
         "base": "#",
-        "function": "PT",
+        "function": "LIB",
         "paramsList": [
-            "Text1"
-        ]
-    },
-    "1::__ ? dumpVars:myVars": {
-        "name": "__",
-        "base": "?",
-        "function": "dumpVars",
-        "paramsList": [
-            "myVars"
+            "moreMath"
         ]
     }
 }
