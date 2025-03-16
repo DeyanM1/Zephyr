@@ -6,6 +6,7 @@ import time
 from functions import *
 
 
+
 MEASURE_TIME = False
 
 
@@ -13,7 +14,7 @@ LIB_DIRECTORY = "lib"
 
 EXAMPLE_NAMES = ["variables.zph", "buildInFunctions.zph", "list.zph", "MathObject.zph", "function.zph", "conditionalObject.zph", "ifStatement.zph", "ifElseStatement.zph", "loop.zph", "rng.zph", "predefVars1.zph", "predefVars2.zph", "libraries.zph"]
 PROJECT_NAMES = ["sumCalculator", "guessNumber", "piApproximator"]
-CURRENT_ELEMENT = 13
+CURRENT_ELEMENT = 2
 
 
 FILE_DIRECTORY = "Examples" 
@@ -26,6 +27,15 @@ FILE_NAME = EXAMPLE_NAMES[CURRENT_ELEMENT-1]
 #FILE_DIRECTORY = f"." 
 
 def lexer(filename: str, fileDirectory: str = "."):
+    """_summary_
+
+    Args:
+        filename (str): _description_
+        fileDirectory (str, optional): _description_. Defaults to ".".
+
+    Raises:
+        BaseException: _description_
+    """    
     currentCommand = ""
     
     code = []
@@ -73,11 +83,16 @@ def lexer(filename: str, fileDirectory: str = "."):
     with open(f"{fileDirectory}/{filename}.zsrc", "w") as file:
         json.dump(data, file, indent=4) 
     
-    return data
+    #return data
 
 
-def compiler(filename: str, fileDirectory: str = ".",):
-    
+def compiler(filename: str, fileDirectory: str = "."):
+    """_summary_
+
+    Args:
+        filename (str): _description_
+        fileDirectory (str, optional): _description_. Defaults to ".".
+    """
     if filename.endswith(".zsrc"):
         filename = filename[: -len(".zsrc")] 
     elif filename.endswith(".zph"):

@@ -1,10 +1,18 @@
 {
-    "0::lib # LIB:moreMath": {
-        "name": "lib",
+    "0::a # PT:Hello": {
+        "name": "a",
         "base": "#",
-        "function": "LIB",
+        "function": "PT",
         "paramsList": [
-            "moreMath"
+            "Hello"
+        ]
+    },
+    "1::a ? push:": {
+        "name": "a",
+        "base": "?",
+        "function": "push",
+        "paramsList": [
+            ""
         ]
     }
 }

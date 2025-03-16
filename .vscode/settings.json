@@ -1,15 +1,17 @@
 {
   "material-icon-theme.files.associations": {
-    "*.zph": "../../icons/zph",
-    "*.zsrc": "../../icons/zsrc",
-    "*.zpkg": "../../icons/zpkg"
+    "*.zph": "./extensions/icons/zph",
+    "*.zsrc": "./extensions/icons/zsrc",
+    "*.zpkg": "./extensions/icons/zpkg"
 
   },
-  
+
   "files.associations": {
     "*.zsrc": "json",
     "*.zpkg": "json"
   },
+  
+  
   "cSpell.words": [
     "ALIST",
     "zpkg",
