@@ -94,5 +94,13 @@
         "paramsList": [
             ""
         ]
+    },
+    "12::__ ? dumpVars:": {
+        "name": "__",
+        "base": "?",
+        "function": "dumpVars",
+        "paramsList": [
+            ""
+        ]
     }
 }

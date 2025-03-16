@@ -32,7 +32,15 @@
             "'myList<2>'"
         ]
     },
-    "4::myNum # CT:PT": {
+    "4::__ ? dumpVars:": {
+        "name": "__",
+        "base": "?",
+        "function": "dumpVars",
+        "paramsList": [
+            ""
+        ]
+    },
+    "5::myNum # CT:PT": {
         "name": "myNum",
         "base": "#",
         "function": "CT",
@@ -40,7 +48,7 @@
             "PT"
         ]
     },
-    "5::myNum ? push:": {
+    "6::myNum ? push:": {
         "name": "myNum",
         "base": "?",
         "function": "push",

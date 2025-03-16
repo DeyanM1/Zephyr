@@ -10,3 +10,5 @@ statement # IF:condition|1;
 msg1 ? push:;
 
 statement ? END:;
+
+__ ? dumpVars:;

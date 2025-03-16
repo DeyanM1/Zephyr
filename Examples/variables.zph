@@ -11,10 +11,11 @@ number ? push:;
 decimal # CT:PT;
 decimal ? push:;
 
-
-
 number # CT:INT;
 number ? w:++;
 
+
 number # CT:PT;
 number ? push:;
+
+__ ? dumpVars:;

@@ -23,7 +23,15 @@
             "('a'>'b')"
         ]
     },
-    "3::conditionalObject # CT:PT": {
+    "3::__ ? dumpVars:": {
+        "name": "__",
+        "base": "?",
+        "function": "dumpVars",
+        "paramsList": [
+            ""
+        ]
+    },
+    "4::conditionalObject # CT:PT": {
         "name": "conditionalObject",
         "base": "#",
         "function": "CT",
@@ -31,7 +39,7 @@
             "PT"
         ]
     },
-    "4::conditionalObject ? push:": {
+    "5::conditionalObject ? push:": {
         "name": "conditionalObject",
         "base": "?",
         "function": "push",

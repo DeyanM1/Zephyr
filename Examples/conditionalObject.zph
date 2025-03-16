@@ -3,6 +3,9 @@ b # INT:7;
 
 conditionalObject # CO:('a'>'b');
 
+__ ? dumpVars:;
+
 conditionalObject # CT:PT;
 
 conditionalObject ? push:;
+

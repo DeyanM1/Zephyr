@@ -1,0 +1,21 @@
+{
+    "a": {
+        "name": "a",
+        "type": "INT",
+        "value": "5",
+        "const: ": false
+    },
+    "b": {
+        "name": "b",
+        "type": "INT",
+        "value": "6",
+        "const: ": false
+    },
+    "mathObject": {
+        "name": "mathObject",
+        "type": "MO",
+        "value": 11,
+        "equation": "('a'+'b')",
+        "calculation": "(5+6)"
+    }
+}

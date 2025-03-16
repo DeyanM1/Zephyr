@@ -9,3 +9,5 @@ __ ? JUMP:7;
 b ? push:;
 
 c ? push:;
+
+__ ? dumpVars:;

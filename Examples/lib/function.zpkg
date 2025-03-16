@@ -1,0 +1,33 @@
+{
+    "a": {
+        "name": "a",
+        "type": "INT",
+        "value": "7",
+        "const: ": false
+    },
+    "b": {
+        "name": "b",
+        "type": "INT",
+        "value": "6",
+        "const: ": false
+    },
+    "function": {
+        "name": "function",
+        "type": "PT",
+        "value": "11",
+        "const: ": false
+    },
+    "function2": {
+        "name": "function2",
+        "type": "FUNC",
+        "value": 13,
+        "const": false,
+        "MO": {
+            "name": "function2",
+            "type": "MO",
+            "value": 13,
+            "equation": "('a'+'b')",
+            "calculation": "(7+6)"
+        }
+    }
+}

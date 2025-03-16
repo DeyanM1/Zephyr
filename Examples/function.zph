@@ -22,5 +22,9 @@ a ? w:++;
 
 function2 ? call:;
 
+__ ? dumpVars:;
+
 function2 # CT:PT;
 function2 ? push:;
+
+

@@ -3,6 +3,8 @@ b # INT:6;
 
 mathObject # MO:('a'+'b');
 
+__ ? dumpVars:;
+
 mathObject # CT:PT;
 
 mathObject ? push:;

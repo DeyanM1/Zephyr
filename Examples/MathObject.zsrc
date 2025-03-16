@@ -23,7 +23,15 @@
             "('a'+'b')"
         ]
     },
-    "3::mathObject # CT:PT": {
+    "3::__ ? dumpVars:": {
+        "name": "__",
+        "base": "?",
+        "function": "dumpVars",
+        "paramsList": [
+            ""
+        ]
+    },
+    "4::mathObject # CT:PT": {
         "name": "mathObject",
         "base": "#",
         "function": "CT",
@@ -31,7 +39,7 @@
             "PT"
         ]
     },
-    "4::mathObject ? push:": {
+    "5::mathObject ? push:": {
         "name": "mathObject",
         "base": "?",
         "function": "push",

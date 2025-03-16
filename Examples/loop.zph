@@ -7,3 +7,5 @@ loop # LOOP:condition;
     message ? push:;
     b ? w:++;
 loop ? END:;
+
+__ ? dumpVars:;

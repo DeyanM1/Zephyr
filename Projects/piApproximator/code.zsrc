@@ -15,31 +15,15 @@
             "1.0"
         ]
     },
-    "2::four # FLOAT:4.0": {
-        "name": "four",
-        "base": "#",
-        "function": "FLOAT",
-        "paramsList": [
-            "4.0"
-        ]
-    },
-    "3::two # FLOAT:2.0": {
-        "name": "two",
-        "base": "#",
-        "function": "FLOAT",
-        "paramsList": [
-            "2.0"
-        ]
-    },
-    "4::iterations # INT:600000": {
+    "2::iterations # INT:6000": {
         "name": "iterations",
         "base": "#",
         "function": "INT",
         "paramsList": [
-            "600000"
+            "6000"
         ]
     },
-    "5::iteration # INT:1": {
+    "3::iteration # INT:1": {
         "name": "iteration",
         "base": "#",
         "function": "INT",
@@ -47,7 +31,7 @@
             "1"
         ]
     },
-    "6::iLoopCO # CO:('iteration' < 'iterations')": {
+    "4::iLoopCO # CO:('iteration' < 'iterations')": {
         "name": "iLoopCO",
         "base": "#",
         "function": "CO",
@@ -55,7 +39,7 @@
             "('iteration' < 'iterations')"
         ]
     },
-    "7::iLoop # LOOP:iLoopCO": {
+    "5::iLoop # LOOP:iLoopCO": {
         "name": "iLoop",
         "base": "#",
         "function": "LOOP",
@@ -63,7 +47,7 @@
             "iLoopCO"
         ]
     },
-    "8::piMO # MO:": {
+    "6::piMO # MO:": {
         "name": "piMO",
         "base": "#",
         "function": "MO",
@@ -71,7 +55,7 @@
             ""
         ]
     },
-    "9::piMO ? ('pi'+4/'divisor'-4/('divisor'+2)):": {
+    "7::piMO ? ('pi'+4/'divisor'-4/('divisor'+2)):": {
         "name": "piMO",
         "base": "?",
         "function": "('pi'+4/'divisor'-4/('divisor'+2))",
@@ -79,7 +63,7 @@
             ""
         ]
     },
-    "10::pi ? w:'piMO'": {
+    "8::pi ? w:'piMO'": {
         "name": "pi",
         "base": "?",
         "function": "w",
@@ -87,7 +71,7 @@
             "'piMO'"
         ]
     },
-    "11::piMO # CT:PT": {
+    "9::piMO # CT:PT": {
         "name": "piMO",
         "base": "#",
         "function": "CT",
@@ -95,12 +79,28 @@
             "PT"
         ]
     },
-    "12::piMO ? push:": {
+    "10::piMO ? push:": {
         "name": "piMO",
         "base": "?",
         "function": "push",
         "paramsList": [
             ""
+        ]
+    },
+    "11::divisor ? w:++": {
+        "name": "divisor",
+        "base": "?",
+        "function": "w",
+        "paramsList": [
+            "++"
+        ]
+    },
+    "12::divisor ? w:++": {
+        "name": "divisor",
+        "base": "?",
+        "function": "w",
+        "paramsList": [
+            "++"
         ]
     },
     "13::divisor ? w:++": {
@@ -119,23 +119,7 @@
             "++"
         ]
     },
-    "15::divisor ? w:++": {
-        "name": "divisor",
-        "base": "?",
-        "function": "w",
-        "paramsList": [
-            "++"
-        ]
-    },
-    "16::divisor ? w:++": {
-        "name": "divisor",
-        "base": "?",
-        "function": "w",
-        "paramsList": [
-            "++"
-        ]
-    },
-    "17::iteration ? w:++": {
+    "15::iteration ? w:++": {
         "name": "iteration",
         "base": "?",
         "function": "w",
@@ -143,7 +127,7 @@
             "++"
         ]
     },
-    "18::iLoop ? END:": {
+    "16::iLoop ? END:": {
         "name": "iLoop",
         "base": "?",
         "function": "END",
@@ -151,7 +135,7 @@
             ""
         ]
     },
-    "19::__ ? dumpVars:piApproximatorVars": {
+    "17::__ ? dumpVars:piApproximatorVars": {
         "name": "__",
         "base": "?",
         "function": "dumpVars",

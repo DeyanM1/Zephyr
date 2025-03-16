@@ -4,8 +4,8 @@ myList ? SET:2|5;
 myNum # INT:0;
 myNum ? w:'myList<2>';
 
+__ ? dumpVars:;
+
 myNum # CT:PT;
 myNum ? push:;
 
-
-~__ ? dumpVars:listVars;

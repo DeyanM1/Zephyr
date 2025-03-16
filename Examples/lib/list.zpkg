@@ -1,0 +1,18 @@
+{
+    "myList": {
+        "name": "myList",
+        "type": "LIST",
+        "elementsType": "INT",
+        "data": [
+            null,
+            "5"
+        ],
+        "negData: ": []
+    },
+    "myNum": {
+        "name": "myNum",
+        "type": "INT",
+        "value": "5",
+        "const: ": false
+    }
+}

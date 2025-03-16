@@ -1,6 +1,7 @@
 import re
 import json
 import numpy as np
+import os
 
 INT_reg = r"^\d+$"
 FLOAT_reg = r'^\d+\.\d+$'
@@ -87,7 +88,7 @@ class Variable:
                         self.push()
                     
                     case "INPUT":
-                        self.INPUT(paramsList[0])
+                        self.INPUT(paramsList[0], variables)
                         
                     case "w":
                         self.write(paramsList[0], variables)
@@ -162,9 +163,9 @@ class Variable:
                 print(f"ERROR: {self.name} -> new Value incompatible with type ({self.type})!   | {self.name} {self.base} {self.function} ")        # ERROR-MESSAGE-HERE
                 quit()
 
-    def INPUT(self, message):
+    def INPUT(self, message, variables):
         value = input(message)
-        self.write(value)
+        self.write(value, variables)
           
 class List:
     def __init__(self, name, base, function, paramsList, variables):
@@ -598,12 +599,24 @@ class LOOP:
         self.infinite = False
                 
         self.setCondition(paramsList[0], variables)
+
         
         
         self.base = base    # FOR ERRORS
         self.function = function    # FOR ERRORS
         
-        self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "startIndex": self.startIndex, "EndIndex": self.endIndex, "Infinite": self.infinite, "conditionObject": self.conditionObject}
+        self.dumpConfig = {"name": self.name, 
+                           "type": self.type, 
+                           "value": self.value,
+                           "startIndex": self.startIndex, 
+                           "EndIndex": self.endIndex, 
+                           "Infinite": self.infinite, 
+                           "conditionObject": {
+                                "name": self.conditionObject.name, 
+                                "type": self.conditionObject.type, 
+                                "value": self.conditionObject.value, 
+                                "condition": self.conditionObject.condition
+                           }}
         
     def matchFunction(self, base, function, paramsList, variables, currentIndex):
         self.base = base
@@ -629,27 +642,26 @@ class LOOP:
             self.conditionObject = variables[conditionObjectName]
         elif conditionObjectName in BOOL_TRANSFORM.keys():
             self.infinite = True
-        self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "startIndex": self.startIndex, "EndIndex": self.endIndex, "Infinite": self.infinite, "conditionObject": self.conditionObject}
-            
+            self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value,"startIndex": self.startIndex, "EndIndex": self.endIndex, "Infinite": self.infinite, "conditionObject": {"name": self.conditionObject.name, "type": self.conditionObject.type, "value": self.conditionObject.value, "condition": self.conditionObject.condition}}            
     def loopEnd(self, endIndex, variables):
         if not self.endIndex:
             self.endIndex = endIndex
         
         if self.infinite:
             index = self.startIndex
-            self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "startIndex": self.startIndex, "EndIndex": self.endIndex, "Infinite": self.infinite, "conditionObject": self.conditionObject}
+            self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value,"startIndex": self.startIndex, "EndIndex": self.endIndex, "Infinite": self.infinite, "conditionObject": {"name": self.conditionObject.name, "type": self.conditionObject.type, "value": self.conditionObject.value, "condition": self.conditionObject.condition}}            
             return index
 
             
         self.conditionObject.prepare(variables)
         if self.conditionObject.value != "~1":
-            self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "startIndex": self.startIndex, "EndIndex": self.endIndex, "Infinite": self.infinite, "conditionObject": self.conditionObject}
+            self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value,"startIndex": self.startIndex, "EndIndex": self.endIndex, "Infinite": self.infinite, "conditionObject": {"name": self.conditionObject.name, "type": self.conditionObject.type, "value": self.conditionObject.value, "condition": self.conditionObject.condition}}            
             return endIndex
 
 
 
         index = self.startIndex
-        self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "startIndex": self.startIndex, "EndIndex": self.endIndex, "Infinite": self.infinite, "conditionObject": self.conditionObject}
+        self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value,"startIndex": self.startIndex, "EndIndex": self.endIndex, "Infinite": self.infinite, "conditionObject": {"name": self.conditionObject.name, "type": self.conditionObject.type, "value": self.conditionObject.value, "condition": self.conditionObject.condition}}            
         return index
 
 class RNG:
@@ -770,8 +782,7 @@ class PredefVar:
             data[name] = dump
 
         
-        
+        os.makedirs(os.path.dirname(f"{self.fileDirectory}/lib/"), exist_ok=True)
         file = open(f"{self.fileDirectory}/lib/{self.fileName}.zpkg", "w")
-        #print(f"{self.fileDirectory}/lib/{self.fileName}.zpkg")
         json.dump(data, file, indent=4) 
             

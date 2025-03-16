@@ -97,7 +97,15 @@
             ""
         ]
     },
-    "12::function2 # CT:PT": {
+    "12::__ ? dumpVars:": {
+        "name": "__",
+        "base": "?",
+        "function": "dumpVars",
+        "paramsList": [
+            ""
+        ]
+    },
+    "13::function2 # CT:PT": {
         "name": "function2",
         "base": "#",
         "function": "CT",
@@ -105,7 +113,7 @@
             "PT"
         ]
     },
-    "13::function2 ? push:": {
+    "14::function2 ? push:": {
         "name": "function2",
         "base": "?",
         "function": "push",

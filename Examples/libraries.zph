@@ -5,5 +5,8 @@ a # INT:1;
 moreMath ? add5:a;
 moreMath ? add10:a;
 
+
 a # CT:PT;
 a ? push:;
+
+__ ? dumpVars:;

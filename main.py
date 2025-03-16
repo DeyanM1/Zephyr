@@ -2,6 +2,7 @@
 
 
 import json
+import time
 from functions import *
 
 
@@ -12,17 +13,17 @@ LIB_DIRECTORY = "lib"
 
 EXAMPLE_NAMES = ["variables.zph", "buildInFunctions.zph", "list.zph", "MathObject.zph", "function.zph", "conditionalObject.zph", "ifStatement.zph", "ifElseStatement.zph", "loop.zph", "rng.zph", "predefVars1.zph", "predefVars2.zph", "libraries.zph"]
 PROJECT_NAMES = ["sumCalculator", "guessNumber", "piApproximator"]
-CURRENT_ELEMENT = 13 
+CURRENT_ELEMENT = 1
 
 
 FILE_DIRECTORY = "Examples" 
 FILE_NAME = EXAMPLE_NAMES[CURRENT_ELEMENT-1]
 
 
-#FILE_DIRECTORY = f"Projects/{PROJECT_NAMES[CURRENT_ELEMENT-1]}/" 
-#FILE_DIRECTORY = f"." 
+#FILE_DIRECTORY = f"Projects/{PROJECT_NAMES[CURRENT_ELEMENT-1]}" 
 #FILE_NAME = "code.zph"
 
+#FILE_DIRECTORY = f"." 
 
 def lexer(filename: str, fileDirectory: str = "."):
     currentCommand = ""
@@ -150,7 +151,10 @@ def compiler(filename: str, fileDirectory: str = ".",):
                             variables = var.read()
                         
                         case "dumpVars":
-                            var = PredefVar(name, base, function, paramsList, fileDirectory, variables)
+                            if paramsList[0] == "":
+                                var = PredefVar(name, base, function, [filename], fileDirectory, variables)
+                            else:
+                                var = PredefVar(name, base, function, paramsList, fileDirectory, variables)
                             var.dump()
                         case _:
                             print(f"ERROR: {name} has no function # {function}! | {name} {base} {function}")
@@ -175,5 +179,9 @@ def compiler(filename: str, fileDirectory: str = ".",):
 
 
 if __name__ == "__main__":
+    if MEASURE_TIME: t1 = time.time()
+    
     lexer(FILE_NAME, FILE_DIRECTORY)
     compiler(FILE_NAME, FILE_DIRECTORY)
+    
+    if MEASURE_TIME: t2 = time.time(); print(f"Time: {t2 - t1} seconds")
