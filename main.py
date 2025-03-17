@@ -17,14 +17,14 @@ PROJECT_NAMES = ["sumCalculator", "guessNumber", "piApproximator"]
 CURRENT_ELEMENT = 2
 
 
-FILE_DIRECTORY = "Examples" 
-FILE_NAME = EXAMPLE_NAMES[CURRENT_ELEMENT-1]
+#FILE_DIRECTORY = "Examples" 
+#FILE_NAME = EXAMPLE_NAMES[CURRENT_ELEMENT-1]
 
 
 #FILE_DIRECTORY = f"Projects/{PROJECT_NAMES[CURRENT_ELEMENT-1]}" 
-#FILE_NAME = "code.zph"
+FILE_NAME = "code.zph"
 
-#FILE_DIRECTORY = f"." 
+FILE_DIRECTORY = f"." 
 
 def lexer(filename: str, fileDirectory: str = "."):
     """_summary_

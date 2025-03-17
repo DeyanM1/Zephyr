@@ -11,7 +11,7 @@ if not exist "%OUTPUT_DIR%" mkdir "%OUTPUT_DIR%"
 cd /d "%OUTPUT_DIR%"
 
 :: Download main and dependency scripts from GitHub
-curl -o zephyr.py https://raw.githubusercontent.com/DeyanM1/Zephyr/refs/heads/main/zephyr.py
+curl -o zephyr.py https://raw.githubusercontent.com/DeyanM1/Zephyr/refs/heads/main/dist/zephyr.py
 curl -o main.py https://raw.githubusercontent.com/DeyanM1/Zephyr/refs/heads/main/main.py
 curl -o functions.py https://raw.githubusercontent.com/DeyanM1/Zephyr/refs/heads/main/functions.py
 

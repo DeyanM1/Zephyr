@@ -7,10 +7,10 @@
             "Hello"
         ]
     },
-    "1::a ? push:": {
+    "1::a ? pussh:": {
         "name": "a",
         "base": "?",
-        "function": "push",
+        "function": "pussh",
         "paramsList": [
             ""
         ]
