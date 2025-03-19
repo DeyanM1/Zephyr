@@ -10,3 +10,4 @@ build/
 main.spec
 ZephyrRun.spec
 /cupy
+Isoliert/

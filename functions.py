@@ -4,6 +4,7 @@ import numpy as np
 import os
 import importlib
 
+
 INT_reg = r"^\d+$"
 FLOAT_reg = r'^\d+\.\d+$'
 PT_reg = r"^'.*'$"
@@ -18,6 +19,28 @@ RANDOM_NUMBER_TYPES = ["INT"]
 
 BOOL_TRANSFORM = {"~0": False, "~1": True}
 
+
+class Error(Exception):
+    ERROR_MESSAGES = {
+        101: "ERROR: {name} has no function # {function}! ({type})   | {name} {base} {function}",
+        102: "ERROR: {unknownName} -> Unknown Variable! {description} | {name} {base} {function}"  
+    }
+    
+    def __init__(self, error_code, **kwargs):
+        """
+        101: "ERROR: {name} has no function # {function}! ({type})   | {name} {base} {function}"\r\n
+        102: "ERROR: {name} -> Unknown Variable! {description} | {name} {base} {function}  
+        
+        Args:
+            error_code (_type_): _description_
+        """     
+        self.error_code = error_code
+        self.message = self.ERROR_MESSAGES.get(error_code, "Unknown error.").format(**kwargs)
+        self.handle()
+        
+    def handle(self):
+        print(f"[{self.error_code}]  {self.message}")
+        quit(self.error_code)
 
 
 def checkValueForType(value: str, type: str):
@@ -72,7 +95,6 @@ def changeType(name: str, newType: str, variables: dict):
     
     
 
-    
 
 
 class Variable:    
@@ -100,8 +122,8 @@ class Variable:
                     case "CT":
                         self.changeType(paramsList[0])
                     case _:
-                        print(f"ERROR: {self.name} has no function # {function}! ({self.type})   | {self.name} {self.base} {self.function}")        # ERROR-MESSAGE-HERE
-                        quit()
+                        raise Error(101, name=self.name, function=function, type=self.type, base=self.base)
+
             case "?":
                 match function:
                     case "push":
@@ -113,8 +135,8 @@ class Variable:
                     case "w":
                         self.write(paramsList[0], variables)
                     case _:
-                        print(f"ERROR: {self.name} has no function ? {function}! ({self.type})   | {self.name} {self.base} {self.function}")        # ERROR-MESSAGE-HERE
-                        quit()
+                        raise Error(101, name=self.name, function=function, type=self.type, base=self.base)
+
        
     def changeType(self, newType):
         compatibleTypes = ["PT", "INT", "FLOAT"]
@@ -213,15 +235,13 @@ class LIST:
             case "#":
                 match function:
                     case _:
-                        print(f"ERROR: {self.name} has no function # {function}! ({self.type})   | {self.name} {self.base} {self.function}")        # ERROR-MESSAGE-HERE
-                        quit()
+                        raise Error(101, name=self.name, function=function, type=self.type, base=self.base)
             case "?":
                 match function:
                     case "SET":
                         self.setValue(paramsList[0], paramsList[1], variables)
                     case _:
-                        print(f"ERROR: {self.name} has no function ? {function}! ({self.type})   | {self.name} {self.base} {self.function}")        # ERROR-MESSAGE-HERE
-                        quit()
+                        raise Error(101, name=self.name, function=function, type=self.type, base=self.base)
 
     def setValue(self, pos, value, variables):
         pos = str(pos)
@@ -232,8 +252,8 @@ class LIST:
                     posVar = variables[name]
                     pos = int(posVar.value)
                 except Exception as e:
-                    print(f"ERROR: Position variable {name} not found!")        # ERROR-MESSAGE-HERE
-                    quit()
+                    Error(102, unknownName=name, name=self.name, base=self.base, function=self.function, description="Postion variable")
+
             else:
                 pos = int(pos)
             
@@ -270,8 +290,7 @@ class LIST:
                 posVar = variables[name]
                 pos = int(posVar.value)
             except Exception as e:
-                print(f"ERROR: Position variable {name} not found!")        # ERROR-MESSAGE-HERE
-                quit()
+                Error(102, unknownName=name, name=self.name, base=self.base, function=self.function, description="Postion variable")
         if int(pos) == 0:
             print("ERROR: Invalid position!")
             quit()
@@ -334,8 +353,7 @@ class MO:
             case "#":
                 match function:
                     case _:
-                        print(f"ERROR: {self.name} has no function # {function}! ({self.type})   | {self.name} {self.base} {self.function}")        # ERROR-MESSAGE-HERE
-                        quit()
+                        raise Error(101, name=self.name, function=function, type=self.type, base=self.base)
             case "?":
                 match function:
                     case function if function.startswith("("):
@@ -343,8 +361,7 @@ class MO:
                         self.setEquation(function)
                         self.prepare(variables)
                     case _:
-                        print(f"ERROR: {self.name} has no function ? {function}! ({self.type})   | {self.name} {self.base} {self.function}")        # ERROR-MESSAGE-HERE
-                        quit()
+                        raise Error(101, name=self.name, function=function, type=self.type, base=self.base)
                 
     def setEquation(self, equation):
         self.equation = equation
@@ -374,6 +391,7 @@ class MO:
                         self.calculation += str(variables.get(variablestr).value)
                         variablestr, in_var = "", False
                     except Exception as e:
+                        Error(102, unknownName=variablestr, name=self.name, base=self.base, function=self.function, description="variable for calculation")
                         print(f"ERROR: {self.name} -> Unknown Variable! ({variablestr})")        # ERROR-MESSAGE-HERE
                         quit()
                 else:
@@ -425,8 +443,7 @@ class FUNC:
             case "#":
                 match function:
                     case _:
-                        print(f"ERROR: {self.name} has no function # {function}! ({self.type})   | {self.name} {self.base} {self.function}")        # ERROR-MESSAGE-HERE
-                        quit()
+                        raise Error(101, name=self.name, function=function, type=self.type, base=self.base)
             case "?":
                 match function:
                     case function if function.startswith("("):
@@ -436,8 +453,7 @@ class FUNC:
                     case "call":
                         self.call(variables)
                     case _:
-                        print(f"ERROR: {self.name} has no function ? {function}! ({self.type})   | {self.name} {self.base} {self.function}")        # ERROR-MESSAGE-HERE
-                        quit()
+                        raise Error(101, name=self.name, function=function, type=self.type, base=self.base)
 
 
     def setEquation(self, equation, variables):
@@ -485,15 +501,13 @@ class CO:
             case "#":
                 match function:
                     case _:
-                        print(f"ERROR: {self.name} has no function # {function}! ({self.type})   | {self.name} {self.base} {self.function}")        # ERROR-MESSAGE-HERE
-                        quit()
+                        raise Error(101, name=self.name, function=function, type=self.type, base=self.base)
             case "?":
                 match function:
                     case function if function.startswith("("):
                         self.setCondition(function, variables)
                     case _:
-                        print(f"ERROR: {self.name} has no function ? {function}! ({self.type})   | {self.name} {self.base} {self.function}")        # ERROR-MESSAGE-HERE
-                        quit()
+                        raise Error(101, name=self.name, function=function, type=self.type, base=self.base)
 
     def setCondition(self, condition, variables):
         self.rawCondition = condition
@@ -576,8 +590,7 @@ class IF:
                 match function:
 
                     case _:
-                        print(f"ERROR: {self.name} has no function # {function}! ({self.type})   | {self.name} {self.base} {self.function}")        # ERROR-MESSAGE-HERE
-                        quit()
+                        raise Error(101, name=self.name, function=function, type=self.type, base=self.base)
             case "?":
                 match function:
                     case "ELSE":
@@ -591,8 +604,7 @@ class IF:
                     case "END":
                         return currentIndex
                     case _:
-                        print(f"ERROR: {self.name} has no function ? {function}! ({self.type})   | {self.name} {self.base} {self.function}")        # ERROR-MESSAGE-HERE
-                        quit()
+                        raise Error(101, name=self.name, function=function, type=self.type, base=self.base)
 
     def checkCondition(self, variables):
         if variables.get(self.conditionObjectName).value == "~1":
@@ -645,16 +657,14 @@ class LOOP:
             case "#":
                 match function:
                     case _:
-                        print(f"ERROR: {self.name} has no function # {function}! ({self.type})   | {self.name} {self.base} {self.function}")        # ERROR-MESSAGE-HERE
-                        quit()
+                        raise Error(101, name=self.name, function=function, type=self.type, base=self.base)
             case "?":
                 match function:
                     case "END":
                         index = self.loopEnd(currentIndex, variables)
                         return index
                     case _:
-                        print(f"ERROR: {self.name} has no function ? {function}! ({self.type})   | {self.name} {self.base} {self.function}")        # ERROR-MESSAGE-HERE
-                        quit()
+                        raise Error(101, name=self.name, function=function, type=self.type, base=self.base)
     
     def setCondition(self, conditionObjectName, variables):
         if conditionObjectName.isalpha():
@@ -706,15 +716,13 @@ class RNG:
             case "#":
                 match function:
                     case _:
-                        print(f"ERROR: {self.name} has no function # {function}! ({self.type})   | {self.name} {self.base} {self.function}")        # ERROR-MESSAGE-HERE
-                        quit()
+                        raise Error(101, name=self.name, function=function, type=self.type, base=self.base)
             case "?":
                 match function:
                     case "CR":
                         self.setRange(paramsList[0])
                     case _:
-                        print(f"ERROR: {self.name} has no function ? {function}! ({self.type})   | {self.name} {self.base} {self.function}")        # ERROR-MESSAGE-HERE
-                        quit()
+                        raise Error(101, name=self.name, function=function, type=self.type, base=self.base)
     
     def setRange(self, rngRange):
         try:
@@ -832,14 +840,12 @@ class LIB:
                 match function:
                     
                     case _:
-                        print(f"ERROR: {self.name} has no function # {function}! ({self.type})   | {self.name} {self.base} {self.function}")        # ERROR-MESSAGE-HERE
-                        quit()
+                        raise Error(101, name=self.name, function=function, type=self.type, base=self.base)
             case "?":
                 match function:
 
                     case _:
-                        print(f"ERROR: {self.name} has no function ? {function}! ({self.type})   | {self.name} {self.base} {self.function}")        # ERROR-MESSAGE-HERE
-                        quit()
+                        raise Error(101, name=self.name, function=function, type=self.type, base=self.base)
     
     def setLib(self):
         try:
@@ -853,3 +859,7 @@ class LIB:
         except ImportError as e:
             print(f"ERROR: {self.name} cant import library! ({self.libPath}.{self.libName})   | {self.name} {self.base} {self.function}")        # ERROR-MESSAGE-HERE
             quit()
+            
+            
+if __name__ == "__main__":
+    raise Error(101, name="Main", function="Main", type="Main", base="#")

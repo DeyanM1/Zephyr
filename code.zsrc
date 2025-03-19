@@ -1,18 +1,20 @@
 {
-    "0::a # PT:Hello": {
+    "0::a # LIST:PT|Hello": {
         "name": "a",
         "base": "#",
-        "function": "PT",
+        "function": "LIST",
         "paramsList": [
+            "PT",
             "Hello"
         ]
     },
-    "1::a ? pussh:": {
+    "1::a ? SET:'b2'|Hello2": {
         "name": "a",
         "base": "?",
-        "function": "pussh",
+        "function": "SET",
         "paramsList": [
-            ""
+            "'b2'",
+            "Hello2"
         ]
     }
 }

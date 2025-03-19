@@ -1,6 +1,3 @@
-#TODO: Libraries
-
-
 import json
 import time
 from functions import *
@@ -117,7 +114,6 @@ def compiler(filename: str, fileDirectory: str = "."):
         
         
         
-        
         if function in TYPES:
             match function:
                 case "INT"|"PT"|"FLOAT":
@@ -180,10 +176,15 @@ def compiler(filename: str, fileDirectory: str = "."):
                             print(f"ERROR: {name} has no function # {function}! | {name} {base} {function}")
                             quit()
         
-
+        
+        elif name not in variables.keys():
+            Error(102, name=name, base=base, function=function, description="")
+    
+    
         elif function == "CT" and variables[name].type not in ["INT", "PT", "FLOAT"]:
             variables = changeType(name, paramsList[0], variables)
-            
+         
+
         else:               
             match variables[name].type:
                 case "INT"|"PT"|"FLOAT"|"LIST"|"MO"|"FUNC"|"CO"|"RNG":
@@ -192,6 +193,7 @@ def compiler(filename: str, fileDirectory: str = "."):
                     currentIndex = variables[name].matchFunction(base, function, paramsList, variables, currentIndex)
                 case "LIB":
                     variables = variables[name].matchFunction(base, function, paramsList, variables)
+                    
 
         
         

@@ -3,22 +3,37 @@
 
 ---
 # Table of Contents
-1. [Syntax Overview](#syntax-overview)
-2. [Types](#types)
-3. [Basic info](#basic-info)
-4. [Types Explained](#types-explained)  
-4.1 [Variables](#variables)  
-4.2 [Built-in Functions](#built-in-functions)   
-4.3 [List](#lists)  
-4.4 [AList](#alists)  
-4.5 [Math Object](#math-object)    
-4.6 [Function](#function)    
-4.7 [Conditional Object](#conditional-object)  
-4.8 [Loop](#loop)  
-4.9 [Random Number Generator](#random-number-generator)  
-4.10 [Predefined Variables](#predefined-variables)  
-4.11 [Libraries](#libraries)  
-5. [Conclusion](#conclusion)  
+- [Zephyr Documentation](#zephyr-documentation)
+- [Table of Contents](#table-of-contents)
+  - [Syntax Overview](#syntax-overview)
+  - [Types](#types)
+  - [Basic Info](#basic-info)
+    - [Extensions](#extensions)
+    - [Run a file](#run-a-file)
+- [ERROR Handling](#error-handling)
+  - [Different Error types](#different-error-types)
+- [Types Explained](#types-explained)
+  - [Variables](#variables)
+    - [Declaring Variables](#declaring-variables)
+    - [Changing Type](#changing-type)
+    - [Modifying Values](#modifying-values)
+    - [Input and Output](#input-and-output)
+  - [Built-in Functions](#built-in-functions)
+  - [Lists](#lists)
+  - [ALIST](#alist)
+  - [Math Object](#math-object)
+  - [Function](#function)
+  - [Function RES](#function-res)
+  - [Function VC](#function-vc)
+  - [Conditional Object](#conditional-object)
+  - [IF statement](#if-statement)
+  - [Loop](#loop)
+  - [Random Number Generator](#random-number-generator)
+    - [Changing Range](#changing-range)
+  - [Predefined Variables](#predefined-variables)
+  - [Libraries](#libraries)
+    - [Creating a Library](#creating-a-library)
+  - [Conclusion](#conclusion)
 
 
 
@@ -88,6 +103,13 @@ LIB_FOLDER_NAME = "<libraryFolderName>"
 
 TODO: Add run .zsrc file in main.py
 
+----
+# ERROR Handling
+## Different Error types
+1. **[101]** -> Unknown command
+
+
+
 -----
 # Types Explained
 
@@ -100,7 +122,7 @@ TODO: Add run .zsrc file in main.py
 <VariableName> # <Type>:<Value>(|<~1>/<~0>);
 ```
 
-- **Type**: The data type of the variable.
+- **Type**: The data *type* of the variable.
 - **Value**: The initial value of the variable.
 
 - **~1/~0**: Optional flags for constants.
@@ -108,7 +130,7 @@ TODO: Add run .zsrc file in main.py
 **Examples:**
 
 - Declare an integer:
-  ```zephyr
+  ```zephyr 
   counter # INT:10;
   ```
 - Declare a constant text:
@@ -116,7 +138,6 @@ TODO: Add run .zsrc file in main.py
   message # PT:"Hello World"|~1;
   ```
 
-Variables **cant** have numbers in them!!
 
 ### Changing Type
 
@@ -163,7 +184,7 @@ Variables **cant** have numbers in them!!
 
 
 
-## Input and Output
+### Input and Output
 
 **Print a value:**
 

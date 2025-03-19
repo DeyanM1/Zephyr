@@ -1,3 +1,4 @@
+a # LIST:PT|Hello;
 
-a # PT:Hello;                                                                               
-a ? pussh:;
+
+a ? SET:'b2'|Hello2;
