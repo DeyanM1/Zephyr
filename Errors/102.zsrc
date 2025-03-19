@@ -1,14 +1,14 @@
 {
-    "0::a # INT:56": {
+    "0::a # PT:abc": {
         "name": "a",
         "base": "#",
-        "function": "INT",
+        "function": "PT",
         "paramsList": [
-            "56"
+            "abc"
         ]
     },
-    "1::a ? push:": {
-        "name": "a",
+    "1::b ? push:": {
+        "name": "b",
         "base": "?",
         "function": "push",
         "paramsList": [

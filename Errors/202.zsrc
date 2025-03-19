@@ -1,0 +1,27 @@
+{
+    "0::a # LIST:INT|1": {
+        "name": "a",
+        "base": "#",
+        "function": "LIST",
+        "paramsList": [
+            "INT",
+            "1"
+        ]
+    },
+    "1::b # INT:0": {
+        "name": "b",
+        "base": "#",
+        "function": "INT",
+        "paramsList": [
+            "0"
+        ]
+    },
+    "2::b ? w:'a<5>'": {
+        "name": "b",
+        "base": "?",
+        "function": "w",
+        "paramsList": [
+            "'a<5>'"
+        ]
+    }
+}

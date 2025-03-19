@@ -11,17 +11,19 @@ LIB_DIRECTORY = "lib"
 
 EXAMPLE_NAMES = ["variables.zph", "buildInFunctions.zph", "list.zph", "MathObject.zph", "function.zph", "conditionalObject.zph", "ifStatement.zph", "ifElseStatement.zph", "loop.zph", "rng.zph", "predefVars1.zph", "predefVars2.zph", "libraries.zph"]
 PROJECT_NAMES = ["sumCalculator", "guessNumber", "piApproximator"]
-CURRENT_ELEMENT = 2
+ERROR_NAMES = ["101.zph", "102.zph", "110.zph", "201.zph", "202.zph", "203.zph", "204.zph", "205.zph"]
+CURRENT_ELEMENT = 1
 
 
 #FILE_DIRECTORY = "Examples" 
 #FILE_NAME = EXAMPLE_NAMES[CURRENT_ELEMENT-1]
 
-
+FILE_DIRECTORY = "Errors"
+FILE_NAME = ERROR_NAMES[CURRENT_ELEMENT-1]
 #FILE_DIRECTORY = f"Projects/{PROJECT_NAMES[CURRENT_ELEMENT-1]}" 
-FILE_NAME = "code.zph"
 
-FILE_DIRECTORY = f"." 
+#FILE_NAME = "code.zph"
+#FILE_DIRECTORY = f"." 
 
 def lexer(filename: str, fileDirectory: str = "."):
     """_summary_
@@ -173,12 +175,12 @@ def compiler(filename: str, fileDirectory: str = "."):
                                 var = PredefVar(name, base, function, paramsList, fileDirectory, variables)
                             var.dump()
                         case _:
-                            print(f"ERROR: {name} has no function # {function}! | {name} {base} {function}")
-                            quit()
+                            raise Error(101, name=name, function=function, type="BuildIn", base=base)
+
         
         
         elif name not in variables.keys():
-            Error(102, name=name, base=base, function=function, description="")
+            Error(102, unknownName=name, name=name, base=base, function=function, description="")
     
     
         elif function == "CT" and variables[name].type not in ["INT", "PT", "FLOAT"]:

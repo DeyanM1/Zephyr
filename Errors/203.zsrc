@@ -1,0 +1,10 @@
+{
+    "0::a # FUNC:RE": {
+        "name": "a",
+        "base": "#",
+        "function": "FUNC",
+        "paramsList": [
+            "RE"
+        ]
+    }
+}

@@ -107,6 +107,7 @@ TODO: Add run .zsrc file in main.py
 # ERROR Handling
 ## Different Error types
 1. **[101]** -> Unknown command
+2. **[102]**
 
 
 

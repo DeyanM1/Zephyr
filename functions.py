@@ -22,25 +22,38 @@ BOOL_TRANSFORM = {"~0": False, "~1": True}
 
 class Error(Exception):
     ERROR_MESSAGES = {
-        101: "ERROR: {name} has no function # {function}! ({type})   | {name} {base} {function}",
-        102: "ERROR: {unknownName} -> Unknown Variable! {description} | {name} {base} {function}"  
+        101: "ERROR: {type} has no function # {function}! ({name})   | {name} {base} {function}", # *
+        102: "ERROR: {unknownName} -> Unknown Variable! {description} | {name} {base} {function}", # *
+        110: "ERROR: {type} != {descriptionChild} -> unsupported type! \n{description} | {name} {base} {function}", # *
+        201: "ERROR: {type} != PT -> Only PT type is pushable! | {name} {base} {function}", # Variable
+        202: "ERROR: {index} -> Invalid positional Value! \n{description} | {name} {base} {function}", # Variable, LIST
+        203: "ERROR: {returnFunction} -> Invalid return function! | {name} {base} {function}", # FUNC
+        204: "ERROR: {descriptionChild} -> {description} | {name} {base} {function}", # CO
+        205: "ERROR: {libName} -> cant import library! ({libPath}.{libName}) | {name} {base} {function}", # RNG
     }
     
-    def __init__(self, error_code, **kwargs):
+    def __init__(self, errorCode, **kwargs):
         """
-        101: "ERROR: {name} has no function # {function}! ({type})   | {name} {base} {function}"\r\n
-        102: "ERROR: {name} -> Unknown Variable! {description} | {name} {base} {function}  
+        101: "ERROR: {type} has no function # {function}! ({name})   | {name} {base} {function}", # *\n
+        102: "ERROR: {unknownName} -> Unknown Variable! {description} | {name} {base} {function}", # *\n
+        110: "ERROR: {type} != {descriptionChild} -> unsupported type! \n{description} | {name} {base} {function}", # *\n
+        201: "ERROR: {type} != PT -> Only PT type is pushable! | {name} {base} {function}", # Variable\n
+        202: "ERROR: {index} -> Invalid positional Value! \n{description} | {name} {base} {function}", # Variable, LIST\n
+        203: "ERROR: {returnFunction} -> Invalid return function! | {name} {base} {function}", # FUNC\n
+        204: "ERROR: {descriptionChild} -> {description} | {name} {base} {function}", # CO\n
+        205: "ERROR: {libName} -> cant import library! ({libPath}.{libName}) | {name} {base} {function}", # RNG\n
+
         
         Args:
             error_code (_type_): _description_
         """     
-        self.error_code = error_code
-        self.message = self.ERROR_MESSAGES.get(error_code, "Unknown error.").format(**kwargs)
+        self.errorCode = errorCode
+        self.message = self.ERROR_MESSAGES.get(errorCode, "Unknown error.").format(**kwargs)
         self.handle()
         
     def handle(self):
-        print(f"[{self.error_code}]  {self.message}")
-        quit(self.error_code)
+        print(f"[{self.errorCode}]  {self.message}")
+        quit(self.errorCode)
 
 
 def checkValueForType(value: str, type: str):
@@ -85,8 +98,8 @@ def changeType(name: str, newType: str, variables: dict):
         case "MO"|"FUNC"|"CO"|"RNG":
             compatibleTypes = ["PT", "INT", "FLOAT"]
             if newType not in compatibleTypes:
-                print(f"ERROR: {variables[name].name} CT -> new Type not supported   | {variables[name].name} {variables[name].base} {variables[name].function} ")        # ERROR-MESSAGE-HERE
-                quit()
+                raise Error(110, type=variables[name].type, descriptionChild=newType, description="new Type not supported", name=variables[name].name, base=variables[name].base, function=variables[name].function)
+
                 
             var = Variable(variables[name].name, variables[name].base, newType, [variables[name].value, False], variables)
             variables.update({variables[name].name: var})
@@ -142,20 +155,22 @@ class Variable:
         compatibleTypes = ["PT", "INT", "FLOAT"]
 
         if newType not in compatibleTypes:
-            print(f"ERROR: {self.name} CT -> new Type not supported   | {self.name} {self.base} {self.function} ")        # ERROR-MESSAGE-HERE
-            quit()
+            raise Error(110, type=self.type, descriptionChild=newType, description="new Type not supported", 
+                  name=self.name, base=self.base, function=self.function)
+
    
         if checkValueForType(self.value, newType) == False:
-            print(f"ERROR: {self.name} CT -> Current Value no compatible with new Type!   | {self.name} {self.base} {self.function} ")        # ERROR-MESSAGE-HERE
-            quit()
+            raise Error(110, type=self.value, descriptionChild=newType, description="Value not compatible with new Type", 
+                  name=self.name, base=self.base, function=self.function)
+
         self.type = newType
             
     def push(self):
         if self.type == "PT":
             print(f"PUSH: {self.value}")
         else:
-            print(f"ERROR: {self.name} -> Only type 'PT' is pushable!   | {self.name} {self.base} {self.function} ")        # ERROR-MESSAGE-HERE
-            quit()
+            raise Error(201, type=self.type, name=self.name, base=self.base, function=self.function)
+
  
     def write(self, newValue, variables):
         newValue = str(newValue)
@@ -167,9 +182,14 @@ class Variable:
             if "<" in var and ">" in var:
                 varName, varIndex = var.split("<")
                 varIndex = varIndex.replace(">", "")
+                
+                if varName not in variables.keys():
+                    raise Error(202, index=varName, description="Index Variable not found!",
+                                name=self.name, base=self.base, function=self.function)
+
                 if variables[varName].type != "LIST":
-                    print(f"ERROR: {self.name} w -> Unexpected positional value! {varIndex} in {varName}  | {self.name} {self.base} {self.function} ")        # ERROR-MESSAGE-HERE
-                    quit()
+                    raise Error(202, index=varName, description="Index Variable not a LIST!",
+                                name=self.name, base=self.base, function=self.function)
                 
                 self.value = str(variables[varName].getValue(varIndex, variables))
                 self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "const: ": self.const}
@@ -202,8 +222,8 @@ class Variable:
                 self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "const: ": self.const}
 
             else:
-                print(f"ERROR: {self.name} -> new Value incompatible with type ({self.type})!   | {self.name} {self.base} {self.function} ")        # ERROR-MESSAGE-HERE
-                quit()
+                raise Error(110, type=self.value, descriptionChild=self.type, description="Value not compatible with new Type", 
+                  name=self.name, base=self.base, function=self.function)
 
     def INPUT(self, message, variables):
         value = input(message)
@@ -252,7 +272,7 @@ class LIST:
                     posVar = variables[name]
                     pos = int(posVar.value)
                 except Exception as e:
-                    Error(102, unknownName=name, name=self.name, base=self.base, function=self.function, description="Postion variable")
+                    raise Error(102, unknownName=name, name=self.name, base=self.base, function=self.function, description="Postion variable")
 
             else:
                 pos = int(pos)
@@ -261,8 +281,8 @@ class LIST:
 
             
             if int(pos) == 0:
-                print("ERROR: Invalid position!")
-                quit()
+                raise Error(202, index=pos, description="Position cant be 0", name=self.name, base=self.base, function=self.base)
+
             elif pos >= 0:
                 pos = pos-1
                 # Treat as a positive index for self.data
@@ -290,10 +310,9 @@ class LIST:
                 posVar = variables[name]
                 pos = int(posVar.value)
             except Exception as e:
-                Error(102, unknownName=name, name=self.name, base=self.base, function=self.function, description="Postion variable")
+                raise Error(102, unknownName=name, name=self.name, base=self.base, function=self.function, description="Postion variable")
         if int(pos) == 0:
-            print("ERROR: Invalid position!")
-            quit()
+            raise Error(202, index=pos, description="Position cant be 0", name=self.name, base=self.base, function=self.base)
         
         elif int(pos) > 0:
             pos = int(pos)-1
@@ -301,8 +320,8 @@ class LIST:
                 return self.data[pos]
 
             except IndexError:
-                print("ERROR: Index out of range")
-                quit()
+                raise Error(202, index=pos, description="Index is out of range", name="", base="", function="")
+
         
         else:
             pos = abs(int(pos)+1)
@@ -310,9 +329,8 @@ class LIST:
                 return self.negData[pos]
 
             except IndexError:
-                print("ERROR: Index out of range")
-                quit()            
-                             
+                raise Error(202, index=pos, description="Index is out of range", name="", base="", function="")
+                            
 class MO:
     def __init__(self, name, base, function, paramsList, variables):
         """
@@ -385,15 +403,12 @@ class MO:
                 if in_var:
                     try:
                         if variables.get(variablestr).type not in ["INT", "FLOAT"]:
-                            print(f"ERROR: {self.name} -> incompatible variable for calculation! ({variablestr})  | {self.name} {self.base} {self.function} ")        # ERROR-MESSAGE-HERE
-                            quit()
+                            raise Error(110, type=variables.get(variablestr).type, descriptionChild="INT/FLOAT", description="incompatible variable for calculation!", name=self.name, base=self.base, function=self.function)
                             
                         self.calculation += str(variables.get(variablestr).value)
                         variablestr, in_var = "", False
                     except Exception as e:
-                        Error(102, unknownName=variablestr, name=self.name, base=self.base, function=self.function, description="variable for calculation")
-                        print(f"ERROR: {self.name} -> Unknown Variable! ({variablestr})")        # ERROR-MESSAGE-HERE
-                        quit()
+                        raise Error(102, unknownName=variablestr, name=self.name, base=self.base, function=self.function, description="variable for calculation")
                 else:
                     in_var = True
 
@@ -426,8 +441,12 @@ class FUNC:
             if paramsList[1] != "": 
                 self.const = BOOL_TRANSFORM[paramsList[1]]
         
-
-        self.return_func = paramsList[0] if paramsList[0] in RETURN_FUNCION_COMMANDS else print(f"ERROR: {self.name} Unknown return function command {paramsList[0]}!   | {self.name} {self.base} {self.function}")        # ERROR-MESSAGE-HERE
+        if paramsList[0] in RETURN_FUNCION_COMMANDS:
+            self.return_func = paramsList[0]
+        else:
+            raise Error(203, returnFunction=paramsList[0], name=self.name, base=base, function=function)
+        
+        
         self.MathObject = None
         
         self.base = base    # FOR ERRORS
@@ -529,8 +548,8 @@ class CO:
             elif elem == "'": 
                 if in_var:
                     if variables[variablestr].type != "INT" and variables[variablestr].type != "FLOAT":
-                        print(f"ERROR: {self.name} -> incompatible variable for condition! ({variablestr})  | {self.name} {self.base} {self.function} ")        # ERROR-MESSAGE-HERE
-                        quit()
+                        raise Error(110, type=variables[variablestr].type, descriptionChild="INT/FLOAT",
+                              description="incompatible variable for condition!", name=self.name, base=self.base, function=self.function)
                     editCondition += str(variables[variablestr].value)
                     variablestr, in_var = "", False
                     
@@ -554,8 +573,7 @@ class CO:
             
 
         except Exception:
-            print(f"ERROR: {self.condition} is not a valid condition!")        # ERROR-MESSAGE-HERE
-            quit()
+            raise Error(204, descriptionChild=self.condition, description="Invalid condition!", name=self.name, base=self.base, function=self.function)
   
 class IF:
     def __init__(self, name, base, function, paramsList, variables, startIndex):
@@ -730,8 +748,8 @@ class RNG:
             rangeMin, rangeMax = int(rangeMin), int(rangeMax)
             self.rngRange = [rangeMin, rangeMax]
         except Exception as e:
-            print(f"ERROR: {self.name} RNG-Range not accepted! ({rngRange})   | {self.name} {self.base} {self.function}")        # ERROR-MESSAGE-HERE
-            quit()
+            raise Error(204, descriptionChild=rngRange, description="Invalid RNG-Range!", name=self.name, base=self.base, function=self.function)
+
 
         
         self.generateRNG()
@@ -857,9 +875,4 @@ class LIB:
                             "libName": self.libName}
 
         except ImportError as e:
-            print(f"ERROR: {self.name} cant import library! ({self.libPath}.{self.libName})   | {self.name} {self.base} {self.function}")        # ERROR-MESSAGE-HERE
-            quit()
-            
-            
-if __name__ == "__main__":
-    raise Error(101, name="Main", function="Main", type="Main", base="#")
+            raise Error(205, libName=self.libName, libPath=self.libPath, name=self.name, base=self.base, function=self.function)

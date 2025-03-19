@@ -1,0 +1,18 @@
+{
+    "0::a # PT:10a": {
+        "name": "a",
+        "base": "#",
+        "function": "PT",
+        "paramsList": [
+            "10a"
+        ]
+    },
+    "1::a # CT:MO": {
+        "name": "a",
+        "base": "#",
+        "function": "CT",
+        "paramsList": [
+            "MO"
+        ]
+    }
+}

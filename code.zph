@@ -1,4 +1,3 @@
-a # LIST:PT|Hello;
+a # INT:56;
 
-
-a ? SET:'b2'|Hello2;
+a ? push:;
