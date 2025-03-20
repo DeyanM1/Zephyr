@@ -1,5 +1,9 @@
+<style>
+  body {
+    font-family: Fira Code, sans-serif;
+  }
+</style>
 # Zephyr Documentation
-
 
 ---
 # Table of Contents
@@ -9,9 +13,9 @@
   - [Types](#types)
   - [Basic Info](#basic-info)
     - [Extensions](#extensions)
-    - [Run a file](#run-a-file)
-- [ERROR Handling](#error-handling)
-  - [Different Error types](#different-error-types)
+    - [Run a File](#run-a-file)
+- [Error Handling](#error-handling)
+  - [Different Error Types](#different-error-types)
 - [Types Explained](#types-explained)
   - [Variables](#variables)
     - [Declaring Variables](#declaring-variables)
@@ -26,7 +30,7 @@
   - [Function RES](#function-res)
   - [Function VC](#function-vc)
   - [Conditional Object](#conditional-object)
-  - [IF statement](#if-statement)
+  - [IF Statement](#if-statement)
   - [Loop](#loop)
   - [Random Number Generator](#random-number-generator)
     - [Changing Range](#changing-range)
@@ -34,8 +38,6 @@
   - [Libraries](#libraries)
     - [Creating a Library](#creating-a-library)
   - [Conclusion](#conclusion)
-
-
 
 ## Syntax Overview
 
@@ -46,44 +48,44 @@
 <--------------------------command------------------------->
 ```
 
+- **VariableName**: The name of the variable, user-defined.
+- **base**: The base of the variable, used to define its operation:
+  - **?**: For variable operations (e.g., modifying or retrieving values).
+  - **#**: For declaring variables or changing their types.
+- **function**: The operation to execute on the variable (e.g., printing, defining a function).
+- **arguments**: Additional information passed to the function.
+- **command**: The entire statement.
 
-- **VariableName**: The name of the variable, it is user defined
-- **base**: The Base of the variable is used to define what is being done to the variable it is language construct:
-**?**: Used for variable operations (e.g., modifying or retrieving values).
-**#**: Used for declaring variables or changing their types.
-- **function**: The function is the thing to be executed as the variable (e.g. printing / defining a function, etc.), its a language construct too
-- **arguments**: The arguments are used to pass more information to the function
-- **command**: The entire thing combined is called command
 ---
 
 ## Types
 
-- **Variable**: Simple variable Types: (INT, FLOAT, PT)  
-- **__**: Built-in Functions
-- **LIST**: Lists
-- **ALIST**: Allocated Lists
-- **MO**: Math Object
-- **FUNC**: Function
-- **CO**: Conditional Object
-- **LOOP**: Loop
-- **RNG**: Random Number Generator
-- **PredefVar**: Predefined variable
-- **LIB**: Library
+- **Variable**: Simple variable types (INT, FLOAT, PT).  
+- **__**: Built-in functions.  
+- **LIST**: Lists.  
+- **ALIST**: Allocated lists.  
+- **MO**: Math object.  
+- **FUNC**: Function.  
+- **CO**: Conditional object.  
+- **LOOP**: Loop.  
+- **RNG**: Random number generator.  
+- **PredefVar**: Predefined variable.  
+- **LIB**: Library.  
 
 ---
 
 ## Basic Info
 
 ### Extensions
-- **.zph**: The Zephyr code file                   (Zephyr code)
-- **.zsrc**: The Zephyr source file, for debugging (Zephyr source)
-- **.zpkg**: The Zephyr dumped variables file      (Zephyr package)
+- **.zph**: Zephyr code file.  
+- **.zsrc**: Zephyr source file for debugging.  
+- **.zpkg**: Zephyr dumped variables file.  
+  
+![](https://github.com/user-attachments/assets/58b3cce4-7ca9-4432-8cd0-45dfd3cda824#gh-dark-mode-only)
+![](https://github.com/user-attachments/assets/6c7fc8b9-c8f1-450f-bda8-6863f83aa567#gh-light-mode-only)
+![flowChart2](https://github.com/user-attachments/assets/332dac53-778b-4986-9fe6-67c22719c03e)
 
-  ![](https://github.com/user-attachments/assets/58b3cce4-7ca9-4432-8cd0-45dfd3cda824#gh-dark-mode-only)
-  ![](https://github.com/user-attachments/assets/6c7fc8b9-c8f1-450f-bda8-6863f83aa567#gh-light-mode-only)
-  ![flowChart2](https://github.com/user-attachments/assets/332dac53-778b-4986-9fe6-67c22719c03e)
-
-### Run a file
+### Run a File
 
 1. Define the folder containing your Zephyr files in main.py. Ensure the folder is in the current working directory, if nested directories: add the next name with a slash in between.  
 !WITHOUT THE LAST SLASH!
@@ -101,17 +103,31 @@ LIB_FOLDER_NAME = "<libraryFolderName>"
 ```
 4. Run the file. This will generate a .zsrc file (e.g., exampleFile.zsrc) for debugging. The file is formatted like JSON and can be executed directly.
 
-TODO: Add run .zsrc file in main.py
+**TODO:** Add functionality to run `.zsrc` files in `main.py`.
 
-----
-# ERROR Handling
-## Different Error types
-1. **[101]** -> Unknown command
-2. **[102]**
+---
 
+# Error Handling
 
+## Different Error Types
 
------
+1. **[101]** -> Type doesn't have this function.  
+2. **[102]** -> Unknown variable.  
+3. **[110]** -> Current type doesn't support new value or new type.  
+4. **[201]** -> Only PT type is pushable.  
+5. **[202]** -> Invalid positional value.  
+6. **[203]** -> Invalid return function.  
+7. **[204]** -> Invalid condition or RNG range.  
+8. **[205]** -> Unable to import library.  
+
+**Example Error Message:**
+```
+[110]: ERROR: {type} != {descriptionChild} -> unsupported type! 
+{description} | {name} {base} {function}
+```
+
+---
+
 # Types Explained
 
 ## Variables
@@ -138,7 +154,6 @@ TODO: Add run .zsrc file in main.py
   ```zephyr
   message # PT:"Hello World"|~1;
   ```
-
 
 ### Changing Type
 
@@ -181,9 +196,6 @@ TODO: Add run .zsrc file in main.py
   printableText ? w:++;
   ```
   printableText after increment: HelloWorldHelloWorld
-
-
-
 
 ### Input and Output
 
@@ -246,8 +258,6 @@ myList ? SET:'myPosVar'|'myPosValue';
 
 myNum # INT:0;
 myNum ? w:'myList<POS>';
-
-
 ```
 optionalData Syntax: ..|5,1,5,2
                      ..|test1,test2,test3
@@ -257,10 +267,6 @@ optionalData Syntax: ..|5,1,5,2
 ## ALIST
 A Allocated List is a list that does'nt fill spaces between values. It saves memory.
 The positioning an Commands are like a normal List.
-
-
-
-
 
 ## Math Object
 
@@ -308,7 +314,6 @@ Functions in Zephyr allow you to encapsulate logic and reuse it.
 - **Return Types**: `RES` (Result); `VC` (Variable changable);
 - **~ 1/~0**: Indicates if the function's behavior changes based on external variable modifications.
 
-
 ## Function RES
 **Pass an Equation to a Function:**
 
@@ -333,7 +338,6 @@ Functions in Zephyr allow you to encapsulate logic and reuse it.
   addNumbers ? call:;
   ```
 
-
 ## Function VC
 - usage:
 ```zephyr
@@ -355,7 +359,6 @@ b # INT:2;
 a2 # INT:2;
 b2 # INT:3;
 
-
 function # FUNC:VC;
 function ? ('v1'+'v2')
 
@@ -367,7 +370,6 @@ function ? call:;   -> Result == 5
 ```
 
 ---
-
 
 ## Conditional Object
 
@@ -389,8 +391,7 @@ Conditional objects return boolean values (`~1` for true, `~0` for false) based 
   isGreater # CO:('a' > 'b');
   ```
 
-
-## IF statement
+## IF Statement
 
 If statements are used to add logic to your program. 
 
@@ -398,7 +399,7 @@ If statements are used to add logic to your program.
 ```zephyr
 statement # IF:<conditionalObjectName>|<commandsInIF>;
 
-statement ? ELSE:;
+statement ? ELSE:<commandsInIF>;
 
 statement ? END:;
 ```
@@ -418,9 +419,6 @@ statement ? ELSE:1;
 
 statement ? END:;
 ``` 
-
-
-
 
 ## Loop
 
@@ -450,8 +448,6 @@ Loops in Zephyr allow you to repeat actions.
   repeatLoop ? END:;
   ```
 
-----
-
 ## Random Number Generator
 
 - usage:
@@ -474,8 +470,6 @@ Loops in Zephyr allow you to repeat actions.
 ```zephyr
 <VariableName> ? CR:<range>;
 ```
-
------
 
 ## Predefined Variables
 
@@ -500,7 +494,6 @@ The file extension is .zpkg
 }
 ```
 - Place predefined variable files in the `lib/` directory.
-
 
 !Without Extension!
 **Dump Variables used in code**
