@@ -7,7 +7,15 @@
             "10a"
         ]
     },
-    "1::a # CT:MO": {
+    "1::a # CT:INT": {
+        "name": "a",
+        "base": "#",
+        "function": "CT",
+        "paramsList": [
+            "INT"
+        ]
+    },
+    "2::a # CT:MO": {
         "name": "a",
         "base": "#",
         "function": "CT",

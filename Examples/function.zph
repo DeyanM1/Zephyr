@@ -1,7 +1,7 @@
 a # INT:5;
 b # INT:6;
 
-function # FUNC:RES|~1;
+function # FUNC:RES|~0;
 function ? ('a'+'b'):;
 
 a ? w:++;
@@ -15,7 +15,7 @@ function ? push:;
 
 ~ No Variable change
 
-function2 # FUNC:RES|~0;
+function2 # FUNC:RES|~1;
 function2 ? ('a'+'b'):;
 
 a ? w:++;
