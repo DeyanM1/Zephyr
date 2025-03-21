@@ -15,7 +15,15 @@
             "1"
         ]
     },
-    "2::func # FUNC:RES|~0": {
+    "2::number ? INPUT:Enter number to factorize > ": {
+        "name": "number",
+        "base": "?",
+        "function": "INPUT",
+        "paramsList": [
+            "Enter number to factorize > "
+        ]
+    },
+    "3::func # FUNC:RES|~0": {
         "name": "func",
         "base": "#",
         "function": "FUNC",
@@ -24,20 +32,12 @@
             "~0"
         ]
     },
-    "3::func ? ('result'*'number'):": {
+    "4::func ? ('result'*'number'):": {
         "name": "func",
         "base": "?",
         "function": "('result'*'number')",
         "paramsList": [
             ""
-        ]
-    },
-    "4::__ ? dumpVars:dumpMe": {
-        "name": "__",
-        "base": "?",
-        "function": "dumpVars",
-        "paramsList": [
-            "dumpMe"
         ]
     },
     "5::condition # CO:('number'!=1)": {

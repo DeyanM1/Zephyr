@@ -1,12 +1,10 @@
 number # INT:3;
 result # INT:1;
 
+number ? INPUT:Enter number to factorize > ;
 
 func # FUNC:RES|~0;
 func ? ('result'*'number'):;
-
-
-__ ? dumpVars:dumpMe;
 
 
 condition # CO:('number'!=1);
