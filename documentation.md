@@ -313,7 +313,7 @@ Functions in Zephyr allow you to encapsulate logic and reuse it.
 
 - **Return Types**: `RES` (Result); `VC` (Variable changable);
 - **~ 1/~0**: Indicates if the function's behavior changes based on external variable modifications.
-
+- **~ 1** Disables variable change!
 ## Function RES
 **Pass an Equation to a Function:**
 

@@ -107,9 +107,6 @@ def changeType(name: str, newType: str, variables: dict):
     return variables
     
     
-
-
-
 class Variable:    
     def __init__(self, name, base, function, paramsList, variables):
         self.const = paramsList[1] if len(paramsList) < 1 else False
@@ -408,7 +405,7 @@ class MO:
                         self.calculation += str(variables.get(variablestr).value)
                         variablestr, in_var = "", False
                     except Exception as e:
-                        raise Error(102, unknownName=variablestr, name=self.name, base=self.base, function=self.function, description="variable for calculation")
+                        raise Error(102, unknownName=variablestr, name=self.name, base="?", function="()", description="variable for calculation")
                 else:
                     in_var = True
 
@@ -539,7 +536,7 @@ class CO:
 
 
         for elem in self.rawCondition:
-            if elem in DIGITS and in_var == False: self.calculation += elem
+            if elem in DIGITS and in_var == False: editCondition += elem
             elif elem == '>': editCondition += elem
             elif elem == '<': editCondition += elem
             elif elem == '!': editCondition += elem

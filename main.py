@@ -10,17 +10,19 @@ MEASURE_TIME = False
 LIB_DIRECTORY = "lib"
 
 EXAMPLE_NAMES = ["variables.zph", "buildInFunctions.zph", "list.zph", "MathObject.zph", "function.zph", "conditionalObject.zph", "ifStatement.zph", "ifElseStatement.zph", "loop.zph", "rng.zph", "predefVars1.zph", "predefVars2.zph", "libraries.zph"]
-PROJECT_NAMES = ["sumCalculator", "guessNumber", "piApproximator"]
+PROJECT_NAMES = ["sumCalculator", "guessNumber", "piApproximator", "factorialCalculator"]
 ERROR_NAMES = ["101.zph", "102.zph", "110.zph", "201.zph", "202.zph", "203.zph", "204.zph", "205.zph"]
-CURRENT_ELEMENT = 1
+CURRENT_ELEMENT = 4
 
 
 #FILE_DIRECTORY = "Examples" 
 #FILE_NAME = EXAMPLE_NAMES[CURRENT_ELEMENT-1]
 
-FILE_DIRECTORY = "Errors"
-FILE_NAME = ERROR_NAMES[CURRENT_ELEMENT-1]
-#FILE_DIRECTORY = f"Projects/{PROJECT_NAMES[CURRENT_ELEMENT-1]}" 
+#FILE_DIRECTORY = "Errors"
+#FILE_NAME = ERROR_NAMES[CURRENT_ELEMENT-1]
+
+FILE_DIRECTORY = f"Projects/{PROJECT_NAMES[CURRENT_ELEMENT-1]}" 
+FILE_NAME = f"{PROJECT_NAMES[CURRENT_ELEMENT-1]}.zph"
 
 #FILE_NAME = "code.zph"
 #FILE_DIRECTORY = f"." 
