@@ -9,8 +9,8 @@ MEASURE_TIME = False
 
 LIB_DIRECTORY = "lib"
 
-#                     1                     2                3               4                5                   6                       7                  8                 9           10             11                12                 13            
-EXAMPLE_NAMES = ["variables.zph", "buildInFunctions.zph", "list.zph", "MathObject.zph", "function.zph", "conditionalObject.zph", "ifStatement.zph", "ifElseStatement.zph", "loop.zph", "rng.zph", "predefVars1.zph", "predefVars2.zph", "libraries.zph"]
+#                     1                     2                3               4                5                   6                       7                  8                 9           10             11                12                 13            14
+EXAMPLE_NAMES = ["variables.zph", "buildInFunctions.zph", "list.zph", "MathObject.zph", "function.zph", "conditionalObject.zph", "ifStatement.zph", "ifElseStatement.zph", "loop.zph", "rng.zph", "predefVars1.zph", "predefVars2.zph", "libraries.zph", "GPIO.zph"]
 PROJECT_NAMES = ["sumCalculator", "factorialCalculator", "guessNumber", "piApproximator", "moreMath"]
 ERROR_NAMES = ["101.zph", "102.zph", "110.zph", "201.zph", "202.zph", "203.zph", "204.zph", "205.zph"]
 #                 1           2          3         4           5          6          7          8                           
