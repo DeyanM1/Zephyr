@@ -25,7 +25,7 @@ def matchFunction(self, base, function, paramsList, variables):
                     set(variables, paramsList[0], paramsList[1])
                             
                 case "READ":
-                    variables = read(variables, paramsList[0], paramsList[1])
+                    variables = read(variables, int(paramsList[0]), paramsList[1])
                 
                 case "RESET":
                     GPIO.cleanup()
@@ -36,7 +36,7 @@ def matchFunction(self, base, function, paramsList, variables):
 def set(variables, pin, valueToSet):
     value = valueToSet
     
-    if valueToSet.startsWith("'"):
+    if valueToSet.startswith("'"):
         valueVarName = valueToSet.replace("'", "")
         if variables[valueVarName].type == "INT":
             value = variables[valueVarName].value

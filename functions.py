@@ -107,6 +107,11 @@ def changeType(name: str, newType: str, variables: dict):
     return variables
     
     
+if __name__ == "__main__":
+    print(checkValueForType("0", "PT"))
+    
+    
+    
 class Variable:    
     def __init__(self, name, base, function, paramsList, variables):
         self.const = paramsList[1] if len(paramsList) < 1 else False
@@ -651,18 +656,19 @@ class LOOP:
         self.base = base    # FOR ERRORS
         self.function = function    # FOR ERRORS
         
-        self.dumpConfig = {"name": self.name, 
-                           "type": self.type, 
-                           "value": self.value,
-                           "startIndex": self.startIndex, 
-                           "EndIndex": self.endIndex, 
-                           "Infinite": self.infinite, 
-                           "conditionObject": {
-                                "name": self.conditionObject.name, 
-                                "type": self.conditionObject.type, 
-                                "value": self.conditionObject.value, 
-                                "condition": self.conditionObject.condition
-                           }}
+        if self.infinite == False:
+            self.dumpConfig = {"name": self.name, 
+                            "type": self.type, 
+                            "value": self.value,
+                            "startIndex": self.startIndex, 
+                            "EndIndex": self.endIndex, 
+                            "Infinite": self.infinite, 
+                            "conditionObject": {
+                                    "name": self.conditionObject.name, 
+                                    "type": self.conditionObject.type, 
+                                    "value": self.conditionObject.value, 
+                                    "condition": self.conditionObject.condition
+                            }}
         
     def matchFunction(self, base, function, paramsList, variables, currentIndex):
         self.base = base
@@ -686,14 +692,14 @@ class LOOP:
             self.conditionObject = variables[conditionObjectName]
         elif conditionObjectName in BOOL_TRANSFORM.keys():
             self.infinite = True
-            self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value,"startIndex": self.startIndex, "EndIndex": self.endIndex, "Infinite": self.infinite, "conditionObject": {"name": self.conditionObject.name, "type": self.conditionObject.type, "value": self.conditionObject.value, "condition": self.conditionObject.condition}}            
+            self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value,"startIndex": self.startIndex, "EndIndex": self.endIndex, "Infinite": self.infinite}            
     def loopEnd(self, endIndex, variables):
         if not self.endIndex:
             self.endIndex = endIndex
         
         if self.infinite:
             index = self.startIndex
-            self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value,"startIndex": self.startIndex, "EndIndex": self.endIndex, "Infinite": self.infinite, "conditionObject": {"name": self.conditionObject.name, "type": self.conditionObject.type, "value": self.conditionObject.value, "condition": self.conditionObject.condition}}            
+            self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value,"startIndex": self.startIndex, "EndIndex": self.endIndex, "Infinite": self.infinite}            
             return index
 
             
@@ -810,7 +816,7 @@ class PredefVar:
                 self.variablesRead.update({var.name: var})
                 
             case "RNG":
-                paramsList[1] = f"{data["rngRange"][0]}->{data["rngRange"][1]}"
+                paramsList[1] = f"{data['rngRange'][0]}->{data['rngRange'][1]}"
                 var = RNG(name, base, function, paramsList, variables)
                 self.variablesRead.update({var.name: var})
         

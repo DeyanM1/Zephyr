@@ -17,8 +17,8 @@ ERROR_NAMES = ["101.zph", "102.zph", "110.zph", "201.zph", "202.zph", "203.zph",
 CURRENT_ELEMENT = 10
 
 
-FILE_DIRECTORY = "Examples" 
-FILE_NAME = EXAMPLE_NAMES[CURRENT_ELEMENT-1]
+#FILE_DIRECTORY = "Examples" 
+#FILE_NAME = EXAMPLE_NAMES[CURRENT_ELEMENT-1]
 
 #FILE_DIRECTORY = f"Projects/{PROJECT_NAMES[CURRENT_ELEMENT-1]}" 
 #FILE_NAME = f"{PROJECT_NAMES[CURRENT_ELEMENT-1]}.zph"
@@ -26,8 +26,8 @@ FILE_NAME = EXAMPLE_NAMES[CURRENT_ELEMENT-1]
 #FILE_DIRECTORY = "Errors"
 #FILE_NAME = ERROR_NAMES[CURRENT_ELEMENT-1]
 
-#FILE_DIRECTORY = f"." 
-#FILE_NAME = "code.zph"
+FILE_DIRECTORY = f"." 
+FILE_NAME = "code.zph"
 
 def lexer(filename: str, fileDirectory: str = "."):
     """_summary_
