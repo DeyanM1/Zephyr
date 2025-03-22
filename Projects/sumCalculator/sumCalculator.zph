@@ -1,5 +1,6 @@
 sum # INT:0;
-n # INT:500;
+n # INT:1;
+n ? INPUT:Enter a number to calculate the sum -> ;
 
                             
 MO # MO:(('n'*('n'+1))/2);

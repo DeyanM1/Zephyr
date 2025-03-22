@@ -1,10 +1,10 @@
 {
-    "0::number # INT:3": {
+    "0::number # INT:52": {
         "name": "number",
         "base": "#",
         "function": "INT",
         "paramsList": [
-            "3"
+            "52"
         ]
     },
     "1::result # INT:1": {
