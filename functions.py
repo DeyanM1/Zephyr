@@ -158,7 +158,7 @@ class Variable:
                   name=self.name, base=self.base, function=self.function)
 
    
-        if checkValueForType(self.value, newType) == None:
+        if checkValueForType(str(self.value), newType) == None:
             raise Error(110, type=self.value, descriptionChild=newType, description="Value not compatible with new Type", 
                   name=self.name, base=self.base, function=self.function)
 

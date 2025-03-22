@@ -38,13 +38,12 @@ def set(variables, pin, valueToSet):
     
     if valueToSet.startswith("'"):
         valueVarName = valueToSet.replace("'", "")
-        if variables[valueVarName].type == "INT":
-            value = variables[valueVarName].value
-            
+        value = variables[valueVarName].value
+
     match value:
-        case "LOW"|"0"|"~0":
+        case "LOW"|"0"|"~0"|0:
             GPIO.output(pin, GPIO.LOW)
-        case "HIGH"|"1"|"~1":
+        case "HIGH"|"1"|"~1"|1:
             GPIO.output(pin, GPIO.HIGH)
 
 def read(variables, pin, outputVar):
