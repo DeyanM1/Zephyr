@@ -11,23 +11,23 @@ LIB_DIRECTORY = "lib"
 
 #                     1                     2                3               4                5                   6                       7                  8                 9           10             11                12                 13            
 EXAMPLE_NAMES = ["variables.zph", "buildInFunctions.zph", "list.zph", "MathObject.zph", "function.zph", "conditionalObject.zph", "ifStatement.zph", "ifElseStatement.zph", "loop.zph", "rng.zph", "predefVars1.zph", "predefVars2.zph", "libraries.zph"]
-PROJECT_NAMES = ["sumCalculator", "factorialCalculator", "guessNumber", "piApproximator"]
+PROJECT_NAMES = ["sumCalculator", "factorialCalculator", "guessNumber", "piApproximator", "moreMath"]
 ERROR_NAMES = ["101.zph", "102.zph", "110.zph", "201.zph", "202.zph", "203.zph", "204.zph", "205.zph"]
 #                 1           2          3         4           5          6          7          8                           
-CURRENT_ELEMENT = 1
+CURRENT_ELEMENT = 5
 
 
 #FILE_DIRECTORY = "Examples" 
 #FILE_NAME = EXAMPLE_NAMES[CURRENT_ELEMENT-1]
 
-#FILE_DIRECTORY = f"Projects/{PROJECT_NAMES[CURRENT_ELEMENT-1]}" 
-#FILE_NAME = f"{PROJECT_NAMES[CURRENT_ELEMENT-1]}.zph"
+FILE_DIRECTORY = f"Projects/{PROJECT_NAMES[CURRENT_ELEMENT-1]}" 
+FILE_NAME = f"{PROJECT_NAMES[CURRENT_ELEMENT-1]}.zph"
 
 #FILE_DIRECTORY = "Errors"
 #FILE_NAME = ERROR_NAMES[CURRENT_ELEMENT-1]
 
-FILE_DIRECTORY = f"." 
-FILE_NAME = "code.zph"
+#FILE_DIRECTORY = f"." 
+#FILE_NAME = "code.zph"
 
 def lexer(filename: str, fileDirectory: str = "."):
     """_summary_
@@ -156,7 +156,10 @@ def compiler(filename: str, fileDirectory: str = "."):
                     variables.update({var.name: var})
                     
                 case "LIB":
-                    libPath = f"{FILE_DIRECTORY}.{LIB_DIRECTORY}"
+                    libFileDirectory = fileDirectory.replace("/", ".")
+                    libPath = f"{libFileDirectory}.{LIB_DIRECTORY}"
+                    if libFileDirectory == "." or libFileDirectory == "":
+                        libPath = f"{LIB_DIRECTORY}"
                     var = LIB(name, base, function, paramsList, libPath, variables)
                     variables.update({var.name: var})
             
@@ -182,7 +185,6 @@ def compiler(filename: str, fileDirectory: str = "."):
                             raise Error(101, name=name, function=function, type="BuildIn", base=base)
 
         
-        
         elif name not in variables.keys():
             Error(102, unknownName=name, name=name, base=base, function=function, description="")
     
@@ -199,11 +201,7 @@ def compiler(filename: str, fileDirectory: str = "."):
                     currentIndex = variables[name].matchFunction(base, function, paramsList, variables, currentIndex)
                 case "LIB":
                     variables = variables[name].matchFunction(base, function, paramsList, variables)
-                    
 
-        
-        
-        
         currentIndex += 1
     print("\n\n", variables)
 

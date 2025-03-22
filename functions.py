@@ -844,11 +844,11 @@ class LIB:
         
         self.setLib()
 
-    def matchFunction(self, base, function, paramsList, variables):
+    def matchFunction(self, base, function, paramsList, variables) -> dict:
         self.base = base
         self.function = function
         
-        return self.libObject.search(self.name, base, function, paramsList, variables)
+        return self.libObject.matchFunction(self.name, base, function, paramsList, variables)
         
         match base:
             case "#":
