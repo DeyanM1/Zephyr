@@ -1,24 +1,14 @@
-moreMath # LIB:moreMath;
+GPIO # LIB:GPIO;
+GPIO # SETUP:BCM;
 
+GPIO ? SETUP:6|OUT;
+GPIO ? SETUP:5|IN;
 
-number # INT:5;
-moreMath ? factorial:number;
+value # INT:0;
 
-number # CT:PT;
-number ? push:;
+LOOP # LOOP:~1;
 
+    GPIO ? SET:6|'value';
+    GPIO ? READ:5|'value';
 
-number # INT:5;
-exponent # INT:2;
-moreMath ? exponentiation:number|exponent;
-
-number # CT:PT;
-number ? push:;
-
-
-number # INT:25;
-root # INT:2;
-moreMath ? root:number|root;
-
-number # CT:PT;
-number ? push:;
+LOOP ? END:;

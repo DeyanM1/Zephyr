@@ -1,6 +1,5 @@
-#import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 
-GPIO = ""
 
 def matchFunction(self, base, function, paramsList, variables):
     match base:
@@ -23,18 +22,30 @@ def matchFunction(self, base, function, paramsList, variables):
                         case "IN":
                             GPIO.setup(int(paramsList[0]), GPIO.IN)
                 case "SET":
-                    match paramsList[1]:
-                        case "LOW"|"0"|"~0":
-                            GPIO.output(paramsList[0], GPIO.LOW)
-                        case "HIGH"|"1"|"~1":
-                            GPIO.output(paramsList[0], GPIO.HIGH)
+                    set(variables, paramsList[0], paramsList[1])
+                            
                 case "READ":
                     variables = read(variables, paramsList[0], paramsList[1])
-
+                
+                case "RESET":
+                    GPIO.cleanup()
                 case _:
                     pass
     return variables
 
+def set(variables, pin, valueToSet):
+    value = valueToSet
+    
+    if valueToSet.startsWith("'"):
+        valueVarName = valueToSet.replace("'", "")
+        if variables[valueVarName].type == "INT":
+            value = variables[valueVarName].value
+            
+    match value:
+        case "LOW"|"0"|"~0":
+            GPIO.output(pin, GPIO.LOW)
+        case "HIGH"|"1"|"~1":
+            GPIO.output(pin, GPIO.HIGH)
 
 def read(variables, pin, outputVar):
     value = GPIO.input(pin)
