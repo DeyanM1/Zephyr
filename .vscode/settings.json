@@ -1,24 +1,17 @@
 {
   "material-icon-theme.files.associations": {
-    "*.zph": "./extensions/icons/zph",
-    "*.zsrc": "./extensions/icons/zsrc",
-    "*.zpkg": "./extensions/icons/zpkg"
-
+    "*.zph": "../../icons/zph",
+    "*.zsrc": "../../icons/zsrc",
+    "*.zpkg": "../../icons/zpkg"
   },
 
   "files.associations": {
     "*.zsrc": "json",
     "*.zpkg": "json"
   },
-  
-  
-  "cSpell.words": [
-    "ALIST",
-    "zpkg",
-    "zscr",
-    "zsrc"
-  ],
+
+  "cSpell.words": ["ALIST", "zpkg", "zscr", "zsrc"],
   "code-runner.executorMapByGlob": {
-    "*.zph": "python3.13 c:/Users/deyan/OneDrive/Projects/Zephyr/main.py $fileName",
-  },
+    "*.zph": "python3.13 c:/Users/deyan/OneDrive/Projects/Zephyr/main.py $fileName"
+  }
 }
