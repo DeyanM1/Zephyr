@@ -78,7 +78,7 @@ def checkValueForType(value: str, type: str):
             if re.search(FLOAT_reg, value) != None:
                 return value
     
-    return False
+    return None
 
 
 def changeType(name: str, newType: str, variables: dict):
@@ -106,10 +106,7 @@ def changeType(name: str, newType: str, variables: dict):
     
     return variables
     
-    
-if __name__ == "__main__":
-    print(checkValueForType("0", "PT"))
-    
+
     
     
 class Variable:    
@@ -161,7 +158,7 @@ class Variable:
                   name=self.name, base=self.base, function=self.function)
 
    
-        if checkValueForType(self.value, newType) == False:
+        if checkValueForType(self.value, newType) == None:
             raise Error(110, type=self.value, descriptionChild=newType, description="Value not compatible with new Type", 
                   name=self.name, base=self.base, function=self.function)
 
@@ -219,7 +216,7 @@ class Variable:
 
         
         else:  
-            if checkValueForType(newValue, self.type) != False:
+            if checkValueForType(newValue, self.type) != None:
                 self.value = newValue
                 self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "const: ": self.const}
 
@@ -267,7 +264,7 @@ class LIST:
 
     def setValue(self, pos, value, variables):
         pos = str(pos)
-        if checkValueForType(value, self.elementsType) != False:
+        if checkValueForType(value, self.elementsType) != None:
             if pos.startswith("'"):
                 try:
                     name = pos.replace("'", "")
