@@ -8,6 +8,8 @@ __ ? JUMP:7;
 
 b ? push:;
 
+__ ? WAIT:5;
+
 c ? push:;
 
 __ ? dumpVars:;

@@ -61,34 +61,34 @@
 
 ## Types
 
-- **Variable**: Simple variable types (INT, FLOAT, PT).  
-- **__**: Built-in functions.  
-- **LIST**: Lists.  
-- **ALIST**: Allocated lists.  
-- **MO**: Math object.  
-- **FUNC**: Function.  
-- **CO**: Conditional object.  
-- **LOOP**: Loop.  
-- **RNG**: Random number generator.  
-- **PredefVar**: Predefined variable.  
-- **LIB**: Library.  
+- **Variable**: Simple variable types (INT, FLOAT, PT).
+- **__**: Built-in functions.
+- **LIST**: Lists.
+- **ALIST**: Allocated lists.
+- **MO**: Math object.
+- **FUNC**: Function.
+- **CO**: Conditional object.
+- **LOOP**: Loop.
+- **RNG**: Random number generator.
+- **PredefVar**: Predefined variable.
+- **LIB**: Library.
 
 ---
 
 ## Basic Info
 
 ### Extensions
-- **.zph**: Zephyr code file.  
-- **.zsrc**: Zephyr source file for debugging.  
-- **.zpkg**: Zephyr dumped variables file.  
-  
+- **.zph**: Zephyr code file.
+- **.zsrc**: Zephyr source file for debugging.
+- **.zpkg**: Zephyr dumped variables file.
+
 ![](https://github.com/user-attachments/assets/58b3cce4-7ca9-4432-8cd0-45dfd3cda824#gh-dark-mode-only)
 ![](https://github.com/user-attachments/assets/6c7fc8b9-c8f1-450f-bda8-6863f83aa567#gh-light-mode-only)
 ![flowChart2](https://github.com/user-attachments/assets/332dac53-778b-4986-9fe6-67c22719c03e)
 
 ### Run a File
 
-1. Define the folder containing your Zephyr files in main.py. Ensure the folder is in the current working directory, if nested directories: add the next name with a slash in between.  
+1. Define the folder containing your Zephyr files in main.py. Ensure the folder is in the current working directory, if nested directories: add the next name with a slash in between.
 !WITHOUT THE LAST SLASH!
 ```python
 FILE_LIBRARY = "<FileLibrary>"
@@ -112,19 +112,19 @@ LIB_FOLDER_NAME = "<libraryFolderName>"
 
 ## Different Error Types
 
-1. **[101]** -> Type doesn't have this function.  
-2. **[102]** -> Unknown variable.  
+1. **[101]** -> Type doesn't have this function.
+2. **[102]** -> Unknown variable.
 3. **[103]** -> Keyboard interrupt
-4. **[110]** -> Current type doesn't support new value or new type.  
-5. **[201]** -> Only PT type is pushable.  
-6. **[202]** -> Invalid positional value.  
-7. **[203]** -> Invalid return function.  
-8. **[204]** -> Invalid condition or RNG range.  
-9. **[205]** -> Unable to import library.  
+4. **[110]** -> Current type doesn't support new value or new type.
+5. **[201]** -> Only PT type is pushable.
+6. **[202]** -> Invalid positional value.
+7. **[203]** -> Invalid return function.
+8. **[204]** -> Invalid condition or RNG range.
+9. **[205]** -> Unable to import library.
 
 **Example Error Message:**
 ```
-[110]: ERROR: {type} != {descriptionChild} -> unsupported type! 
+[110]: ERROR: {type} != {descriptionChild} -> unsupported type!
 {description} | {name} {base} {function}
 ```
 
@@ -149,7 +149,7 @@ LIB_FOLDER_NAME = "<libraryFolderName>"
 **Examples:**
 
 - Declare an integer:
-  ```zephyr 
+  ```zephyr
   counter # INT:10;
   ```
 - Declare a constant text:
@@ -232,8 +232,10 @@ Zephyr comes with several built-in functions that can be used without prior defi
 
 ```zephyr
 __ ? JUMP:<Line>;
+__ ? WAIT:<Seconds>;
 ```
 - **JUMP**: Jumps to a specific function, not a line.
+- **WAIT**: Wait for a specific amount of second. (To pass Variables put them in ' ')
 - **DUMPING VARIABLES** see below
 
 ---
@@ -251,7 +253,7 @@ OptionalData from 1 to +Inf
 Supported types: Variables
 **Declare a list:**
 
-- usage: 
+- usage:
 ```zephyr
 myList # LIST:<ElementsType>|optionalData;
 myList ? SET:[POS]|Data;
@@ -278,7 +280,7 @@ Math objects allow for complex calculations.
 
 - usage:
 ```zephyr
-<VariableName> # MO:; 
+<VariableName> # MO:;
 <VariableName> # MO:(<equation>);
 ```
 
@@ -395,7 +397,7 @@ Conditional objects return boolean values (`~1` for true, `~0` for false) based 
 
 ## IF Statement
 
-If statements are used to add logic to your program. 
+If statements are used to add logic to your program.
 
 **Declare a IF statement**
 ```zephyr
@@ -420,7 +422,7 @@ statement ? ELSE:1;
 ~ B is greater than A
 
 statement ? END:;
-``` 
+```
 
 ## Loop
 
@@ -535,13 +537,13 @@ Libraries in Zephyr allow for the creation of custom functions that extend the l
 - Libraries are stored in the `lib/` directory.
 
 ```plaintext
-lib/  
-├── code.zpkg  
-└── exampleLibrary.py  
-main.py  
-functions.py  
-code.zsrc  
-code.zph  
+lib/
+├── code.zpkg
+└── exampleLibrary.py
+main.py
+functions.py
+code.zsrc
+code.zph
 ```
 
 **Library Code Structure:**
