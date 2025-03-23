@@ -1,6 +1,2 @@
-b # PT:STOP;
-a # LOOP:~1;
-
-b ? push:;
-
-a ? END:;
+a # PT:Hello;
+a ? push:;

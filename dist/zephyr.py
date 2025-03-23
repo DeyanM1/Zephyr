@@ -32,17 +32,10 @@ if __name__ == "__main__":
     
     
     if args.function == "compile":
-        if args.time: t1 = time.time()
-        
-        main.lexer(args.file, args.dir)
+        main.lexer(args.file, args.dir, measureTime=args.time)
         if args.run:
-            main.compiler(args.file, args.dir)
-        
-        if args.time: t2 = time.time(); print(f"Time: {t2 - t1} seconds")
+            main.compiler(args.file, args.dir, measureTime=args.time)
         
     elif args.function == "run":
-        if args.time: t1 = time.time()
-        
-        main.compiler(args.file, args.dir)
-        
-        if args.time: t2 = time.time(); print(f"Time: {t2 - t1} seconds")
+        main.compiler(args.file, args.dir, measureTime=args.time)
+

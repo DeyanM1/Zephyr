@@ -13,9 +13,9 @@ LIB_DIRECTORY = "lib"
 #                     1                     2                3               4                5                   6                       7                  8                 9           10             11                12                 13            14
 EXAMPLE_NAMES = ["variables.zph", "buildInFunctions.zph", "list.zph", "MathObject.zph", "function.zph", "conditionalObject.zph", "ifStatement.zph", "ifElseStatement.zph", "loop.zph", "rng.zph", "predefVars1.zph", "predefVars2.zph", "libraries.zph", "GPIO.zph"]
 PROJECT_NAMES = ["sumCalculator", "factorialCalculator", "guessNumber", "piApproximator", "moreMath"]
-ERROR_NAMES = ["101.zph", "102.zph", "110.zph", "201.zph", "202.zph", "203.zph", "204.zph", "205.zph"]
-#                 1           2          3         4           5          6          7          8                           
-CURRENT_ELEMENT = 10
+ERROR_NAMES = ["101.zph", "102.zph", "103.zph", "110.zph", "201.zph", "202.zph", "203.zph", "204.zph", "205.zph"]
+#                 1           2          3         4           5          6          7          8          7                 
+CURRENT_ELEMENT = 3
 
 
 #FILE_DIRECTORY = "Examples" 
@@ -24,12 +24,13 @@ CURRENT_ELEMENT = 10
 #FILE_DIRECTORY = f"Projects/{PROJECT_NAMES[CURRENT_ELEMENT-1]}" 
 #FILE_NAME = f"{PROJECT_NAMES[CURRENT_ELEMENT-1]}.zph"
 
-#FILE_DIRECTORY = "Errors"
-#FILE_NAME = ERROR_NAMES[CURRENT_ELEMENT-1]
+FILE_DIRECTORY = "Errors"
+FILE_NAME = ERROR_NAMES[CURRENT_ELEMENT-1]
 
-FILE_DIRECTORY = f"." 
-FILE_NAME = "code.zph"
+#FILE_DIRECTORY = f"." 
+#FILE_NAME = "code.zph"
 
+@measureTime
 def lexer(filename: str, fileDirectory: str = "."):
     """_summary_
 
@@ -86,10 +87,9 @@ def lexer(filename: str, fileDirectory: str = "."):
         
     with open(f"{fileDirectory}/{filename}.zsrc", "w") as file:
         json.dump(data, file, indent=4) 
-    
-    #return data
 
 
+@measureTime
 def compiler(filename: str, fileDirectory: str = "."):
     signal.signal(signal.SIGINT, handle_keyboard_interrupt)
     """_summary_
@@ -210,9 +210,5 @@ def compiler(filename: str, fileDirectory: str = "."):
 
 
 if __name__ == "__main__":
-    if MEASURE_TIME: t1 = time.time()
-    
-    lexer(FILE_NAME, FILE_DIRECTORY)
+    lexer(FILE_NAME, FILE_DIRECTORY, measureTime=MEASURE_TIME)
     compiler(FILE_NAME, FILE_DIRECTORY)
-    
-    if MEASURE_TIME: t2 = time.time(); print(f"Time: {t2 - t1} seconds")

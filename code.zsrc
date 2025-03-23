@@ -1,32 +1,16 @@
 {
-    "0::b # PT:STOP": {
-        "name": "b",
+    "0::a # PT:Hello": {
+        "name": "a",
         "base": "#",
         "function": "PT",
         "paramsList": [
-            "STOP"
+            "Hello"
         ]
     },
-    "1::a # LOOP:~1": {
+    "1::a ? push:": {
         "name": "a",
-        "base": "#",
-        "function": "LOOP",
-        "paramsList": [
-            "~1"
-        ]
-    },
-    "2::b ? push:": {
-        "name": "b",
         "base": "?",
         "function": "push",
-        "paramsList": [
-            ""
-        ]
-    },
-    "3::a ? END:": {
-        "name": "a",
-        "base": "?",
-        "function": "END",
         "paramsList": [
             ""
         ]

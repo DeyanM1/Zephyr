@@ -2,7 +2,10 @@ import re
 import json
 import numpy as np
 import os
+import time
 import importlib
+from functools import wraps
+import signal
 
 
 INT_reg = r"^\d+$"
@@ -57,8 +60,24 @@ class Error(Exception):
         print(f"\n[{self.errorCode}]  {self.message}")
         quit(self.errorCode)
 
+
 def handle_keyboard_interrupt(signal_number, frame):
     raise Error(103)
+
+def measureTime(func):
+    @wraps(func)  # Keeps function metadata
+    def wrapper(*args, measureTime=False, **kwargs):  # New keyword argument
+        if measureTime:
+            start_time = time.time()
+            result = func(*args, **kwargs)  # Call the actual function
+            end_time = time.time()
+            print(f"Execution time ({func.__name__}): {end_time - start_time:.7f}s")  
+
+        else:
+            result = func(*args, **kwargs)  # Just call the function without measuring time
+        return result
+    return wrapper
+
 
 
 def checkValueForType(value: str, type: str):
@@ -113,7 +132,7 @@ def changeType(name: str, newType: str, variables: dict):
     
 
     
-    
+signal.signal(signal.SIGINT, handle_keyboard_interrupt)   
 class Variable:    
     def __init__(self, name, base, function, paramsList, variables):
         self.const = paramsList[1] if len(paramsList) < 1 else False
