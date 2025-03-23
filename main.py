@@ -1,6 +1,7 @@
 import json
 import time
 from functions import *
+import signal
 
 
 
@@ -90,6 +91,7 @@ def lexer(filename: str, fileDirectory: str = "."):
 
 
 def compiler(filename: str, fileDirectory: str = "."):
+    signal.signal(signal.SIGINT, handle_keyboard_interrupt)
     """_summary_
 
     Args:
@@ -191,7 +193,7 @@ def compiler(filename: str, fileDirectory: str = "."):
     
         elif function == "CT" and variables[name].type not in ["INT", "PT", "FLOAT"]:
             variables = changeType(name, paramsList[0], variables)
-         
+        
 
         else:               
             match variables[name].type:
@@ -204,6 +206,7 @@ def compiler(filename: str, fileDirectory: str = "."):
 
         currentIndex += 1
     print("\n\n", variables)
+
 
 
 if __name__ == "__main__":

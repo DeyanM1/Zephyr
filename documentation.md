@@ -114,12 +114,13 @@ LIB_FOLDER_NAME = "<libraryFolderName>"
 
 1. **[101]** -> Type doesn't have this function.  
 2. **[102]** -> Unknown variable.  
-3. **[110]** -> Current type doesn't support new value or new type.  
-4. **[201]** -> Only PT type is pushable.  
-5. **[202]** -> Invalid positional value.  
-6. **[203]** -> Invalid return function.  
-7. **[204]** -> Invalid condition or RNG range.  
-8. **[205]** -> Unable to import library.  
+3. **[103]** -> Keyboard interrupt
+4. **[110]** -> Current type doesn't support new value or new type.  
+5. **[201]** -> Only PT type is pushable.  
+6. **[202]** -> Invalid positional value.  
+7. **[203]** -> Invalid return function.  
+8. **[204]** -> Invalid condition or RNG range.  
+9. **[205]** -> Unable to import library.  
 
 **Example Error Message:**
 ```

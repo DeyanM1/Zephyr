@@ -1,122 +1,32 @@
 {
-    "0::moreMath # LIB:moreMath": {
-        "name": "moreMath",
+    "0::b # PT:STOP": {
+        "name": "b",
         "base": "#",
-        "function": "LIB",
+        "function": "PT",
         "paramsList": [
-            "moreMath"
+            "STOP"
         ]
     },
-    "1::number # INT:5": {
-        "name": "number",
+    "1::a # LOOP:~1": {
+        "name": "a",
         "base": "#",
-        "function": "INT",
+        "function": "LOOP",
         "paramsList": [
-            "5"
+            "~1"
         ]
     },
-    "2::moreMath ? factorial:number": {
-        "name": "moreMath",
-        "base": "?",
-        "function": "factorial",
-        "paramsList": [
-            "number"
-        ]
-    },
-    "3::number # CT:PT": {
-        "name": "number",
-        "base": "#",
-        "function": "CT",
-        "paramsList": [
-            "PT"
-        ]
-    },
-    "4::number ? push:": {
-        "name": "number",
+    "2::b ? push:": {
+        "name": "b",
         "base": "?",
         "function": "push",
         "paramsList": [
             ""
         ]
     },
-    "5::number # INT:5": {
-        "name": "number",
-        "base": "#",
-        "function": "INT",
-        "paramsList": [
-            "5"
-        ]
-    },
-    "6::exponent # INT:2": {
-        "name": "exponent",
-        "base": "#",
-        "function": "INT",
-        "paramsList": [
-            "2"
-        ]
-    },
-    "7::moreMath ? exponentiation:number|exponent": {
-        "name": "moreMath",
+    "3::a ? END:": {
+        "name": "a",
         "base": "?",
-        "function": "exponentiation",
-        "paramsList": [
-            "number",
-            "exponent"
-        ]
-    },
-    "8::number # CT:PT": {
-        "name": "number",
-        "base": "#",
-        "function": "CT",
-        "paramsList": [
-            "PT"
-        ]
-    },
-    "9::number ? push:": {
-        "name": "number",
-        "base": "?",
-        "function": "push",
-        "paramsList": [
-            ""
-        ]
-    },
-    "10::number # INT:25": {
-        "name": "number",
-        "base": "#",
-        "function": "INT",
-        "paramsList": [
-            "25"
-        ]
-    },
-    "11::root # INT:2": {
-        "name": "root",
-        "base": "#",
-        "function": "INT",
-        "paramsList": [
-            "2"
-        ]
-    },
-    "12::moreMath ? root:number|root": {
-        "name": "moreMath",
-        "base": "?",
-        "function": "root",
-        "paramsList": [
-            "number",
-            "root"
-        ]
-    },
-    "13::number # CT:PT": {
-        "name": "number",
-        "base": "#",
-        "function": "CT",
-        "paramsList": [
-            "PT"
-        ]
-    },
-    "14::number ? push:": {
-        "name": "number",
-        "base": "?",
-        "function": "push",
+        "function": "END",
         "paramsList": [
             ""
         ]

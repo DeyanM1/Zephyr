@@ -24,6 +24,7 @@ class Error(Exception):
     ERROR_MESSAGES = {
         101: "ERROR: {type} has no function # {function}! ({name})   | {name} {base} {function}", # *
         102: "ERROR: {unknownName} -> Unknown Variable! {description} | {name} {base} {function}", # *
+        103: "ERROR: Keyboard interrupt! | Stopping...",
         110: "ERROR: {type} != {descriptionChild} -> unsupported type! \n{description} | {name} {base} {function}", # *
         201: "ERROR: {type} != PT -> Only PT type is pushable! | {name} {base} {function}", # Variable
         202: "ERROR: {index} -> Invalid positional Value! \n{description} | {name} {base} {function}", # Variable, LIST
@@ -36,6 +37,7 @@ class Error(Exception):
         """
         101: "ERROR: {type} has no function # {function}! ({name})   | {name} {base} {function}", # *\n
         102: "ERROR: {unknownName} -> Unknown Variable! {description} | {name} {base} {function}", # *\n
+        103: "ERROR: keyboard interrupt! | [{index}] {name} {base} {function}",
         110: "ERROR: {type} != {descriptionChild} -> unsupported type! \n{description} | {name} {base} {function}", # *\n
         201: "ERROR: {type} != PT -> Only PT type is pushable! | {name} {base} {function}", # Variable\n
         202: "ERROR: {index} -> Invalid positional Value! \n{description} | {name} {base} {function}", # Variable, LIST\n
@@ -52,8 +54,11 @@ class Error(Exception):
         self.handle()
         
     def handle(self):
-        print(f"[{self.errorCode}]  {self.message}")
+        print(f"\n[{self.errorCode}]  {self.message}")
         quit(self.errorCode)
+
+def handle_keyboard_interrupt(signal_number, frame):
+    raise Error(103)
 
 
 def checkValueForType(value: str, type: str):
