@@ -1,0 +1,18 @@
+{
+    "0::a # LOOP:~1": {
+        "name": "a",
+        "base": "#",
+        "function": "LOOP",
+        "paramsList": [
+            "~1"
+        ]
+    },
+    "1::a ? END:": {
+        "name": "a",
+        "base": "?",
+        "function": "END",
+        "paramsList": [
+            ""
+        ]
+    }
+}
