@@ -29,7 +29,7 @@ This language is intended for:
 
 
 
-## Installation
+## Installation !! NOT RECENT!!
 
 ### Installation Guide
 1. download the ZephyrInstaller.exe from the [Releases tab](https://github.com/DeyanM1/Zephyr/releases)

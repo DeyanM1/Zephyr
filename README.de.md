@@ -1,48 +1,46 @@
 ![www](https://github.com/user-attachments/assets/621614f4-354e-4368-832e-184b75503e86)
 
-## Introduction22222222222222222
+## Einführung
 
-Zephyr is a variable-based programming language designed for simplicity and efficiency. In Zephyr, all variables are lowercase, and the syntax is minimalistic, allowing you to define and manipulate variables, perform calculations, and structure your programs using loops, functions, and conditional logic.
+Zephyr ist eine variablenbasierte Programmiersprache, die für Einfachheit und Effizienz entwickelt wurde. In Zephyr sind alle Variablen klein geschrieben, und die Syntax ist minimalistisch. Dadurch kannst du Variablen definieren und manipulieren, Berechnungen durchführen sowie Programme mit Schleifen, Funktionen und bedingter Logik strukturieren.
 
+### Vision und Zielsetzung
 
-### Vision and Purpose
-Welcome to the Zephyr project! My goal is to create the world's first variable-based programming language, designed to provide an innovative and intuitive approach to understanding the inner workings of programming languages. This language is tailored for intermediate to professional developers who want to deepen their knowledge of how programming languages parse, compile, and execute code.
+Willkommen beim Zephyr-Projekt! Mein Ziel ist es, die weltweit erste variablenbasierte Programmiersprache zu entwickeln, die einen innovativen und intuitiven Ansatz zur Funktionsweise von Programmiersprachen bietet. Zephyr richtet sich an fortgeschrittene Entwickler und Profis, die ihr Wissen über das Parsen, Kompilieren und Ausführen von Code vertiefen möchten.
 
-### Why This Language?
-Programming languages often abstract away the low-level details of how they handle code, making it challenging for developers to fully grasp the mechanics of compilation and execution. With Zephyr, I aim to bridge this gap. By focusing on variables as a central concept, this language provides developers with a clear, hands-on perspective on how code is processed under the hood.
+### Warum diese Sprache?
 
-### Key Features
-- Variable-Centric Design: A unique syntax and structure that revolve around variables as the primary building blocks of code.
-- Educational Focus: Ideal for developers who want to learn or teach the concepts of parsing and compiling in a practical way.
-- Comprehensive Documentation: The language comes with detailed, beginner-friendly, and well-organized documentation to help users understand its syntax, features, and concepts thoroughly.
+Viele Programmiersprachen abstrahieren die zugrunde liegenden Prozesse der Codeverarbeitung, was es Entwicklern erschwert, die Mechanismen hinter der Kompilierung und Ausführung wirklich zu verstehen. Zephyr schließt diese Lücke: Durch den Fokus auf Variablen als zentrales Konzept erhalten Entwickler eine klare, praxisnahe Perspektive darauf, wie Code tatsächlich verarbeitet wird.
 
-### Who Is It For?
-This language is intended for:
+### Hauptmerkmale
 
-- Intermediate developers who want to expand their understanding of programming language design.
-- Experienced professionals exploring innovative ways to teach or experiment with compilation processes.
-- Curious learners interested in diving deeper into how programming languages work behind the scenes.
+- **Variablenzentriertes Design:** Eine einzigartige Syntax und Struktur, bei der Variablen die grundlegenden Bausteine des Codes sind.
+- **Bildungsfokus:** Ideal für Entwickler, die Parsing und Kompilierung auf praxisnahe Weise lernen oder lehren möchten.
+- **Umfassende Dokumentation:** Detaillierte, einsteigerfreundliche und gut strukturierte Anleitungen helfen, Syntax, Funktionen und Konzepte der Sprache schnell zu verstehen.
 
+### Für wen ist Zephyr gedacht?
 
+Diese Sprache richtet sich an:
 
+- Fortgeschrittene Entwickler, die ein tieferes Verständnis für die Entwicklung von Programmiersprachen gewinnen möchten.
+- Erfahrene Profis, die neue Ansätze zur Lehre oder zur experimentellen Erforschung von Compiler-Prozessen suchen.
+- Neugierige Lernende, die mehr über die inneren Abläufe von Programmiersprachen erfahren möchten.
 
 ## Installation
 
-### Installation Guide
-1. download the ZephyrInstaller.exe from the [Releases tab](https://github.com/DeyanM1/Zephyr/releases)
-2. Open the exe file and proceed the installation
-3. Run this command in a terminal:
-    ZephyrRun compile <yourFileName>
-4. (For help execute: ZephyrRun -h)
+### Installationsanleitung VERALTET
 
-## Write programs
+1. Lade die `ZephyrInstaller.exe` aus dem [Releases-Tab](https://github.com/DeyanM1/Zephyr/releases) herunter.
+2. Öffne die `.exe`-Datei und folge den Installationsanweisungen.
+3. Führe folgenden Befehl im Terminal aus:
+    ```sh
+    ZephyrRun compile <DeinDateiname>
+    ```
+4. (Für weitere Hilfe: `Zephyr -h` ausführen)
 
-**See documentation** [here](https://github.com/DeyanM1/Zephyr/blob/main/documentation.md)
+## Programme schreiben
 
-
-
-
-
+**Siehe Dokumentation** [hier](https://github.com/DeyanM1/Zephyr/blob/main/documentation.md)
 
 
 ---
