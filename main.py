@@ -216,5 +216,5 @@ def compiler(filename: str, fileDirectory: str = "."):
 
 
 if __name__ == "__main__":
-    lexer(FILE_NAME, FILE_DIRECTORY, measureTime=True)
-    compiler(FILE_NAME, FILE_DIRECTORY, measureTime=True)
+    lexer(FILE_NAME, FILE_DIRECTORY, measureTime=MEASURE_TIME)
+    compiler(FILE_NAME, FILE_DIRECTORY, measureTime=MEASURE_TIME)
