@@ -1,9 +1,6 @@
 ![www](https://github.com/user-attachments/assets/621614f4-354e-4368-832e-184b75503e86)
 
-![English](https://img.shields.io/badge/lang-English-blue)](README.md)
-[![Deutsch](https://img.shields.io/badge/lang-Deutsch-red)](README.de.md)
-
-## Introduction
+## Introduction22222222222222222
 
 Zephyr is a variable-based programming language designed for simplicity and efficiency. In Zephyr, all variables are lowercase, and the syntax is minimalistic, allowing you to define and manipulate variables, perform calculations, and structure your programs using loops, functions, and conditional logic.
 
