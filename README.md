@@ -29,14 +29,13 @@ This language is intended for:
 
 
 
-## Installation !! NOT RECENT!!
+## Installation
 
 ### Installation Guide
-1. download the ZephyrInstaller.exe from the [Releases tab](https://github.com/DeyanM1/Zephyr/releases)
-2. Open the exe file and proceed the installation
-3. Run this command in a terminal:
-    ZephyrRun compile <yourFileName>
-4. (For help execute: ZephyrRun -h)
+1. downLoad the `compile.exe` from the dist folder [here](https://github.com/DeyanM1/Zephyr/blob/main/dist/compile.bat)
+2. Launch the file and proceed the installation
+3. There is a exe file in `C:\Users\userName\Zephyr`
+
 
 ## Write programs
 

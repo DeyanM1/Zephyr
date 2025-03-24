@@ -31,15 +31,17 @@ Diese Sprache richtet sich an:
 
 ## Installation
 
-### Installationsanleitung VERALTET
+### Installationsanleitung
 
-1. Lade die `ZephyrInstaller.exe` aus dem [Releases-Tab](https://github.com/DeyanM1/Zephyr/releases) herunter.
-2. Öffne die `.exe`-Datei und folge den Installationsanweisungen.
-3. Führe folgenden Befehl im Terminal aus:
-    ```sh
-    ZephyrRun compile <DeinDateiname>
-    ```
-4. (Für weitere Hilfe: `Zephyr -h` ausführen)
+1. Lade die `compile.exe` [hier](https://github.com/DeyanM1/Zephyr/blob/main/dist/compile.bat) herunter.
+2. Öffne die `.bat`-Datei und folge den Installationsanweisungen.
+3. Nun ist eine exe datei in `C:\Users\userName\Zephyr`
+
+
+### Installation Guide#
+1. downLoad the compile.exe from the dist folder [here](https://github.com/DeyanM1/Zephyr/blob/main/dist/compile.bat)
+2. Launch the `.exe`' file and proceed the installation
+3. There is a exe file in C:\Users\userName\Zephyr
 
 ## Programme schreiben
 
