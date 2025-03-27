@@ -15,20 +15,20 @@ EXAMPLE_NAMES = ["variables.zph", "buildInFunctions.zph", "list.zph", "MathObjec
 PROJECT_NAMES = ["sumCalculator", "factorialCalculator", "guessNumber", "piApproximator", "moreMath"]
 ERROR_NAMES = ["101.zph", "102.zph", "103.zph", "110.zph", "201.zph", "202.zph", "203.zph", "204.zph", "205.zph"]
 #                 1           2          3         4           5          6          7          8          7
-CURRENT_ELEMENT = 5
+CURRENT_ELEMENT = 2
 
 
 #FILE_DIRECTORY = "Examples"
 #FILE_NAME = EXAMPLE_NAMES[CURRENT_ELEMENT-1]
 
-#FILE_DIRECTORY = f"Projects/{PROJECT_NAMES[CURRENT_ELEMENT-1]}"
-#FILE_NAME = f"{PROJECT_NAMES[CURRENT_ELEMENT-1]}.zph"
+FILE_DIRECTORY = f"Projects/{PROJECT_NAMES[CURRENT_ELEMENT-1]}"
+FILE_NAME = f"{PROJECT_NAMES[CURRENT_ELEMENT-1]}.zph"
 
 #FILE_DIRECTORY = "Errors"
 #FILE_NAME = ERROR_NAMES[CURRENT_ELEMENT-1]
 
-FILE_DIRECTORY = f"."
-FILE_NAME = "code.zph"
+#FILE_DIRECTORY = f"."
+#FILE_NAME = "code.zph"
 
 @measureTime
 def lexer(filename: str, fileDirectory: str = "."):

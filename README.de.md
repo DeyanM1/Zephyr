@@ -38,11 +38,6 @@ Diese Sprache richtet sich an:
 3. Nun ist eine exe datei in `C:\Users\userName\Zephyr`
 
 
-### Installation Guide#
-1. downLoad the compile.exe from the dist folder [here](https://github.com/DeyanM1/Zephyr/blob/main/dist/compile.bat)
-2. Launch the `.exe`' file and proceed the installation
-3. There is a exe file in C:\Users\userName\Zephyr
-
 ## Programme schreiben
 
 **Siehe Dokumentation** [hier](https://github.com/DeyanM1/Zephyr/blob/main/documentation.md)

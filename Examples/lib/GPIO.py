@@ -22,11 +22,11 @@ def matchFunction(self, base, function, paramsList, variables):
                         case "IN":
                             GPIO.setup(int(paramsList[0]), GPIO.IN)
                 case "SET":
-                    set(variables, paramsList[0], paramsList[1])
-                            
+                    set(variables, int(paramsList[0]), paramsList[1])
+
                 case "READ":
                     variables = read(variables, int(paramsList[0]), paramsList[1])
-                
+
                 case "RESET":
                     GPIO.cleanup()
                 case _:
@@ -35,7 +35,7 @@ def matchFunction(self, base, function, paramsList, variables):
 
 def set(variables, pin, valueToSet):
     value = valueToSet
-    
+
     if valueToSet.startswith("'"):
         valueVarName = valueToSet.replace("'", "")
         value = variables[valueVarName].value
@@ -49,5 +49,5 @@ def set(variables, pin, valueToSet):
 def read(variables, pin, outputVar):
     value = GPIO.input(pin)
     variables[outputVar].value = value
-    
+
     return variables
