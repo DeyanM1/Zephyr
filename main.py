@@ -5,21 +5,21 @@ import signal
 
 
 
-MEASURE_TIME = False
+MEASURE_TIME = True
 
 
 LIB_DIRECTORY = "lib"
 
 #                     1                     2                3               4                5                   6                       7                  8                 9           10             11                12                 13            14
 EXAMPLE_NAMES = ["variables.zph", "buildInFunctions.zph", "list.zph", "MathObject.zph", "function.zph", "conditionalObject.zph", "ifStatement.zph", "ifElseStatement.zph", "loop.zph", "rng.zph", "predefVars1.zph", "predefVars2.zph", "libraries.zph", "GPIO.zph"]
-PROJECT_NAMES = ["sumCalculator", "factorialCalculator", "guessNumber", "piApproximator", "moreMath"]
+PROJECT_NAMES = ["sumCalculator", "factorialCalculator", "guessNumber", "piApproximator", "moreMath", "nestedLOOP"]
 ERROR_NAMES = ["101.zph", "102.zph", "103.zph", "110.zph", "201.zph", "202.zph", "203.zph", "204.zph", "205.zph"]
-#                 1           2          3         4           5          6          7          8          7
-CURRENT_ELEMENT = 2
+#                 1           2          3         4           5          6          7          8          9
+CURRENT_ELEMENT = 6
 
 
-#FILE_DIRECTORY = "Examples"
-#FILE_NAME = EXAMPLE_NAMES[CURRENT_ELEMENT-1]
+FILE_DIRECTORY = "Examples"
+FILE_NAME = EXAMPLE_NAMES[CURRENT_ELEMENT-1]
 
 FILE_DIRECTORY = f"Projects/{PROJECT_NAMES[CURRENT_ELEMENT-1]}"
 FILE_NAME = f"{PROJECT_NAMES[CURRENT_ELEMENT-1]}.zph"
@@ -194,7 +194,7 @@ def compiler(filename: str, fileDirectory: str = "."):
 
 
         elif name not in variables.keys():
-            Error(102, unknownName=name, name=name, base=base, function=function, description="")
+            raise Error(102, unknownName=name, name=name, base=base, function=function, description="")
 
 
         elif function == "CT" and variables[name].type not in ["INT", "PT", "FLOAT"]:
