@@ -3,11 +3,11 @@ b # INT:2;
 
 msg1 # PT:TRUE;
 
- 
+
 condition # CO:('a'>'b');
 statement # IF:condition|1;
 
-msg1 ? push:;
+    msg1 ? push:;
 
 statement ? END:;
 
