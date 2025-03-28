@@ -17,7 +17,7 @@ PT_reg = r"^'.*'$"
 TYPES = ["PT", "INT", "FLOAT", "LIST", "MO", "FUNC", "CO", "IF", "LOOP", "RNG", "PredefVar", "LIB"]
 
 
-DIGITS = "123456789"
+DIGITS = "0123456789"
 
 RETURN_FUNCION_COMMANDS = ["RES", "VC"]
 RANDOM_NUMBER_TYPES = ["INT"]
