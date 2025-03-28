@@ -1,13 +1,9 @@
-counter # INT:1;
+a # INT:5;
+b # INT:3;
 
-condition # CO:('counter'<=5);
-loop # LOOP:condition;
 
-    counter # CT:PT;
-    counter ? push:;
-    counter # CT:INT;
+condition # CO:('a'>10);
 
-    __ ? WAIT:1;
+condition # CT:PT;
 
-    counter ? w:++;
-loop ? END:;
+condition ? push:;
