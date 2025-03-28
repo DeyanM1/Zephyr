@@ -1,4 +1,4 @@
-def matchFunction(self, base, function, paramsList, variables):
+def matchFunction(base, function, paramsList, variables):
     match base:
         case "#":
             match function:
@@ -13,7 +13,7 @@ def matchFunction(self, base, function, paramsList, variables):
                 case "factorial":
                     variables = factorial(variables, paramsList[0])
 
-                    
+
                 case _:
                     pass
     return variables
@@ -24,7 +24,7 @@ def exponentiation(variables, baseVar, exponentVar):
     exponent = int(variables[exponentVar].value)
     result = base ** exponent
     variables[baseVar].value = result
-    
+
     return variables
 
 
@@ -33,18 +33,15 @@ def root(variables, baseVar, exponentVar):
     exponent = int(variables[exponentVar].value)
     result = base ** (1/exponent)
     variables[baseVar].value = result
-    
+
     return variables
 
 def factorial(variables, baseVar):
     base = int(variables[baseVar].value)
-    
+
     result = 1
     for i in range(2, base + 1):
         result *= i
-    
+
     variables[baseVar].value = result
     return variables
-    
-    
-

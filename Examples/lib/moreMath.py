@@ -1,10 +1,10 @@
-def search(name, base, function, paramsList, vars):
+def matchFunction(name, base, function, paramsList, vars):
     match base:
         case "?":
             match function:
                 case "add5":
                     vars = add5(vars, vars[paramsList[0]])
-                    
+
                 case "add10":
                     vars = add10(vars, vars[paramsList[0]])
     return vars
