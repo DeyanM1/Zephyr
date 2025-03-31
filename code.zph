@@ -1,9 +1,3 @@
-a # INT:5;
-b # INT:3;
+a # PT:Hallo;
 
-
-condition # CO:('a'>10);
-
-condition # CT:PT;
-
-condition ? push:;
+a ? push:;

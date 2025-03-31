@@ -1,72 +1,16 @@
 {
-    "0::counter # INT:1": {
-        "name": "counter",
+    "0::a # PT:Hallo": {
+        "name": "a",
         "base": "#",
-        "function": "INT",
+        "function": "PT",
         "paramsList": [
-            "1"
+            "Hallo"
         ]
     },
-    "1::condition # CO:('counter'<=5)": {
-        "name": "condition",
-        "base": "#",
-        "function": "CO",
-        "paramsList": [
-            "('counter'<=5)"
-        ]
-    },
-    "2::loop # LOOP:condition": {
-        "name": "loop",
-        "base": "#",
-        "function": "LOOP",
-        "paramsList": [
-            "condition"
-        ]
-    },
-    "3::counter # CT:PT": {
-        "name": "counter",
-        "base": "#",
-        "function": "CT",
-        "paramsList": [
-            "PT"
-        ]
-    },
-    "4::counter ? push:": {
-        "name": "counter",
+    "1::a ? push:": {
+        "name": "a",
         "base": "?",
         "function": "push",
-        "paramsList": [
-            ""
-        ]
-    },
-    "5::counter # CT:INT": {
-        "name": "counter",
-        "base": "#",
-        "function": "CT",
-        "paramsList": [
-            "INT"
-        ]
-    },
-    "6::__ ? WAIT:1": {
-        "name": "__",
-        "base": "?",
-        "function": "WAIT",
-        "paramsList": [
-            "1"
-        ]
-    },
-    "7::counter ? w:++": {
-        "name": "counter",
-        "base": "?",
-        "function": "w",
-        "paramsList": [
-            "++"
-        ]
-    },
-    "8::loop ? END:": {
-        "name": "loop",
-        "base": "?",
-        "function": "END",
         "paramsList": [
             ""
         ]

@@ -5,7 +5,7 @@ import signal
 
 
 
-MEASURE_TIME = True
+MEASURE_TIME = False
 
 
 LIB_DIRECTORY = "lib"
@@ -15,7 +15,7 @@ EXAMPLE_NAMES = ["variables.zph", "buildInFunctions.zph", "list.zph", "MathObjec
 PROJECT_NAMES = ["sumCalculator", "factorialCalculator", "guessNumber", "piApproximator", "moreMath", "nestedLOOP"]
 ERROR_NAMES = ["101.zph", "102.zph", "103.zph", "110.zph", "201.zph", "202.zph", "203.zph", "204.zph", "205.zph"]
 #                 1           2          3         4           5          6          7          8          9
-CURRENT_ELEMENT = 6
+CURRENT_ELEMENT = 3
 
 
 FILE_DIRECTORY = "Examples"
