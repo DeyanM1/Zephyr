@@ -25,9 +25,9 @@ LOOP1 # LOOP:conditionOne;
         b # CT:INT;
         b ? w:--;
 
-    LOOP2 ? END:;
+    LOOP1 ? END:;
     separator ? push:;
-LOOP1 ? END:;
+LOOP2 ? END:;
 
 
 a # CT:PT;

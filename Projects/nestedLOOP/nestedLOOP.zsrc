@@ -151,8 +151,8 @@
             "--"
         ]
     },
-    "19::LOOP2 ? END:": {
-        "name": "LOOP2",
+    "19::LOOP1 ? END:": {
+        "name": "LOOP1",
         "base": "?",
         "function": "END",
         "paramsList": [
@@ -167,8 +167,8 @@
             ""
         ]
     },
-    "21::LOOP1 ? END:": {
-        "name": "LOOP1",
+    "21::LOOP2 ? END:": {
+        "name": "LOOP2",
         "base": "?",
         "function": "END",
         "paramsList": [
