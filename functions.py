@@ -6,6 +6,7 @@ import time
 import importlib
 from functools import wraps
 import signal
+import sys
 
 
 INT_reg = r"^\d+$"
@@ -448,7 +449,6 @@ class MO:
         self.calculate()
 
     def calculate(self):
-        # TODO: make better calculation, because very unsafe: https://stackoverflow.com/questions/9685946/math-operations-from-string
         self.value = eval(self.calculation)
         self.dumpConfig = {self.name: {"name": self.name, "type": self.type, "value": self.value, "equation": self.equation, "calculation": "None"}}
 
@@ -892,7 +892,13 @@ class LIB:
                         raise Error(101, name=self.name, function=function, type=self.type, base=self.base)
 
     def setLib(self):
+        zephyrEnvPath = os.getenv("ZEPHYR_PATH")
+
         try:
+            if zephyrEnvPath:
+                sys.path.append(zephyrEnvPath)
+                self.libPath = "lib"
+
             module = importlib.import_module(f"{self.libPath}.{self.libName}")
             self.libObject = module
             self.dumpConfig = {"name": self.name,
