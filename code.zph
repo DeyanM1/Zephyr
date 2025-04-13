@@ -1,13 +1,1 @@
-counter # INT:1;
-
-condition # CO:('counter'<=5);
-loop # LOOP:condition;
-
-    counter # CT:PT;
-    counter ? push:;
-    counter # CT:INT;
-
-    __ ? WAIT:1;
-
-    counter ? w:++;
-loop ? END:;
+mathLib # LIB:moreMath;
