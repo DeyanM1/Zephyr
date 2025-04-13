@@ -1,6 +1,56 @@
 @echo off
 setlocal EnableDelayedExpansion
 
+
+
+:: ------------------------------------ ::
+::       CHECK PYTHON INSTALLATION      ::
+:: ------------------------------------ ::
+
+:: Check if Python 3.11 or higher is installed
+for /f "delims=" %%P in ('python --version 2^>nul') do set "PythonVersion=%%P"
+if not defined PythonVersion (
+    echo Python 3.11 or higher is required but not found.
+    echo Please install Python 3.11 or higher and try again.
+    exit /b 1
+)
+
+:: Extract major and minor version
+for /f "tokens=2 delims=." %%A in ("%PythonVersion:~7%") do (
+    set "MajorVersion=%%A"
+    set "MinorVersion=%%B"
+)
+
+
+
+if !MajorVersion! LSS 3 (
+    echo Python 3.11 or higher is required but found version !PythonVersion!.
+    exit /b 1
+) else if !MajorVersion! EQU 3 if !MinorVersion! LSS 11 (
+    echo Python 3.11 or higher is required but found version !PythonVersion!.
+    exit /b 1
+)
+
+echo Python version !PythonVersion! detected.
+
+:: Check if pyinstaller is installed using pip list
+pip show pyinstaller >nul 2>&1
+if errorlevel 1 (
+    echo PyInstaller is not installed. Installing it now...
+    python -m pip install pyinstaller
+    if errorlevel 1 (
+        echo Failed to install PyInstaller. Please install it manually and try again.
+        exit /b 1
+    )
+)
+
+echo PyInstaller is installed.
+
+
+
+
+
+
 :: ------------------------------------ ::
 ::         SETUP: OUTPUT DIRECTORY      ::
 :: ------------------------------------ ::
@@ -39,15 +89,20 @@ rd /s /q build
 
 mkdir lib
 echo.
+echo Installed runner
+echo.
 
 
 :: BUILD 2nd executable for zephyrLibraryManager.py
 pyinstaller --onefile zephyrLibraryManager.py --distpath "%OutputDir%" --name zlm
 
 :: Clean up temporary build files
-del zephyrLibraryManager.py
-del zephyrLibraryManager.spec
+del zephyrLibraryManager.py zlm.spec
 rd /s /q build
+
+echo.
+echo Installed library Manager
+
 
 echo.
 echo.
