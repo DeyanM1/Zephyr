@@ -20,17 +20,17 @@ cd /d "%OutputDir%"
 ::           DOWNLOAD SCRIPTS           ::
 :: ------------------------------------ ::
 
-curl -o zephyr.py     https://raw.githubusercontent.com/DeyanM1/Zephyr/refs/heads/main/dist/zephyr.py
+curl -o zephyr.py                   https://raw.githubusercontent.com/DeyanM1/Zephyr/refs/heads/main/dist/zephyr.py
 curl -o zephyrLibraryManager.py     https://raw.githubusercontent.com/DeyanM1/Zephyr/refs/heads/main/dist/zephyrLibraryManager.py
-curl -o main.py       https://raw.githubusercontent.com/DeyanM1/Zephyr/refs/heads/main/main.py
-curl -o functions.py  https://raw.githubusercontent.com/DeyanM1/Zephyr/refs/heads/main/functions.py
+curl -o main.py                     https://raw.githubusercontent.com/DeyanM1/Zephyr/refs/heads/main/main.py
+curl -o functions.py                https://raw.githubusercontent.com/DeyanM1/Zephyr/refs/heads/main/functions.py
 
 
 :: ------------------------------------ ::
 ::           BUILD EXECUTABLE           ::
 :: ------------------------------------ ::
 
-pyinstaller --onefile --add-data "main.py;." --add-data "functions.py;." zephyr.py --distpath "%OutputDir%"
+pyinstaller --onefile --add-data "main.py;." --add-data "functions.py;." zephyr.py --distpath "%OutputDir%" --name zephyr
 
 :: Clean up temporary build files
 del zephyr.py functions.py main.py
@@ -41,14 +41,15 @@ mkdir lib
 echo.
 
 
-pyinstaller --onefile zephyrLibraryManager.py --distpath "%OutputDir%"
+:: BUILD 2nd executable for zephyrLibraryManager.py
+pyinstaller --onefile zephyrLibraryManager.py --distpath "%OutputDir%" --name zlm
 
 :: Clean up temporary build files
-del zephyr.py functions.py main.py
-del zephyr.spec
+del zephyrLibraryManager.py
+del zephyrLibraryManager.spec
 rd /s /q build
 
-mkdir lib
+echo.
 echo.
 
 
@@ -82,6 +83,7 @@ echo Path added successfully.
 setx ZEPHYR_PATH "%OutputDir%"
 echo ZEPHYR_PATH set to %OutputDir%
 
+echo.
 echo.
 echo Installation Complete! Your EXE is at:
 echo %OutputDir%\main.exe
