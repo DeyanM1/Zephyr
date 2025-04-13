@@ -1,0 +1,210 @@
+{
+    "0::a # INT:4": {
+        "name": "a",
+        "base": "#",
+        "function": "INT",
+        "paramsList": [
+            "4"
+        ]
+    },
+    "1::b # INT:4": {
+        "name": "b",
+        "base": "#",
+        "function": "INT",
+        "paramsList": [
+            "4"
+        ]
+    },
+    "2::separator # PT:-----------------": {
+        "name": "separator",
+        "base": "#",
+        "function": "PT",
+        "paramsList": [
+            "-----------------"
+        ]
+    },
+    "3::separator2 # PT:xxxxxxxxxxx": {
+        "name": "separator2",
+        "base": "#",
+        "function": "PT",
+        "paramsList": [
+            "xxxxxxxxxxx"
+        ]
+    },
+    "4::separator3 # PT:zzzzzzzzzzz": {
+        "name": "separator3",
+        "base": "#",
+        "function": "PT",
+        "paramsList": [
+            "zzzzzzzzzzz"
+        ]
+    },
+    "5::conditionOne # CO:('a'>0)": {
+        "name": "conditionOne",
+        "base": "#",
+        "function": "CO",
+        "paramsList": [
+            "('a'>0)"
+        ]
+    },
+    "6::conditionTwo # CO:('b'>0)": {
+        "name": "conditionTwo",
+        "base": "#",
+        "function": "CO",
+        "paramsList": [
+            "('b'>0)"
+        ]
+    },
+    "7::LOOP1 # LOOP:conditionOne": {
+        "name": "LOOP1",
+        "base": "#",
+        "function": "LOOP",
+        "paramsList": [
+            "conditionOne"
+        ]
+    },
+    "8::a # CT:PT": {
+        "name": "a",
+        "base": "#",
+        "function": "CT",
+        "paramsList": [
+            "PT"
+        ]
+    },
+    "9::a # CT:INT": {
+        "name": "a",
+        "base": "#",
+        "function": "CT",
+        "paramsList": [
+            "INT"
+        ]
+    },
+    "10::b ? w:5": {
+        "name": "b",
+        "base": "?",
+        "function": "w",
+        "paramsList": [
+            "5"
+        ]
+    },
+    "11::a ? w:--": {
+        "name": "a",
+        "base": "?",
+        "function": "w",
+        "paramsList": [
+            "--"
+        ]
+    },
+    "12::separator2 ? push:": {
+        "name": "separator2",
+        "base": "?",
+        "function": "push",
+        "paramsList": [
+            ""
+        ]
+    },
+    "13::LOOP2 # LOOP:conditionTwo": {
+        "name": "LOOP2",
+        "base": "#",
+        "function": "LOOP",
+        "paramsList": [
+            "conditionTwo"
+        ]
+    },
+    "14::separator3 ? push:": {
+        "name": "separator3",
+        "base": "?",
+        "function": "push",
+        "paramsList": [
+            ""
+        ]
+    },
+    "15::b # CT:PT": {
+        "name": "b",
+        "base": "#",
+        "function": "CT",
+        "paramsList": [
+            "PT"
+        ]
+    },
+    "16::b ? push:": {
+        "name": "b",
+        "base": "?",
+        "function": "push",
+        "paramsList": [
+            ""
+        ]
+    },
+    "17::b # CT:INT": {
+        "name": "b",
+        "base": "#",
+        "function": "CT",
+        "paramsList": [
+            "INT"
+        ]
+    },
+    "18::b ? w:--": {
+        "name": "b",
+        "base": "?",
+        "function": "w",
+        "paramsList": [
+            "--"
+        ]
+    },
+    "19::LOOP1 ? END:": {
+        "name": "LOOP1",
+        "base": "?",
+        "function": "END",
+        "paramsList": [
+            ""
+        ]
+    },
+    "20::separator ? push:": {
+        "name": "separator",
+        "base": "?",
+        "function": "push",
+        "paramsList": [
+            ""
+        ]
+    },
+    "21::LOOP2 ? END:": {
+        "name": "LOOP2",
+        "base": "?",
+        "function": "END",
+        "paramsList": [
+            ""
+        ]
+    },
+    "22::a # CT:PT": {
+        "name": "a",
+        "base": "#",
+        "function": "CT",
+        "paramsList": [
+            "PT"
+        ]
+    },
+    "23::a ? push:": {
+        "name": "a",
+        "base": "?",
+        "function": "push",
+        "paramsList": [
+            ""
+        ]
+    },
+    "24::b # CT:PT": {
+        "name": "b",
+        "base": "#",
+        "function": "CT",
+        "paramsList": [
+            "PT"
+        ]
+    },
+    "25::b ? push:": {
+        "name": "b",
+        "base": "?",
+        "function": "push",
+        "paramsList": [
+            ""
+        ]
+    }
+}

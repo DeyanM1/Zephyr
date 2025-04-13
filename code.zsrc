@@ -1,7 +1,10 @@
 {
+    "0::a # PT:Hallo": {
+        "name": "a",
     "0::mathLib # LIB:moreMath": {
         "name": "mathLib",
         "base": "#",
+        "function": "PT",
         "function": "LIB",
         "paramsList": [
             "moreMath"

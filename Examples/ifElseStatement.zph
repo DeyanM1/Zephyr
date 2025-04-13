@@ -1,20 +1,20 @@
 a # INT:5;
-b # INT:5;
+b # INT:9;
 
 msg1 # PT:SAME OR BIGGER;
 msg2 # PT:BIGGER;
-msg3 # PT:FALSE;
+msg3 # PT:SMALLER;
 
 
-condition2 # CO:('a'>'b');
 condition # CO:('a'>='b');
-statement # IF:condition|1;
+condition2 # CO:('a'>'b');
+statement # IF:condition|4;
     msg1 ? push:;
     statement2 # IF:condition2|1;
         msg2 ? push:;
     statement2 ? END:;
 statement ? ELSE:1;
-    msg2 ? push:;
+    msg3 ? push:;
 statement ? END:;
 
 __ ? dumpVars:;

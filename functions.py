@@ -18,7 +18,7 @@ PT_reg = r"^'.*'$"
 TYPES = ["PT", "INT", "FLOAT", "LIST", "MO", "FUNC", "CO", "IF", "LOOP", "RNG", "PredefVar", "LIB"]
 
 
-DIGITS = "123456789"
+DIGITS = "0123456789"
 
 RETURN_FUNCION_COMMANDS = ["RES", "VC"]
 RANDOM_NUMBER_TYPES = ["INT"]
@@ -39,7 +39,7 @@ class Error(Exception):
         205: "ERROR: {libName} -> cant import library! ({libPath}.{libName}) | {name} {base} {function}", # RNG
     }
 
-    def __init__(self, errorCode, **kwargs):
+    def __init__(self, errorCode: int,  **kwargs):
         """
         101: "ERROR: {type} has no function # {function}! ({name})   | {name} {base} {function}", # *\n
         102: "ERROR: {unknownName} -> Unknown Variable! {description} | {name} {base} {function}", # *\n
@@ -53,7 +53,8 @@ class Error(Exception):
 
 
         Args:
-            error_code (_type_): _description_
+            errorCode (int): The error code representing the specific error.
+            **kwargs: Additional context-specific information to format the error message.
         """
         self.errorCode = errorCode
         self.message = self.ERROR_MESSAGES.get(errorCode, "Unknown error.").format(**kwargs)
@@ -877,7 +878,7 @@ class LIB:
         self.base = base
         self.function = function
 
-        return self.libObject.matchFunction(self.name, base, function, paramsList, variables)
+        return self.libObject.matchFunction(base, function, paramsList, variables)
 
         match base:
             case "#":
