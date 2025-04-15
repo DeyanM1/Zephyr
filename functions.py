@@ -15,7 +15,7 @@ PT_reg = r"^'.*'$"
 
 
 
-TYPES = ["PT", "INT", "FLOAT", "LIST", "MO", "FUNC", "CO", "IF", "LOOP", "RNG", "PredefVar", "LIB"]
+TYPES = ["PT", "INT", "FLOAT", "LIST", "MO", "FUNC", "CO", "IF", "LOOP", "RNG", "PredefVar", "LIB", "FILE"]
 
 
 DIGITS = "0123456789"
@@ -32,24 +32,33 @@ class Error(Exception):
         102: "ERROR: {unknownName} -> Unknown Variable! {description} | {name} {base} {function}", # *
         103: "ERROR: Keyboard interrupt! | Stopping...",
         110: "ERROR: {type} != {descriptionChild} -> unsupported type! \n{description} | {name} {base} {function}", # *
+        111: "ERROR: PERMISSON ERROR: {description} | {name} {base} {function}", # *
         201: "ERROR: {type} != PT -> Only PT type is pushable! | {name} {base} {function}", # Variable
-        202: "ERROR: {index} -> Invalid positional Value! \n{description} | {name} {base} {function}", # Variable, LIST
+        202: "ERROR: {index} -> Invalid positional Value! \n{description} | {name} {base} {function}", # Variable, LIST, FILE
         203: "ERROR: {returnFunction} -> Invalid return function! | {name} {base} {function}", # FUNC
         204: "ERROR: {descriptionChild} -> {description} | {name} {base} {function}", # CO
         205: "ERROR: {libName} -> cant import library! ({libPath}.{libName}) | {name} {base} {function}", # RNG
+        206: "ERROR: {fileName} in {fileVarName} -> is closed and cannot be edited or read! | {name} {base} {function}", # FILE
+        207: "ERROR: {fileState} == {fileState} in {name} -> File state cannot be changed! {description} | {name} {base} {function}", # FILE
+        208: "ERROR: {fileName} in {fileVarName} -> File content Error: {description} | {name} {base} {function}", # FILE
     }
 
     def __init__(self, errorCode: int,  **kwargs):
         """
         101: "ERROR: {type} has no function # {function}! ({name})   | {name} {base} {function}", # *\n
         102: "ERROR: {unknownName} -> Unknown Variable! {description} | {name} {base} {function}", # *\n
-        103: "ERROR: keyboard interrupt! | [{index}] {name} {base} {function}",
+        103: "ERROR: keyboard interrupt! | [{index}] {name} {base} {function}",\n
         110: "ERROR: {type} != {descriptionChild} -> unsupported type! \n{description} | {name} {base} {function}", # *\n
+        111: "ERROR: PERMISSON ERROR: {description} | {name} {base} {function}", # *\n
         201: "ERROR: {type} != PT -> Only PT type is pushable! | {name} {base} {function}", # Variable\n
         202: "ERROR: {index} -> Invalid positional Value! \n{description} | {name} {base} {function}", # Variable, LIST\n
         203: "ERROR: {returnFunction} -> Invalid return function! | {name} {base} {function}", # FUNC\n
         204: "ERROR: {descriptionChild} -> {description} | {name} {base} {function}", # CO\n
         205: "ERROR: {libName} -> cant import library! ({libPath}.{libName}) | {name} {base} {function}", # RNG\n
+        206: "ERROR: {fileName} in {fileVarName} is closed and cannot be edited or read! | {name} {base} {function}", # FILE\n
+        207: "ERROR: {fileState} == {fileState} -> File state cannot be changed! {description} | {name} {base} {function}", # FILE\n
+        208: "ERROR: {fileName} in {fileVarName} -> File content Error: {description} | {name} {base} {function}", # FILE\n
+
 
 
         Args:
@@ -108,7 +117,6 @@ def checkValueForType(value: str, type: str):
 
     return None
 
-
 def changeType(name: str, newType: str, variables: dict):
 
     """_summary_
@@ -134,6 +142,33 @@ def changeType(name: str, newType: str, variables: dict):
 
     return variables
 
+def getValueFromVariable(value: str, variables: dict, allowedTypes: list, name, base, function):
+    var = value.replace("'", "")
+    if "<" in var and ">" in var:
+        if "LIST" not in allowedTypes:
+            raise Error(110, type=variables[varName].type, descriptionChild=allowedTypes, description="Value Variable type not compatible!", name=name, base=base, function=function)
+
+        varName, varIndex = var.split("<")
+        varIndex = varIndex.replace(">", "")
+
+        if varName not in variables.keys():
+            raise Error(202, index=varName, description="Index Variable not found!",
+                        name=name, base=base, function=function)
+
+        if variables[varName].type != "LIST":
+            raise Error(202, index=varName, description="Index Variable not a LIST!",
+                        name=name, base=base, function=function)
+
+        value = str(variables[varName].getValue(varIndex, variables))
+    else:
+        if var not in variables.keys():
+            raise Error(102, unknownName=varName, description="Value Variable not found!", name=name, base=base, function=function)
+
+        if variables[var].type not in allowedTypes:
+            raise Error(110, type=variables[var].type, descriptionChild=allowedTypes, description="Value Variable type not compatible!", name=name, base=base, function=function)
+        value = str(variables.get(var).value)
+
+    return value
 
 signal.signal(signal.SIGINT, handle_keyboard_interrupt)
 class Variable:
@@ -204,24 +239,8 @@ class Variable:
             return False
 
         if newValue.startswith("'"):
-            var = newValue.replace("'", "")
-            if "<" in var and ">" in var:
-                varName, varIndex = var.split("<")
-                varIndex = varIndex.replace(">", "")
-
-                if varName not in variables.keys():
-                    raise Error(202, index=varName, description="Index Variable not found!",
-                                name=self.name, base=self.base, function=self.function)
-
-                if variables[varName].type != "LIST":
-                    raise Error(202, index=varName, description="Index Variable not a LIST!",
-                                name=self.name, base=self.base, function=self.function)
-
-                self.value = str(variables[varName].getValue(varIndex, variables))
-                self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "const: ": self.const}
-            else:
-                self.value = str(variables.get(var).value)
-                self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "const: ": self.const}
+            self.value = getValueFromVariable(newValue, variables, ["PT", "LIST"], self.name, self.base, self.function)
+            self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "const: ": self.const}
 
         elif newValue == "++":
             match self.type:
@@ -909,3 +928,290 @@ class LIB:
 
         except ImportError as e:
             raise Error(205, libName=self.libName, libPath=self.libPath, name=self.name, base=self.base, function=self.function)
+
+class FILE:
+    def __init__(self, name: str, base: str, function: str, paramsList: list, variables: dict) -> None:
+        self.name = name
+        self.type = "FILE"
+
+        self.fileName = paramsList[0]
+        self.file = None
+        self.fileContent = None
+        self.closed = False
+
+
+
+        self.override = False
+        if len(paramsList) > 1:
+            self.override = BOOL_TRANSFORM[paramsList[1]]
+
+
+        self.base = base    # FOR ERRORS
+        self.function = function
+
+        self.prepare()
+
+
+    def matchFunction(self, base, function, paramsList, variables):
+        self.base = base
+        self.function = function
+
+        match base:
+            case "#":
+                match function:
+                    case "CT":
+                        self.changeType(paramsList[0])
+                    case _:
+                        raise Error(101, name=self.name, function=function, type=self.type, base=self.base)
+
+            case "?":
+                match function:
+                    case "close":
+                        self.oc(False)
+                    case "reopen":
+                        self.oc(True)
+                    case "clear":
+                        self.clear(variables, paramsList)
+                    case "delete":
+                        self.delete(paramsList)
+                    case "rename":
+                        self.rename(variables, paramsList)
+                    case "w":
+                        self.write(paramsList[0], paramsList[1], variables)
+                    case "a":
+                        self.append(paramsList[0], variables)
+                    case "i":
+                        self.insert(paramsList[0], paramsList[1], variables)
+                    case "rep":
+                        self.replace(paramsList, variables)
+                    case _:
+                        raise Error(101, name=self.name, function=function, type=self.type, base=self.base)
+
+    def checkForClose(self):
+        if self.file.closed:
+            raise Error(206, fileName = self.fileName, fileVarName=self.name, name = self.name, base=self.base, function=self.function)
+
+
+    def prepare(self):
+        if self.override:
+            self.file = open(self.fileName, "w+")
+        else:
+            self.file = open(self.fileName, "a+")
+            self.file.seek(0)
+
+    def oc(self, openFile: bool = True):
+        """
+        opens or closes the current file
+        TRUE = open
+        FALSE = close
+        """
+        if openFile:
+            if not self.file.closed:
+                raise Error(207, fileState="OPEN", description="File is already open!", name=self.name, base=self.base, function=self.function)
+            self.file = open(self.fileName, "a+")
+            self.file.seek(0)
+            self.closed = False
+        else:
+            if self.file.closed:
+                raise Error(207, fileState="CLOSE", description="File is already closed!", name=self.name, base=self.base, function=self.function)
+
+            self.file.close()
+            self.closed = True
+
+    def clear(self, variables, paramsList):
+        if self.closed == True:
+            raise Error(206, fileName = self.fileName, fileVarName=self.name, name = self.name, base=self.base, function=self.function)
+
+
+        lineNumber = 0
+
+        if len(paramsList) == 1 and paramsList[0] != "":
+            lineNumber = paramsList[0]
+
+        if lineNumber.startswith("'"):
+            lineNumber = getValueFromVariable(lineNumber, variables, ["INT", "LIST"], self.name, self.base, self.function)
+
+
+        lineNumber = int(lineNumber)
+        if lineNumber == 0:
+            self.file.truncate(0)
+        else:
+            lineNumber -= 1
+            self.file.seek(0)
+
+            lines = self.file.readlines()
+
+            self.oc(False)
+
+            with open(self.fileName, "w") as file:
+                for i, line in enumerate(lines):
+                    if i != lineNumber:
+                        file.write(line)
+
+            self.oc()
+
+    def delete(self, paramsList: list):
+        force = "~0"
+        if len(paramsList) == 1 and paramsList[0] != "":
+            force = paramsList[0]
+
+        if self.closed == False:
+            self.oc(False)
+        try:
+            if force == "~0":
+                os.remove(self.fileName)
+            else:
+                if self.file.readlines() != []:
+                    raise Error(208, fileName = self.fileName, description="File must be empty!", name = self.name, base=self.base, function=self.function)
+
+                os.remove(self.fileName)
+
+        except PermissionError as e:
+            if hasattr(e, "winerror") and e.winerror == 32:
+                raise Error(111, description=f"File is beeing used by another process! ({self.fileName})", name=self.name, base=self.base, function=self.function)
+            else:
+                print(e)
+
+    def rename(self, variables, paramsList: list):
+        if self.closed == False:
+            self.oc(False)
+
+        deleteContent = False
+        if len(paramsList) == 2 and paramsList[1] != "":
+            deleteContent = True
+
+
+        newName = paramsList[0]
+        if newName.startswith("'"):
+            newName = getValueFromVariable(newName, variables, ["PT", "LIST"], self.name, self.base, self.function)
+
+
+
+
+        if os.path.exists(self.fileName) and not os.path.exists(newName):
+            if deleteContent:
+                open(newName, "w").close()  # Create empty file
+                os.replace(newName, self.fileName)  # Overwrites the original
+
+
+            os.rename(self.fileName, newName)
+        else:
+            raise Error(208, fileName = self.fileName, description="Rename Error: name already in use!", name = self.name, base=self.base, function=self.function)
+
+        self.fileName = newName
+        self.oc(True)
+
+    def write(self, pos, value, variables):
+        if self.closed == True:
+            raise Error(206, fileName = self.fileName, fileVarName=self.name, name = self.name, base=self.base, function=self.function)
+
+
+
+        if pos.startswith("'"):
+            pos = getValueFromVariable(pos, variables, ["INT", "LIST"], self.name, self.base, self.function)
+
+        if value.startswith("'"):
+            value = getValueFromVariable(value, variables, ["PT", "LIST"], self.name, self.base, self.function)
+
+
+        lines = self.file.readlines()
+        pos = int(pos)-1
+        if pos < 0:
+            raise Error(202, index=pos, description=f"at {self.fileName} at {self.name} -> Position must be greater than 0", name=self.name, base=self.base, function=self.function)
+
+
+        while len(lines) <= pos:
+            lines.append("\n")
+
+        lines[pos] = value if value.endswith("\n") else value + "\n"
+
+        self.oc(False)
+        with open(self.fileName, "w") as f:
+            f.writelines(lines)
+        self.oc(True)
+
+    def append(self, value, variables):
+        if self.closed == True:
+            raise Error(206, fileName = self.fileName, fileVarName=self.name, name = self.name, base=self.base, function=self.function)
+
+
+        if value.startswith("'"):
+            value = getValueFromVariable(value, variables, ["PT", "LIST"], self.name, self.base, self.function)
+
+        lines = self.file.readlines()
+        lines.append(value if value.endswith("\n") else value + "\n")
+
+        self.oc(False)
+        with open(self.fileName, "w") as f:
+            f.writelines(lines)
+        self.oc(True)
+
+    def insert(self, pos, value, variables):
+        if self.closed == True:
+            raise Error(206, fileName = self.fileName, fileVarName=self.name, name = self.name, base=self.base, function=self.function)
+
+
+        lines = self.file.readlines()
+
+        if pos.startswith("'"):
+            pos = getValueFromVariable(pos, variables, ["INT", "LIST"], self.name, self.base, self.function)
+
+        if value.startswith("'"):
+            value = getValueFromVariable(value, variables, ["PT", "LIST"], self.name, self.base, self.function)
+
+        pos = int(pos)-1
+        if pos < 0:
+            raise Error(202, index=pos, description=f"at {self.fileName} at {self.name} -> Position must be greater than 0", name=self.name, base=self.base, function=self.function)
+
+
+        while len(lines) < pos:
+            lines.append("\n")
+
+        # Insert at the position
+        lines.insert(pos, value if value.endswith("\n") else value + "\n")
+
+        self.oc(False)
+        with open(self.fileName, "w") as f:
+            f.writelines(lines)
+        self.oc(True)
+
+    def replace(self, paramsList: list, variables):
+        if self.closed == True:
+            raise Error(206, fileName = self.fileName, fileVarName=self.name, name = self.name, base=self.base, function=self.function)
+
+
+        startingPos = 1
+        if len(paramsList) == 2 and paramsList[1] != "":
+            startingPos = paramsList[1]
+
+        listName = paramsList[0].replace("'", "")
+        listObject = variables[listName]
+        listData = listObject.data
+
+        if listObject.type != "LIST":
+            raise Error(110, type=listObject.type, descriptionChild="LIST", description="unsupported Type for replacing file!", name=self.name, base=self.base, function=self.function)
+
+        startingPos = int(startingPos)-1
+        lines = self.file.readlines()
+
+        while len(lines) < startingPos:
+            lines.append("\n")
+
+
+        for i, newLine in enumerate(listData):
+            lineIndex = startingPos + i
+            line = newLine if newLine.endswith("\n") else newLine + "\n"
+
+            if lineIndex < len(lines):
+                lines[lineIndex] = line
+            else:
+                lines.append(line)
+
+        self.oc(False)
+        with open(self.fileName, "w") as f:
+            f.writelines(lines)
+        self.oc(True)
+
+
+if __name__ == "__main__":
+    myFile = open("hello.txt", "a")

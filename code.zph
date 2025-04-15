@@ -1,1 +1,6 @@
-mathLib # LIB:moreMath;
+myFile # FILE:file.txt|~1;
+
+
+
+myFile ? close:;
+myFile ? close:;

@@ -156,6 +156,9 @@ def compiler(filename: str, fileDirectory: str = "."):
                 case "RNG":
                     var = RNG(name, base, function, paramsList, variables)
                     variables.update({var.name: var})
+                case "FILE":
+                    var = FILE(name, base, function, paramsList, variables)
+                    variables.update({var.name: var})
 
                 case "LIB":
                     libFileDirectory = fileDirectory.replace("/", ".")
@@ -203,7 +206,7 @@ def compiler(filename: str, fileDirectory: str = "."):
 
         else:
             match variables[name].type:
-                case "INT"|"PT"|"FLOAT"|"LIST"|"MO"|"FUNC"|"CO"|"RNG":
+                case "INT"|"PT"|"FLOAT"|"LIST"|"MO"|"FUNC"|"CO"|"RNG"|"FILE":
                     variables[name].matchFunction(base, function, paramsList, variables)
                 case "IF"|"LOOP":
                     currentIndex = variables[name].matchFunction(base, function, paramsList, variables, currentIndex)

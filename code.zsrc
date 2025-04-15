@@ -1,13 +1,27 @@
 {
-    "0::a # PT:Hallo": {
-        "name": "a",
-    "0::mathLib # LIB:moreMath": {
-        "name": "mathLib",
+    "0::myFile # FILE:file.txt|~1": {
+        "name": "myFile",
         "base": "#",
-        "function": "PT",
-        "function": "LIB",
+        "function": "FILE",
         "paramsList": [
-            "moreMath"
+            "file.txt",
+            "~1"
+        ]
+    },
+    "1::myFile ? close:": {
+        "name": "myFile",
+        "base": "?",
+        "function": "close",
+        "paramsList": [
+            ""
+        ]
+    },
+    "2::myFile ? close:": {
+        "name": "myFile",
+        "base": "?",
+        "function": "close",
+        "paramsList": [
+            ""
         ]
     }
 }
