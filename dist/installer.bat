@@ -80,7 +80,7 @@ curl -o functions.py                https://raw.githubusercontent.com/DeyanM1/Ze
 ::           BUILD EXECUTABLE           ::
 :: ------------------------------------ ::
 
-pyinstaller --onefile --add-data "main.py;." --add-data "functions.py;." zephyr.py --distpath "%OutputDir%" --name zephyr
+python -m pyinstaller --onefile --add-data "main.py;." --add-data "functions.py;." zephyr.py --distpath "%OutputDir%" --name zephyr
 
 :: Clean up temporary build files
 del zephyr.py functions.py main.py
@@ -94,7 +94,7 @@ echo.
 
 
 :: BUILD 2nd executable for zephyrLibraryManager.py
-pyinstaller --onefile zephyrLibraryManager.py --distpath "%OutputDir%" --name zlm
+python -m pyinstaller --onefile zephyrLibraryManager.py --distpath "%OutputDir%" --name zlm
 
 :: Clean up temporary build files
 del zephyrLibraryManager.py zlm.spec
