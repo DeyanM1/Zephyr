@@ -1,14 +1,10 @@
-<style>
-  body {
-    font-family: Fira Code, sans-serif;
-  }
-</style>
 # Zephyr Documentation
 
 ---
-# Table of Contents
+## Table of Contents
 - [Zephyr Documentation](#zephyr-documentation)
-- [Table of Contents](#table-of-contents)
+  - [Table of Contents](#table-of-contents)
+- [Begginer Info](#begginer-info)
   - [Syntax Overview](#syntax-overview)
   - [Types](#types)
   - [Basic Info](#basic-info)
@@ -22,6 +18,7 @@
     - [Changing Type](#changing-type)
     - [Modifying Values](#modifying-values)
     - [Input and Output](#input-and-output)
+    - [Variable passthrough](#variable-passthrough)
   - [Built-in Functions](#built-in-functions)
   - [Lists](#lists)
   - [ALIST](#alist)
@@ -41,6 +38,8 @@
   - [GPIO-Library](#gpio-library)
   - [Conclusion](#conclusion)
 
+
+# Begginer Info
 ## Syntax Overview
 
 **Basic Structure:**
@@ -224,6 +223,23 @@ Only PT is pushable
   message ? push:;
   ```
 
+### Variable passthrough
+Many Variable functions or arguments support pass from other variables.
+
+```zephyr
+a # PT:;
+b # PT:abc;
+c # LIST:PT|a,b,c;
+
+~ pass from other variables
+a ? w:'b';
+a ? w:'c<2>'
+
+```
+- pass
+to use variables they must be in `' '`.
+If the Var is a List you can add `< >` after the variable to enter the position. For more about List: [Lists](#lists)
+
 ---
 
 ## Built-in Functions
@@ -277,7 +293,7 @@ variable name must be in `' '`
 ---
 ## ALIST
 A Allocated List is a list that does'nt fill spaces between values. It saves memory.
-The positioning an Commands are like a normal List.
+The positioning Commands are like a normal List.
 
 ## Math Object
 
