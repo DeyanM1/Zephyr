@@ -284,10 +284,15 @@ class LIST:
         self.data = []
         self.negData = []
 
+
+        self.base = base    # FOR ERRORS
+        self.function = function    # FOR ERRORS
+
         if len(paramsList) > 1:
             dataToAdd = paramsList[1].split(",")
             for pos in range(0, len(dataToAdd)):
                 self.setValue(pos+1, dataToAdd[pos], variables)
+
 
         self.dumpConfig = {"name": self.name, "type": self.type, "elementsType": self.elementsType, "data": self.data, "negData: ": self.negData}
 
@@ -344,6 +349,8 @@ class LIST:
                 else:
                     self.negData.extend([None] * (pos - len(self.negData) + 1))
                     self.negData[pos] = value
+        else:
+            raise Error(110, type="current Element Value Type", descriptionChild=self.elementsType, description="Data not compatible with Elements Type", name=self.name, base=self.base, function=self.function)
 
         self.dumpConfig = {"name": self.name, "type": self.type, "elementsType": self.elementsType, "data": self.data, "negData: ": self.negData}
 
@@ -1159,6 +1166,8 @@ class FILE:
         if value.startswith("'"):
             value = getValueFromVariable(value, variables, ["PT", "LIST"], self.name, self.base, self.function)
 
+
+
         pos = int(pos)-1
         if pos < 0:
             raise Error(202, index=pos, description=f"at {self.fileName} at {self.name} -> Position must be greater than 0", name=self.name, base=self.base, function=self.function)
@@ -1188,6 +1197,8 @@ class FILE:
         listObject = variables[listName]
         listData = listObject.data
 
+        print(listObject)
+
         if listObject.type != "LIST":
             raise Error(110, type=listObject.type, descriptionChild="LIST", description="unsupported Type for replacing file!", name=self.name, base=self.base, function=self.function)
 
@@ -1211,7 +1222,3 @@ class FILE:
         with open(self.fileName, "w") as f:
             f.writelines(lines)
         self.oc(True)
-
-
-if __name__ == "__main__":
-    myFile = open("hello.txt", "a")

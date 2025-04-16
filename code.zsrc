@@ -1,22 +1,31 @@
 {
-    "0::myFile # FILE:file.txt|~1": {
+    "0::myFile # FILE:file.txt": {
         "name": "myFile",
         "base": "#",
         "function": "FILE",
         "paramsList": [
-            "file.txt",
-            "~1"
+            "file.txt"
         ]
     },
-    "1::myFile ? close:": {
+    "1::myList # LIST:PT|Hello World,This is a test,1234": {
+        "name": "myList",
+        "base": "#",
+        "function": "LIST",
+        "paramsList": [
+            "PT",
+            "Hello World,This is a test,1234"
+        ]
+    },
+    "2::myFile ? rep:'myList'|5": {
         "name": "myFile",
         "base": "?",
-        "function": "close",
+        "function": "rep",
         "paramsList": [
-            ""
+            "'myList'",
+            "5"
         ]
     },
-    "2::myFile ? close:": {
+    "3::myFile ? close:": {
         "name": "myFile",
         "base": "?",
         "function": "close",
