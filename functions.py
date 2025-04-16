@@ -232,7 +232,6 @@ class Variable:
         else:
             raise Error(201, type=self.type, name=self.name, base=self.base, function=self.function)
 
-
     def write(self, newValue, variables):
         newValue = str(newValue)
         if self.const:
@@ -317,18 +316,9 @@ class LIST:
         pos = str(pos)
         if checkValueForType(value, self.elementsType) != None:
             if pos.startswith("'"):
-                try:
-                    name = pos.replace("'", "")
-                    posVar = variables[name]
-                    pos = int(posVar.value)
-                except Exception as e:
-                    raise Error(102, unknownName=name, name=self.name, base=self.base, function=self.function, description="Postion variable")
-
-            else:
-                pos = int(pos)
+                self.value = getValueFromVariable(pos, variables, ["INT", "LIST"], self.name, self.base, self.function)
 
             pos = int(pos)
-
 
             if int(pos) == 0:
                 raise Error(202, index=pos, description="Position cant be 0", name=self.name, base=self.base, function=self.base)

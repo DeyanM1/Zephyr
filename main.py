@@ -174,8 +174,12 @@ def compiler(filename: str, fileDirectory: str = "."):
                 case "?":
                     match function:
                         case "JUMP":
-                            currentIndex = int(paramsList[0]) -1
-                            continue
+                            if currentIndex.startswith("'"):
+                                currentIndex = int(getValueFromVariable(paramsList[0], variables, ["INT", "LIST"], name, base, function))-1
+                                continue
+                            else:
+                                currentIndex = int(paramsList[0]) -1
+                                continue
                         case "WAIT":
                             seconds = paramsList[0]
                             if seconds.startswith("'"):
