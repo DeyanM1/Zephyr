@@ -50,13 +50,13 @@
 <--------------------------command------------------------->
 ```
 
-- **VariableName**: The name of the variable, user-defined.
-- **base**: The base of the variable, used to define its operation:
-  - **?**: For variable operations (e.g., modifying or retrieving values).
-  - **#**: For declaring variables or changing their types.
-- **function**: The operation to execute on the variable (e.g., printing, defining a function).
-- **arguments**: Additional information passed to the function.
-- **command**: The entire statement.
+- **`VariableName`**: The name of the variable, user-defined.
+- **`base`**: The base of the variable, used to define its operation:
+  - **`?`**: For variable operations (e.g., modifying or retrieving values).
+  - **`#`**: For declaring variables or changing their types.
+- **`function`**: The operation to execute on the variable (e.g., printing, defining a function).
+- **`arguments`**: Additional information passed to the function.
+- **`command`:** The entire statement.
 
 ---
 
@@ -142,10 +142,10 @@ LIB_FOLDER_NAME = "<libraryFolderName>"
 <VariableName> # <Type>:<Value>(|<~1>/<~0>);
 ```
 
-- **Type**: The data *type* of the variable.
-- **Value**: The initial value of the variable.
+- **`Type`**: The data type of the variable.
+- **`Value`**: The initial value of the variable.
 
-- **~1/~0**: Optional flags for constants.
+- **`~1/~0`**: Optional flags for constants.
 
 **Examples:**
 
@@ -164,7 +164,7 @@ LIB_FOLDER_NAME = "<libraryFolderName>"
 ```zephyr
 <VariableName> # CT:<Type>;
 ```
-- **Type**: The new variable type
+- **`Type`**: The new variable type
 
 **Example:**
 
@@ -178,10 +178,10 @@ LIB_FOLDER_NAME = "<libraryFolderName>"
 - usage:
 ```zephyr
 <VariableName> ? w:<Value>;
-<VariableName> ? w:<VariableName>;
+<VariableName> ? w:'<VariableName>';
 ```
-- **Value**: Must be compatible with the variable's type.
-- **VariableName**: By entering a VariableName, it copies its value
+- **`Value`**: Must be compatible with the variable's type.
+- **`VariableName`**: By entering a VariableName in `' '`, it copies its value
 
 **Incrementing:**
 
@@ -203,7 +203,7 @@ LIB_FOLDER_NAME = "<libraryFolderName>"
 ### Input and Output
 
 **Print a value:**
-
+Only PT is pushable
 - usage:
 ```zephyr
 <VariableName> ? push:;
@@ -213,8 +213,9 @@ LIB_FOLDER_NAME = "<libraryFolderName>"
 
 - usage:
 ```zephyr
-<VariableName> ? INPUT:<optional input message>;
+<VariableName> ? INPUT:<optionalInputMessage>;
 ```
+`optionalInputMessage` can't use `: ;` !
 
 **Example:**
 
@@ -235,9 +236,9 @@ Zephyr comes with several built-in functions that can be used without prior defi
 __ ? JUMP:<Line>;
 __ ? WAIT:<Seconds>;
 ```
-- **JUMP**: Jumps to a specific function, not a line.
-- **WAIT**: Wait for a specific amount of second. (To pass Variables put them in ' ')
-- **DUMPING VARIABLES** see below
+- **`JUMP`**: Jumps to a specific function, not a line.
+- **`WAIT`**: Wait for a specific amount of second. | INT Variable name support if in `' '`
+- **`DUMPING VARIABLES`**: see below
 
 ---
 
@@ -256,19 +257,24 @@ Supported types: Variables
 
 - usage:
 ```zephyr
+~ define
 myList # LIST:<ElementsType>|optionalData;
-myList ? SET:[POS]|Data;
-
+myList ? SET:<pos>|<data>;
 myList ? SET:'myPosVar'|'myPosValue';
 
+~ read to supported types from a LIST
 myNum # INT:0;
-myNum ? w:'myList<POS>';
+myNum ? w:'myList<pos>';
 ```
-optionalData Syntax: ..|5,1,5,2
-                     ..|test1,test2,test3
+- define
+**`optionalData Syntax`**: `..|5,1,5,2`  /  `..|test1,test2,test3`
+**`pos`**: can be from 1 to +Inf or from -1 to -Inf. | INT, LIST Variable name support if in `' '`
+**`data`**: can be any value which the type supports| PT, LIST Variable name support if in `' '`
+- read
+**`pos`** must be in `< >`
+variable name must be in `' '`
 
 ---
-
 ## ALIST
 A Allocated List is a list that does'nt fill spaces between values. It saves memory.
 The positioning an Commands are like a normal List.
