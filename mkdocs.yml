@@ -1,5 +1,7 @@
 site_name: Zephyr documentation
 site_url: https://sitename.example
+
+
 theme:
   name: material
   font:
@@ -43,3 +45,7 @@ markdown_extensions:
 
   - admonition
   - pymdownx.details
+
+plugins:
+  - search
+  - awesome-pages
