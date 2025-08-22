@@ -29,17 +29,9 @@ This language is intended for:
 
 
 
-## Installation
+## First Steps
 
-### Installation Guide
-1. downLoad the `compile.exe` from the dist folder [here](https://github.com/DeyanM1/Zephyr/blob/main/dist/compile.bat)
-2. Launch the file and proceed the installation
-3. There is a exe file in `C:\Users\userName\Zephyr`
-
-
-## Write programs
-
-**See documentation** [here](https://github.com/DeyanM1/Zephyr/blob/main/documentation.md)
+### **See documentation** [here](https://deyanm1.github.io/ZephyrDocumentation/)
 
 
 
