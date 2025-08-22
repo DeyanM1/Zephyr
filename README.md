@@ -31,7 +31,7 @@ This language is intended for:
 
 ## First Steps
 
-### **See documentation** [here](https://deyanm1.github.io/ZephyrDocumentation/)
+### **See documentation** [here](https://deyanm1.github.io/Zephyr/)
 
 
 

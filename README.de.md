@@ -29,23 +29,21 @@ Diese Sprache richtet sich an:
 - Erfahrene Profis, die neue Ansätze zur Lehre oder zur experimentellen Erforschung von Compiler-Prozessen suchen.
 - Neugierige Lernende, die mehr über die inneren Abläufe von Programmiersprachen erfahren möchten.
 
-## Installation
-
-### Installationsanleitung
-
-1. Lade die `compile.exe` [hier](https://github.com/DeyanM1/Zephyr/blob/main/dist/compile.bat) herunter.
-2. Öffne die `.bat`-Datei und folge den Installationsanweisungen.
-3. Nun ist eine exe datei in `C:\Users\userName\Zephyr`
 
 
-## Programme schreiben
+## Erste Schritte
 
-**Siehe Dokumentation** [hier](https://github.com/DeyanM1/Zephyr/blob/main/documentation.md)
+### **Siehe Dokumentation** [hier](https://deyanm1.github.io/Zephyr/)
 
 
 ---
+
+
+
+
+
 # Notes
 
-python -m PyInstaller main.py -F -n ZephyrRun
+
 https://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=Zephyr%0A
 https://convertio.co/txt-png/
