@@ -13,5 +13,7 @@
   "cSpell.words": ["ALIST", "zpkg", "zscr", "zsrc"],
   "code-runner.executorMapByGlob": {
     "*.zph": "python3.13 c:/Users/deyan/OneDrive/Projects/Zephyr/main.py $fileName"
-  }
+  },
+  "python-envs.defaultEnvManager": "ms-python.python:venv",
+  "python-envs.pythonProjects": []
 }

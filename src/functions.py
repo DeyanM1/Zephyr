@@ -15,7 +15,7 @@ PT_reg = r"^'.*'$"
 
 
 
-TYPES = ["PT", "INT", "FLOAT", "LIST", "MO", "FUNC", "CO", "IF", "LOOP", "RNG", "PredefVar", "LIB", "FILE"]
+TYPES = ["PT", "INT", "FLOAT", "LIST", "ALIST", "MO", "FUNC", "CO", "IF", "LOOP", "RNG", "PredefVar", "LIB", "FILE"]
 
 
 DIGITS = "0123456789"
@@ -372,6 +372,56 @@ class LIST:
 
             except IndexError:
                 raise Error(202, index=pos, description="Index is out of range", name="", base="", function="")
+
+class ALIST:
+    def __init__(self, name, base, function, paramsList, variables):
+        self.name = name
+        self.type = function
+
+        self.elementsType = paramsList[0]
+
+        self.data = {}
+
+    def matchFunction(self, base, function, paramsList, variables):
+        self.base = base
+        self.function = function
+
+        match base:
+            case "#":
+                match function:
+                    case _:
+                        raise Error(101, name=self.name, function=function, type=self.type, base=self.base)
+            case "?":
+                match function:
+                    case "SET":
+                        self.setValue(paramsList[0], paramsList[1], variables)
+                    case _:
+                        raise Error(101, name=self.name, function=function, type=self.type, base=self.base)
+
+    def setValue(self, pos, value, variables):
+        pos = str(pos)
+        if checkValueForType(value, self.elementsType) != None:
+            if pos.startswith("'"):
+                self.value = getValueFromVariable(pos, variables, ["INT", "LIST"], self.name, self.base, self.function)
+
+            pos = int(pos)
+
+            if int(pos) == 0:
+                raise Error(202, index=pos, description="Position cant be 0", name=self.name, base=self.base, function=self.base)
+
+            pos = pos-1
+
+            if pos < len(self.data):
+                self.data[pos] = value
+            else:
+                self.data.extend([None] * (pos - len(self.data) + 1))
+
+        else:
+            raise Error(110, type="current Element Value Type", descriptionChild=self.elementsType, description="Data not compatible with Elements Type", name=self.name, base=self.base, function=self.function)
+
+        self.dumpConfig = {"name": self.name, "type": self.type, "elementsType": self.elementsType, "data": self.data, "negData: ": self.negData}
+
+
 
 class MO:
     def __init__(self, name, base, function, paramsList, variables):

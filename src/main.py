@@ -28,7 +28,7 @@ FILE_NAME = EXAMPLE_NAMES[CURRENT_ELEMENT-1]
 #FILE_NAME = ERROR_NAMES[CURRENT_ELEMENT-1]
 
 FILE_DIRECTORY = f"."
-FILE_NAME = "code.zph"
+FILE_NAME = "src/code.zph"
 
 @measureTime
 def lexer(filename: str, fileDirectory: str = "."):
@@ -130,6 +130,10 @@ def compiler(filename: str, fileDirectory: str = "."):
 
                 case "LIST":
                     var = LIST(name, base, function, paramsList, variables)
+                    variables.update({var.name: var})
+
+                case "ALIST":
+                    var = ALIST(name, base, function, paramsList, variables)
                     variables.update({var.name: var})
 
                 case "MO":
