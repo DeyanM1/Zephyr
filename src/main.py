@@ -31,7 +31,7 @@ FILE_DIRECTORY = f"."
 FILE_NAME = "src/code.zph"
 
 @measureTime
-def lexer(filename: str, fileDirectory: str = "."):
+def lexer(filename: str, fileDirectory: str = ".", measureTime: bool = False):
     """_summary_
 
     Args:
@@ -90,7 +90,7 @@ def lexer(filename: str, fileDirectory: str = "."):
 
 
 @measureTime
-def compiler(filename: str, fileDirectory: str = "."):
+def compiler(filename: str, fileDirectory: str = ".", measureTime: bool = False):
     signal.signal(signal.SIGINT, handle_keyboard_interrupt)
     """_summary_
 
@@ -178,7 +178,8 @@ def compiler(filename: str, fileDirectory: str = "."):
                 case "?":
                     match function:
                         case "JUMP":
-                            if currentIndex.startswith("'"):
+                            currentIndexStr = str(currentIndex)
+                            if currentIndexStr.startswith("'"):
                                 currentIndex = int(getValueFromVariable(paramsList[0], variables, ["INT", "LIST"], name, base, function))-1
                                 continue
                             else:
