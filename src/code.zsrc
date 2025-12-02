@@ -1,0 +1,42 @@
+{
+    "1": {
+        "lineNum": 1,
+        "zfile": {
+            "rawName": "src\\code",
+            "basePath": "C:\\Users\\deyan\\Developement\\Zephyr"
+        },
+        "name": "a",
+        "base": "#",
+        "func": "PT",
+        "args": [
+            "5a"
+        ]
+    },
+    "3": {
+        "lineNum": 3,
+        "zfile": {
+            "rawName": "src\\code",
+            "basePath": "C:\\Users\\deyan\\Developement\\Zephyr"
+        },
+        "name": "a",
+        "base": "?",
+        "func": "w",
+        "args": [
+            "++",
+            "5"
+        ]
+    },
+    "6": {
+        "lineNum": 6,
+        "zfile": {
+            "rawName": "src\\code",
+            "basePath": "C:\\Users\\deyan\\Developement\\Zephyr"
+        },
+        "name": "a",
+        "base": "?",
+        "func": "push",
+        "args": [
+            ""
+        ]
+    }
+}
