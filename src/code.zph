@@ -1,7 +1,0 @@
-myFile # FILE:file.txt;
-
-myList # LIST:PT|Hello World,This is a test,1234;
-
-myFile ? rep:'myList'|5;
-
-myFile ? close:;
