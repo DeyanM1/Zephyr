@@ -1,6 +1,3 @@
-a # PT:5a;
-
-a ? w:++|5;
-
-
-a ? push:;
+a # INT:5;
+b # INT:7;
+co # CO:('a'>'b')

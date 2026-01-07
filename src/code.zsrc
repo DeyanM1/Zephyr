@@ -9,11 +9,11 @@
         "base": "#",
         "func": "PT",
         "args": [
-            "5a"
+            "HI"
         ]
     },
-    "3": {
-        "lineNum": 3,
+    "2": {
+        "lineNum": 2,
         "zfile": {
             "rawName": "src\\code",
             "basePath": "C:\\Users\\deyan\\Developement\\Zephyr"
@@ -23,11 +23,11 @@
         "func": "w",
         "args": [
             "++",
-            "5"
+            "0"
         ]
     },
-    "6": {
-        "lineNum": 6,
+    "3": {
+        "lineNum": 3,
         "zfile": {
             "rawName": "src\\code",
             "basePath": "C:\\Users\\deyan\\Developement\\Zephyr"

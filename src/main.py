@@ -1,16 +1,20 @@
 from __future__ import annotations
+
 import json
 from dataclasses import asdict
 from typing import Any
-from colorama import just_fix_windows_console, Fore
 
-
+from colorama import Fore
 
 import functions
-from functions import ActiveVars, ZCommand, ZFile, raiseException, getRequiredArgs, ZBase
-
-
-just_fix_windows_console()
+from functions import (
+    ActiveVars,
+    ZBase,
+    ZCommand,
+    ZError,
+    ZFile,
+    getRequiredArgs,
+)
 
 ZCommandData: list[ZCommand] = []
 
@@ -57,10 +61,11 @@ def lexer(zfile: ZFile) -> list[ZCommand]:
             name, base, func = first.split(" ", 2)
         except ValueError:
             cmd = ZCommand(line, ZFILE, "", "", "", [])
-            raiseException(cmd, 104)
+            ZError(104).raiseException(cmd)
 
         args = arguments.split("|")
         ZCommandData.append(ZCommand(line, ZFILE, name, base, func, args))
+    #ZCommandData.append(ZCommand(ZCommandData[-1].lineNum+1, ZFILE, "EOF", "#", "EOF", []))
 
 
 
@@ -99,13 +104,13 @@ def compile(inputData: ZFile | list[Any]):
                     name=cmd_dict["name"],
                     base=cmd_dict["base"],
                     func=cmd_dict["func"],
-                    args=cmd_dict["args"]
+                    args=cmd_dict["args"],
                 )
                 ZCommandData.append(cmd)
 
         case [*commands] if all(isinstance(cmd, ZCommand) for cmd in commands):
             ZCommandData = inputData
-            print(ZCommandData)
+            #print(ZCommandData)
 
         case _:
             raise TypeError("Input must be a ZFile or a list of ZCommand instances")
@@ -134,8 +139,12 @@ def compile(inputData: ZFile | list[Any]):
                         activeVars = activeVars[cmd.name].functionRegistry[cmd.func](cmd, activeVars)
                     
                     case _:
-                        var = functions.typeRegistry[cmd.func](cmd)
-                        activeVars.update({cmd.name: var})
+                        try:
+                            var = functions.typeRegistry[cmd.func](cmd)
+                            activeVars.update({cmd.name: var})
+                        except KeyError:
+                            ZError(103).raiseException(cmd)
+                        
             
             
         
@@ -144,7 +153,7 @@ def compile(inputData: ZFile | list[Any]):
                     var = activeVars.get(cmd.name)
                     if var and hasattr(var, "functionRegistry"):
                         if cmd.func not in var.functionRegistry:
-                            raiseException(cmd, 103)
+                            ZError(103).raiseException(cmd)
 
 
                         if "activeVars" in getRequiredArgs(var.functionRegistry[cmd.func]):
@@ -154,14 +163,16 @@ def compile(inputData: ZFile | list[Any]):
 
                 else:
                     # Variable not found or declared
-                    raiseException(cmd, 102)
+                    ZError(102).raiseException(cmd)
+
 
             case _:
                 # Unknown Base
-                raiseException(cmd, 101)
+                ZError(101).raiseException(cmd)
         
         index += 1
 
+    
     
     print(f"\n{Fore.GREEN}Code finished... \n{Fore.MAGENTA}{activeVars}{Fore.RESET}")
 
