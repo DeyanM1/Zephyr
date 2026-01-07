@@ -46,7 +46,8 @@ class ZError:
             107: lambda: ("[107]  Value cannot be changed. Variable is constant! ", len(f"{cmd.name} {cmd.base} "), SyntaxError),
             108: lambda: ("[108]  Current Variable type doenst support new variable type! ", len(f"{cmd.name} {cmd.base} {cmd.func} "), SyntaxError),
             109: lambda: (f"[109]  List ({cmd.name}) doesn't support position 0! ", len(f"{cmd.name}")+7, SyntaxError),
-            110: lambda: ("[110]  Only INT, PT, FLOAT are in- and decrementable! ", 1, SyntaxError)
+            110: lambda: ("[110]  Only INT, PT, FLOAT are in- and decrementable! ", 1, SyntaxError),
+            111: lambda: ("[111]  Error in Condition. ", len(f"{cmd.name} {cmd.base} {cmd.func}"), SyntaxError)
         }
 
         if self.errorCode not in errors:
@@ -130,22 +131,35 @@ class ZCommand:
 
 @dataclass
 class ZBool:
-    rawValue: str = field(default_factory=lambda:"~0")
+    value: str = field(default_factory=lambda:"~0")
 
     lookUpTable: dict[str, bool] = field(default_factory=lambda:{
         "~0": False,
-        "~1": True
+        "~1": True,
     })
+
+    lookUpTable2: dict[bool, str] = field(default_factory=lambda:{
+        False: "~0",
+        True: "~1"
+    })
+
 
 
     @property
     def compiledValue(self) -> bool|ZError:
-        return self.lookUpTable[self.rawValue]
+        return self.lookUpTable[self.value]
+
+    def setCompileValue(self, newRawValue: bool) -> ZError|None:
+        "This function takes a Python bool converts it into ZBool and sets it to current value"
+        newValue = self.lookUpTable2[newRawValue]
+        self.setValue(newValue)
+
+
 
     def setValue(self, value: str) -> None|ZError:
         if value not in self.lookUpTable:
             return ZError(106)
-        self.rawValue = value
+        self.value = value
 
 @dataclass
 class ZValue:
@@ -316,11 +330,11 @@ class Variable:
             self.functionRegistry[func.__name__] = func
         return func
     
-    def onChange(self) -> ZValue:
+    def onChange(self) -> str:
         """
         Returns the value that is being used for typechanging
         """
-        return self.value
+        return self.value.value
         
 
 
@@ -335,7 +349,7 @@ class Variable:
         oldVar: Variable = activeVars[cmd.name]
 
 
-        newVarCmd: ZCommand = ZCommand(cmd.lineNum, cmd.zfile, cmd.name, ZBase.define, targetVarType, [oldVar.onChange().value])
+        newVarCmd: ZCommand = ZCommand(cmd.lineNum, cmd.zfile, cmd.name, ZBase.define, targetVarType, [oldVar.onChange()])
         newVar = typeRegistry[targetVarType](newVarCmd)
 
         activeVars.update({newVar.name: newVar})
@@ -392,9 +406,57 @@ class CO(Variable):
 
         self.supportedVars = ["INT", "FLOAT", "PT"]
 
-        self.value: ZBool = ZBool("~0")
-        self.equation: str = ""
-        self.compiledEquation: str = ""
+        self.value: ZValue = ZValue("") # Raw Condition
+        self.compiledCondition: str = ""
+        self.result: ZBool = ZBool("~0")
+
+        
+    def w(self, cmd: ZCommand, activeVars: ActiveVars) -> ZError|ActiveVars:
+        self.value = ZValue(cmd.args[0])
+        self.compile(activeVars)
+        return activeVars
+    
+    def compile(self, activeVars: ActiveVars) -> ZError|ActiveVars:
+        allowedChars: str = "()=!><+-*/"
+        inVar = False
+        varName = ""
+        
+        for char in self.value.value:
+            if char == "'":
+                if not inVar:
+                    inVar = True
+                    
+                else:
+                    self.compiledCondition += compileValue(varName, activeVars)
+                    inVar = False
+                    varName = ""
+                    
+            
+            if inVar:
+                varName += char
+                continue
+            
+            if char in allowedChars:
+                self.compiledCondition += char
+
+        self.evaluate()
+        return activeVars
+    
+    def evaluate(self) -> ZError|None:
+        result: bool = False
+
+        try:
+            result = eval(self.compiledCondition)
+        except Exception: 
+            return ZError(111)
+        
+        self.result.setCompileValue(result)
+
+
+
+
+    def onChange(self) -> str:
+        return self.result.value
 
 
 @register(name="__")

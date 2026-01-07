@@ -1,3 +1,7 @@
 a # INT:5;
 b # INT:7;
-co # CO:('a'>'b')
+co # CO:;
+co ? w:('b'>'a');
+
+co # CT:PT;
+co ? push:;

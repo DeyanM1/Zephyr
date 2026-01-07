@@ -2,37 +2,75 @@
     "1": {
         "lineNum": 1,
         "zfile": {
-            "rawName": "src\\code",
-            "basePath": "C:\\Users\\deyan\\Developement\\Zephyr"
+            "rawName": "src/code",
+            "basePath": "/home/deyan/dev/Zephyr"
         },
         "name": "a",
         "base": "#",
-        "func": "PT",
+        "func": "INT",
         "args": [
-            "HI"
+            "5"
         ]
     },
     "2": {
         "lineNum": 2,
         "zfile": {
-            "rawName": "src\\code",
-            "basePath": "C:\\Users\\deyan\\Developement\\Zephyr"
+            "rawName": "src/code",
+            "basePath": "/home/deyan/dev/Zephyr"
         },
-        "name": "a",
-        "base": "?",
-        "func": "w",
+        "name": "b",
+        "base": "#",
+        "func": "INT",
         "args": [
-            "++",
-            "0"
+            "7"
         ]
     },
     "3": {
         "lineNum": 3,
         "zfile": {
-            "rawName": "src\\code",
-            "basePath": "C:\\Users\\deyan\\Developement\\Zephyr"
+            "rawName": "src/code",
+            "basePath": "/home/deyan/dev/Zephyr"
         },
-        "name": "a",
+        "name": "co",
+        "base": "#",
+        "func": "CO",
+        "args": [
+            ""
+        ]
+    },
+    "4": {
+        "lineNum": 4,
+        "zfile": {
+            "rawName": "src/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "co",
+        "base": "?",
+        "func": "w",
+        "args": [
+            "('b'>'a')"
+        ]
+    },
+    "6": {
+        "lineNum": 6,
+        "zfile": {
+            "rawName": "src/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "co",
+        "base": "#",
+        "func": "CT",
+        "args": [
+            "PT"
+        ]
+    },
+    "7": {
+        "lineNum": 7,
+        "zfile": {
+            "rawName": "src/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "co",
         "base": "?",
         "func": "push",
         "args": [

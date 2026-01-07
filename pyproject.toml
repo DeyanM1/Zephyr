@@ -13,3 +13,6 @@ dev = [
     "mypy>=1.19.0",
     "pytest>=9.0.1",
 ]
+
+[tool.pyright]
+reportIncompatibleMethodOverride = false

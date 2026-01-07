@@ -180,7 +180,7 @@ def compile(inputData: ZFile | list[Any]):
 
 if __name__ == "__main__":
 
-    ZFILE: ZFile = ZFile("src\\code")
+    ZFILE: ZFile = ZFile("src/code")
 
     lexer(ZFILE)
     compile(ZFILE)
