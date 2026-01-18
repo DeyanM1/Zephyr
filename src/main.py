@@ -13,10 +13,10 @@ from functions import (
     ZCommand,
     ZError,
     ZFile,
+    ZIndex,
     getRequiredArgs,
 )
 
-ZCommandData: list[ZCommand] = []
 
 
 def lexer(zfile: ZFile) -> list[ZCommand]:
@@ -49,7 +49,7 @@ def lexer(zfile: ZFile) -> list[ZCommand]:
                 currentCommand += char
 
 
-
+    ZCommandData: list[ZCommand] = []
     cmd = ZCommand(-1, ZFILE, "", "", "", [""])
     try:
         # Parse each command into ZCommand objects
@@ -58,9 +58,8 @@ def lexer(zfile: ZFile) -> list[ZCommand]:
         for line, command in compiledData:
             try:
                 first, arguments = command.split(":", 1)
-                name, base, func = first.split(" ", 2)
+                name, base, func = first.lstrip().split(" ", 2)
             except ValueError:
-                cmd = ZCommand(line, ZFILE, "", "", "", [])
                 raise ZError(104)
 
             args = arguments.split("|")
@@ -123,8 +122,9 @@ def compile(inputData: ZFile | list[Any]):
 
     
     cmd = ZCommand(-1, ZFILE, "", "", "", [""])
-    activeVars: ActiveVars = {"__": functions.typeRegistry["__"](ZCommand(0, ZFILE, "__", ZBase.define, "", [""]))}
-    index: int = 0
+    activeVars: ActiveVars = {}
+    activeVars.update({"__": functions.typeRegistry["__"](ZCommand(0, ZFILE, "__", ZBase.define, "", [""]), activeVars)})
+    index: ZIndex = 0
     while index != len(ZCommandData):
         try:
             cmd: ZCommand = ZCommandData[index]
@@ -139,7 +139,13 @@ def compile(inputData: ZFile | list[Any]):
                         
                         case _:
                             try:
-                                var = functions.typeRegistry[cmd.func](cmd)
+                                hasActiveVars = "activeVars" in getRequiredArgs(functions.typeRegistry[cmd.func])
+                                hasIndex = "index" in getRequiredArgs(functions.typeRegistry[cmd.func])
+                                if hasActiveVars:
+                                    var = functions.typeRegistry[cmd.func](cmd, activeVars)
+                                else:
+                                    var = functions.typeRegistry[cmd.func](cmd)
+
                                 activeVars.update({cmd.name: var})
                             except KeyError:
                                 raise ZError(103)
@@ -154,11 +160,28 @@ def compile(inputData: ZFile | list[Any]):
                             if cmd.func not in var.functionRegistry:
                                 raise ZError(103)
 
+                            hasActiveVars = "activeVars" in getRequiredArgs(var.functionRegistry[cmd.func])
+                            hasIndex = "index" in getRequiredArgs(var.functionRegistry[cmd.func])
 
-                            if "activeVars" in getRequiredArgs(var.functionRegistry[cmd.func]):
-                                activeVars = var.functionRegistry[cmd.func](cmd, activeVars)
+                            newActiveVars = None
+                            newIndex = None
+
+
+            
+                            if hasActiveVars and not hasIndex:
+                                newActiveVars = var.functionRegistry[cmd.func](cmd, activeVars)
+                            elif hasIndex and not hasActiveVars:
+                                newIndex = var.functionRegistry[cmd.func](cmd, index)
+                            elif hasActiveVars and hasIndex:
+                                newActiveVars, newIndex = var.functionRegistry[cmd.func](cmd, activeVars, index)
                             else:
                                 var.functionRegistry[cmd.func](cmd)
+                            
+                            if newActiveVars is not None:
+                                activeVars = newActiveVars
+                            if newIndex is not None:
+                                index = newIndex
+                            
 
                     else:
                         # Variable not found or declared

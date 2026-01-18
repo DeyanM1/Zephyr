@@ -1,7 +1,13 @@
-a # INT:5;
+a # INT:9;
 b # INT:7;
-co # CO:;
-co ? w:('a'>3);
 
-co # CT:PT;
-co ? push:;
+
+mo # MO:('a'+'b');
+fun # FUNC:RES|~1;
+fun ? w:mo;
+
+a ? w:++;
+fun ? call:;
+
+fun # CT:PT;
+fun ? push:;

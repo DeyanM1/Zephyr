@@ -12,13 +12,14 @@ typeRegistry: dict[str, type] = {}
 
 
 ActiveVars: TypeAlias = dict[str, "Variable"]
+ZIndex: TypeAlias = int
 
 
 class ZError(Exception):
     def __init__(self, code: int) -> None:
         self.code = code
     
-    def process(self, cmd: ZCommand):
+    def process(self, cmd: ZCommand) -> None:
         path: Path = cmd.zfile.zphPath
         context: str = path.read_text().splitlines()[cmd.lineNum - 1]
 
@@ -34,7 +35,10 @@ class ZError(Exception):
             108: lambda: ("[108]  Current Variable type doenst support new variable type! ", len(f"{cmd.name} {cmd.base} {cmd.func} "), SyntaxError),
             109: lambda: (f"[109]  List ({cmd.name}) doesn't support position 0! ", len(f"{cmd.name}")+7, SyntaxError),
             110: lambda: ("[110]  Only INT, PT, FLOAT are in- and decrementable! ", 1, SyntaxError),
-            111: lambda: ("[111]  Error in Condition. ", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError)
+            111: lambda: ("[111]  Error in Condition. ", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
+            112: lambda: ("[112] Given variable isnt correct type!", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
+            113: lambda: ("[113] Given variable isnt defined!", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
+            114: lambda: ("[114] Missing arguments!", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
         }
 
         if self.code not in errors:
@@ -141,6 +145,12 @@ class ZBool:
         newValue = self.lookUpTable2[newRawValue]
         self.setValue(newValue)
 
+    def getZBool(self) -> str:
+        """Returns the current value in ZBool format"""
+        return self.value
+    def getBool(self) -> bool:
+        """Returns the current value in Python Bool format"""
+        return self.lookUpTable[self.value]
 
 
     def setValue(self, value: str) -> None:
@@ -175,23 +185,24 @@ class ZValue:
             return core.isdigit() or (core.startswith("-") and core[1:].isdigit())
         return s.isdigit() or (s.startswith("-") and s[1:].isdigit())
 
-    def setValue(self, newValue: str, targetType: str) -> None:
+    def setValue(self, newValue: str, targetType: str, activeVars: ActiveVars) -> None:
+        compiledValue = compileValue(newValue, activeVars)
         try:
-            if not self.supportedTypes(newValue)[targetType]:
+            if not self.supportedTypes(compiledValue)[targetType]:
                 raise ZError(105)
         except KeyError:
             pass
             
-        self.value = newValue
+        self.value = compiledValue
 
-    def getValueIfVarType(self, targetType: str):
+    def getValueIfVarType(self, targetType: str) -> str|bool:
         # Return value if current Value is supported by target Type
         if self.supportedTypes(self.value)[targetType]:
             return self.value
         else:
             return False
 
-    def increment(self, incrementValue: str, currentType: str) -> None:
+    def increment(self, incrementValue: str, currentType: str, activeVars: ActiveVars) -> None:
         if not self.supportedTypes(incrementValue)[currentType]:
             raise ZError(105)
         
@@ -200,32 +211,32 @@ class ZValue:
             if incrementValue == "":
                 self.incrementValue = "1"
             
-            self.setValue(self.value + (self.value)*int(incrementValue), currentType)
+            self.setValue(self.value + (self.value)*int(incrementValue), currentType, activeVars)
 
 
 
         else:
             newValue = float(self.value) + float(incrementValue)
             if currentType == "INT":
-                self.setValue(str(newValue).split(".")[0], currentType)
+                self.setValue(str(newValue).split(".")[0], currentType, activeVars)
             elif currentType == "FLOAT":
-                self.setValue(str(newValue), currentType)
+                self.setValue(str(newValue), currentType, activeVars)
             else:
                 raise ZError(110)
 
-    def decrement(self, decrementValue: str, currentType: str) -> None:
+    def decrement(self, decrementValue: str, currentType: str, activeVars: ActiveVars) -> None:
         if not self.supportedTypes(decrementValue)[currentType]:
             raise ZError(105)
 
         if currentType == "PT":
-            self.setValue("", currentType)
+            self.setValue("", currentType, activeVars)
 
         else:
             newValue = float(self.value) - float(decrementValue)
             if currentType == "INT":
-                self.setValue(str(newValue).split(".")[0], currentType)
+                self.setValue(str(newValue).split(".")[0], currentType, activeVars)
             elif currentType == "FLOAT":
-                self.setValue(str(newValue), currentType)
+                self.setValue(str(newValue), currentType, activeVars)
             else:
                 raise ZError(110)
 
@@ -267,20 +278,21 @@ def compileValue(rawValue: str, activeVars: ActiveVars) -> str:
         varName = rawValue.replace("'", "")
 
         var = activeVars.get(varName)
-        if var is not None:
-            returnValue = var.value.value
+        if not var:
+            raise ZError(113)
+        
+        returnValue = var.value.value
     
     return returnValue
 
 
 
 class Variable:
-    def __init__(self, cmd: ZCommand) -> None:
+    def __init__(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         self.name = cmd.name
         self.varType = cmd.func
 
-        self.value: ZValue = ZValue()
-        self.value.setValue(cmd.args[0], self.varType)
+        self.value: Any
 
 
         self.const: ZBool = ZBool()
@@ -312,8 +324,6 @@ class Variable:
         """
         return self.value.value
         
-
-
     def CT(self, cmd: ZCommand, activeVars: ActiveVars) -> ActiveVars:
         targetVarType: str = cmd.args[0]
 
@@ -326,7 +336,7 @@ class Variable:
 
 
         newVarCmd: ZCommand = ZCommand(cmd.lineNum, cmd.zfile, cmd.name, ZBase.define, targetVarType, [oldVar.onChange()])
-        newVar = typeRegistry[targetVarType](newVarCmd)
+        newVar = typeRegistry[targetVarType](newVarCmd, activeVars)
 
         activeVars.update({newVar.name: newVar})
 
@@ -340,67 +350,76 @@ class Variable:
 
 @register()
 class INT(Variable):
-    def __init__(self, cmd: ZCommand) -> None:
-        super().__init__(cmd)
+    def __init__(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        super().__init__(cmd, activeVars)
         self.supportedVars = ["FLOAT", "PT"]
+
+        self.value: ZValue = ZValue()
+        self.value.setValue(cmd.args[0], self.varType, activeVars)
         
         self.registerFunc({self.w: ""})
     
-    def w(self, cmd: ZCommand):
+    def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         if self.const.compiledValue:
             raise ZError(107)
 
 
         match cmd.args[0]:
             case "++":
-                self.value.increment(cmd.args[1] if 1 < len(cmd.args) else "1", self.varType)
+                self.value.increment(cmd.args[1] if 1 < len(cmd.args) else "1", self.varType, activeVars)
             case "--":
-                self.value.decrement(cmd.args[1] if 1 < len(cmd.args) else "1", self.varType)
+                self.value.decrement(cmd.args[1] if 1 < len(cmd.args) else "1", self.varType, activeVars)
 
             case _:
-                self.value.setValue(cmd.args[1], self.varType)
+                self.value.setValue(cmd.args[1], self.varType, activeVars)
 
 @register()
 class FLOAT(Variable):
-    def __init__(self, cmd: ZCommand) -> None:
-        super().__init__(cmd)
+    def __init__(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        super().__init__(cmd, activeVars)
         self.supportedVars = ["INT", "PT"]
+
+        self.value: ZValue = ZValue()
+        self.value.setValue(cmd.args[0], self.varType, activeVars)
     
-    def w(self, cmd: ZCommand):
+    def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         if self.const.compiledValue:
             raise ZError(107)
 
 
         match cmd.args[0]:
             case "++":
-                self.value.increment(cmd.args[1] if 1 < len(cmd.args) else "1", self.varType)
+                self.value.increment(cmd.args[1] if 1 < len(cmd.args) else "1", self.varType, activeVars)
             case "--":
-                self.value.decrement(cmd.args[1] if 1 < len(cmd.args) else "1", self.varType)
+                self.value.decrement(cmd.args[1] if 1 < len(cmd.args) else "1", self.varType, activeVars)
 
             case _:
-                self.value.setValue(cmd.args[1], self.varType)
+                self.value.setValue(cmd.args[1], self.varType, activeVars)
 
 @register()
 class PT(Variable):
-    def __init__(self, cmd: ZCommand) -> None:
-        super().__init__(cmd)
+    def __init__(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        super().__init__(cmd, activeVars)
         self.supportedVars = ["INT", "FLOAT"]
+
+        self.value: ZValue = ZValue()
+        self.value.setValue(cmd.args[0], self.varType, activeVars)
 
         self.registerFunc({self.push: "", self.w: ""})
     
-    def w(self, cmd: ZCommand):
+    def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         if self.const.compiledValue:
             raise ZError(107)
 
 
         match cmd.args[0]:
             case "++":
-                self.value.increment(cmd.args[1] if 1 < len(cmd.args) else "1", self.varType)
+                self.value.increment(cmd.args[1] if 1 < len(cmd.args) else "1", self.varType, activeVars)
             case "--":
-                self.value.decrement(cmd.args[1] if 1 < len(cmd.args) else "1", self.varType)
+                self.value.decrement(cmd.args[1] if 1 < len(cmd.args) else "1", self.varType, activeVars)
 
             case _:
-                self.value.setValue(cmd.args[1], self.varType)
+                self.value.setValue(cmd.args[1], self.varType, activeVars)
     
     
     def push(self, cmd: ZCommand) -> None:
@@ -408,29 +427,36 @@ class PT(Variable):
    
 @register()
 class CO(Variable):
-    def __init__(self, cmd: ZCommand) -> None:
-        super().__init__(cmd)
+    def __init__(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        super().__init__(cmd, activeVars)
 
         self.supportedVars = ["INT", "FLOAT", "PT"]
 
-        self.value: ZValue = ZValue("") # Raw Condition
+        self.value: ZBool = ZBool()
+        self.rawCondition: str = ""
         self.compiledCondition: str = ""
-        self.result: ZBool = ZBool("~0")
+
+
+        if len(cmd.args) > 0:
+            if cmd.args[0] != "":
+                self.w(cmd, activeVars)
+
+
 
         self.registerFunc({self.w: ""})
 
         
-    def w(self, cmd: ZCommand, activeVars: ActiveVars) -> ActiveVars:
-        self.value = ZValue(cmd.args[0])
+    def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        self.rawCondition = cmd.args[0]
         self.compile(activeVars)
-        return activeVars
+
     
-    def compile(self, activeVars: ActiveVars) -> ActiveVars:
+    def compile(self, activeVars: ActiveVars) -> None:
         allowedChars: str = "()=!><+-*/"
         inVar = False
         varName = ""
         
-        for char in self.value.value:
+        for char in self.rawCondition:
             if char == "'":
                 if not inVar:
                     inVar = True
@@ -449,7 +475,7 @@ class CO(Variable):
                 self.compiledCondition += char
 
         self.evaluate()
-        return activeVars
+
     
     def evaluate(self) -> None:
         result: bool = False
@@ -459,30 +485,220 @@ class CO(Variable):
         except Exception: 
             raise ZError(111)
         
-        self.result.setCompileValue(result)
-
-
-
+        self.value.setCompileValue(result)
 
     def onChange(self) -> str:
-        return self.result.value
+        return self.value.value
+
+@register()
+class IF(Variable):
+    def __init__(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        super().__init__(cmd, activeVars)
+
+        self.supportedVars = []
+
+        self.value: ZValue = ZValue()
+
+
+        self.conditionalObjectName: ZValue = ZValue()
+        self.conditionalObjectValue: ZBool = ZBool()
+
+        self.countCommandsInIf: ZValue = ZValue()
+        self.countCommandsInElif: ZValue = ZValue()
+        
+        if len(cmd.args) > 1:
+            self.conditionalObjectName.setValue(cmd.args[0], "PT", activeVars)
+            self.countCommandsInIf.setValue(cmd.args[1], "INT", activeVars)
+
+            conditionalObject = activeVars.get(self.conditionalObjectName.value)
+
+            if isinstance(conditionalObject, CO):
+                self.conditionalObjectValue = conditionalObject.value # type: ignore
+            else:
+                raise ZError(112)
+        else:
+            raise ZError(114)
+            
+        self.registerFunc({self.START: "", self.ELSE: "", self.END: ""})
+
+  
+    
+    def START(self, cmd: ZCommand, index: ZIndex) -> ZIndex:
+        newIndex: ZIndex = 0
+        if self.conditionalObjectValue.getBool():
+            newIndex = index
+        elif not self.conditionalObjectValue.getBool():
+            newIndex = index + int(self.countCommandsInIf.value)
+        
+        return newIndex
+
+    def ELSE(self, cmd: ZCommand, activeVars: ActiveVars, index: ZIndex) -> tuple[ActiveVars, ZIndex]:
+        self.countCommandsInElif.setValue(cmd.args[0], "INT", activeVars)
+        newIndex: ZIndex = 0
+        if not self.conditionalObjectValue.getBool():
+            newIndex = index
+        elif self.conditionalObjectValue.getBool():
+            newIndex = index + int(self.countCommandsInElif.value)
+        
+        return activeVars, newIndex
+
+    def END(self, cmd: ZCommand):
+        pass
+
+@register()
+class MO(Variable):
+    def __init__(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        super().__init__(cmd, activeVars)
+
+        self.supportedVars = ["PT", "INT", "FLOAT"]
+
+        self.value: ZValue = ZValue()
+        self.rawEquation: ZValue = ZValue()
+        self.compiledEquation: str = ""
+
+        if len(cmd.args) > 0:
+            if cmd.args[0] != "":
+                self.w(cmd, activeVars)
+        
+        self.registerFunc({self.w: ""})
+
+    def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        self.rawEquation.setValue(cmd.args[0], "PT", activeVars)
+        self.compile(activeVars)
+    
+    def compile(self, activeVars: ActiveVars) -> None:
+        allowedChars: str = "+-*/%=()"
+        inVar = False
+        varName = ""
+
+        for char in self.rawEquation.value:
+            if char == "'":
+                if not inVar:
+                    inVar = True
+                    
+                else:
+                    self.compiledEquation += compileValue(varName, activeVars)
+                    inVar = False
+                    varName = ""
+                    
+            
+            if inVar:
+                varName += char
+                continue
+            
+            if char in allowedChars:
+                self.compiledEquation += char
+
+        self.calculate(activeVars)
+    
+    def calculate(self, activeVars: ActiveVars) -> None:
+        result: float = 0
+
+        try:
+            result = eval(self.compiledEquation)
+        except Exception: 
+            raise ZError(111)
+        
+        self.value.setValue(str(result), "FLOAT", activeVars)
+
+@register()
+class FUNC(Variable):
+    def __init__(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        super().__init__(cmd, activeVars)
+
+        self.supportedVars = ["INT", "PT", "FLOAT"]
+
+
+        self.returnType: str = ""
+        self.disableVariableChange: ZBool = ZBool()
+
+        self.value: ZValue = ZValue("0")
+        self.rawEquation: str = ""
+        self.compiledEquation: str = ""
+
+        if len(cmd.args) > 0 and cmd.args[0]:
+            self.returnType = cmd.args[0]
+        if len(cmd.args) > 1:
+            if cmd.args[1]:
+                self.disableVariableChange.setValue(cmd.args[1])
+        
+    
+                
+        self.registerFunc({self.w: "", self.call: "call"})
+                
+    def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        mathObject: MO = activeVars.get(cmd.args[0])
+        if not mathObject:
+            raise ZError(113)
+        if isinstance(mathObject, MO):
+            self.rawEquation = mathObject.rawEquation.value # type: ignore
+        else:
+            raise ZError(112)
+
+        self.autoCall(activeVars)
+
+    
+    def autoCall(self, activeVars: ActiveVars) -> None:
+        """This function is called after the equation is set and calculates the equation if diasbleVariableChange is True
+           The normal call function is the one called using    fun ? call:;
+        """
+        if self.disableVariableChange.getBool():
+            self.compile(activeVars)
+    
+    def call(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        if not self.disableVariableChange.getBool():
+            self.compile(activeVars)
+        
+    def compile(self, activeVars: ActiveVars) -> None:
+        allowedChars: str = "+-*/%=()"
+        inVar = False
+        varName = ""
+
+        for char in self.rawEquation:
+            if char == "'":
+                if not inVar:
+                    inVar = True
+                    
+                else:
+                    self.compiledEquation += compileValue(varName, activeVars)
+                    inVar = False
+                    varName = ""
+                    
+            
+            if inVar:
+                varName += char
+                continue
+            
+            if char in allowedChars:
+                self.compiledEquation += char
+
+        self.calculate(activeVars)
+    
+    def calculate(self, activeVars: ActiveVars) -> None:
+        result: float = 0
+
+        try:
+            result = eval(self.compiledEquation)
+        except Exception: 
+            raise ZError(111)
+        
+        self.value.setValue(str(result), "FLOAT", activeVars)
 
 
 @register(name="__")
 class BUILD_IN(Variable):
-    def __init__(self, cmd: ZCommand):
-        super().__init__(cmd)
+    def __init__(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        super().__init__(cmd, activeVars)
 
         self.registerFunc({self.wait: ""})
 
     
-    def wait(self, cmd: ZCommand, activeVars: ActiveVars) -> ActiveVars:
-        value = matchValueToVar(cmd.args[0], activeVars)
+    def wait(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        waitTime: ZValue = ZValue()
+        waitTime.setValue(cmd.args[0], "FLOAT", activeVars)
 
-        if value.getValueIfVarType("INT") or value.getValueIfVarType("FLOAT"):
-            time.sleep(float(value.getValueIfVarType("FLOAT")))
+        time.sleep(float(waitTime.value))
 
-        return activeVars
 
 
 
