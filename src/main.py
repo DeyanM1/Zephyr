@@ -34,7 +34,7 @@ def lexer(zfile: ZFile) -> list[ZCommand]:
         list[ZCommand]: A list of ZCommand objects representing the parsed commands from the .zph file.
     """
 
-
+   
     compiledData: list[tuple[int, str]] = []
     forbiddenChars = {"\n", "\r"}  # use set for faster lookup
 
@@ -50,22 +50,24 @@ def lexer(zfile: ZFile) -> list[ZCommand]:
 
 
 
+    cmd = ZCommand(-1, ZFILE, "", "", "", [""])
+    try:
+        # Parse each command into ZCommand objects
+        ZCommandData: list[ZCommand] = []
+        first, arguments, name, base, func = "", "", "", "", ""
+        for line, command in compiledData:
+            try:
+                first, arguments = command.split(":", 1)
+                name, base, func = first.split(" ", 2)
+            except ValueError:
+                cmd = ZCommand(line, ZFILE, "", "", "", [])
+                raise ZError(104)
 
-    
-    # Parse each command into ZCommand objects
-    ZCommandData: list[ZCommand] = []
-    first, arguments, name, base, func = "", "", "", "", ""
-    for line, command in compiledData:
-        try:
-            first, arguments = command.split(":", 1)
-            name, base, func = first.split(" ", 2)
-        except ValueError:
-            cmd = ZCommand(line, ZFILE, "", "", "", [])
-            ZError(104).raiseException(cmd)
-
-        args = arguments.split("|")
-        ZCommandData.append(ZCommand(line, ZFILE, name, base, func, args))
-    #ZCommandData.append(ZCommand(ZCommandData[-1].lineNum+1, ZFILE, "EOF", "#", "EOF", []))
+            args = arguments.split("|")
+            ZCommandData.append(ZCommand(line, ZFILE, name, base, func, args))
+        #ZCommandData.append(ZCommand(ZCommandData[-1].lineNum+1, ZFILE, "EOF", "#", "EOF", []))
+    except ZError as e:
+        e.process(cmd)
 
 
 
@@ -120,57 +122,56 @@ def compile(inputData: ZFile | list[Any]):
     ## Loop through commands
 
     
-
+    cmd = ZCommand(-1, ZFILE, "", "", "", [""])
     activeVars: ActiveVars = {"__": functions.typeRegistry["__"](ZCommand(0, ZFILE, "__", ZBase.define, "", [""]))}
     index: int = 0
     while index != len(ZCommandData):
-
-        cmd: ZCommand = ZCommandData[index]
-
-
+        try:
+            cmd: ZCommand = ZCommandData[index]
 
 
+            match cmd.base:
+                case "#":
+                    match cmd.func:
 
-        match cmd.base:
-            case "#":
-                match cmd.func:
-
-                    case "CT":
-                        activeVars = activeVars[cmd.name].functionRegistry[cmd.func](cmd, activeVars)
-                    
-                    case _:
-                        try:
-                            var = functions.typeRegistry[cmd.func](cmd)
-                            activeVars.update({cmd.name: var})
-                        except KeyError:
-                            ZError(103).raiseException(cmd)
+                        case "CT":
+                            activeVars = activeVars[cmd.name].functionRegistry[cmd.func](cmd, activeVars)
                         
+                        case _:
+                            try:
+                                var = functions.typeRegistry[cmd.func](cmd)
+                                activeVars.update({cmd.name: var})
+                            except KeyError:
+                                raise ZError(103)
+                            
+                
+                
             
+                case "?":
+                    if activeVars and cmd.name in activeVars or cmd.name == "__":
+                        var = activeVars.get(cmd.name)
+                        if var and hasattr(var, "functionRegistry"):
+                            if cmd.func not in var.functionRegistry:
+                                raise ZError(103)
+
+
+                            if "activeVars" in getRequiredArgs(var.functionRegistry[cmd.func]):
+                                activeVars = var.functionRegistry[cmd.func](cmd, activeVars)
+                            else:
+                                var.functionRegistry[cmd.func](cmd)
+
+                    else:
+                        # Variable not found or declared
+                        raise ZError(102)
+
+
+                case _:
+                    # Unknown Base
+                    raise ZError(101)
             
-        
-            case "?":
-                if activeVars and cmd.name in activeVars or cmd.name == "__":
-                    var = activeVars.get(cmd.name)
-                    if var and hasattr(var, "functionRegistry"):
-                        if cmd.func not in var.functionRegistry:
-                            ZError(103).raiseException(cmd)
-
-
-                        if "activeVars" in getRequiredArgs(var.functionRegistry[cmd.func]):
-                            activeVars = var.functionRegistry[cmd.func](cmd, activeVars)
-                        else:
-                            var.functionRegistry[cmd.func](cmd)
-
-                else:
-                    # Variable not found or declared
-                    ZError(102).raiseException(cmd)
-
-
-            case _:
-                # Unknown Base
-                ZError(101).raiseException(cmd)
-        
-        index += 1
+            index += 1
+        except ZError as e:
+            e.process(cmd)
 
     
     

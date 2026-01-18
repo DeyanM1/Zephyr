@@ -14,24 +14,11 @@ typeRegistry: dict[str, type] = {}
 ActiveVars: TypeAlias = dict[str, "Variable"]
 
 
-  
-
-@dataclass
-class ZError:
-    errorCode: int
-
-    def raiseException(self, cmd: ZCommand) -> None:
-        """
-        Raises an exception based on the provided error code and command context.
-
-        Args:
-            cmd (ZCommand): The command object containing details about the command that caused the error.
-            errorCode (int): The error code corresponding to the specific error to raise.
-
-        Raises:
-            ValueError: If the provided error code is not recognized.
-            SyntaxError: For specific error codes, with detailed context about the error.
-        """
+class ZError(Exception):
+    def __init__(self, code: int) -> None:
+        self.code = code
+    
+    def process(self, cmd: ZCommand):
         path: Path = cmd.zfile.zphPath
         context: str = path.read_text().splitlines()[cmd.lineNum - 1]
 
@@ -47,19 +34,19 @@ class ZError:
             108: lambda: ("[108]  Current Variable type doenst support new variable type! ", len(f"{cmd.name} {cmd.base} {cmd.func} "), SyntaxError),
             109: lambda: (f"[109]  List ({cmd.name}) doesn't support position 0! ", len(f"{cmd.name}")+7, SyntaxError),
             110: lambda: ("[110]  Only INT, PT, FLOAT are in- and decrementable! ", 1, SyntaxError),
-            111: lambda: ("[111]  Error in Condition. ", len(f"{cmd.name} {cmd.base} {cmd.func}"), SyntaxError)
+            111: lambda: ("[111]  Error in Condition. ", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError)
         }
 
-        if self.errorCode not in errors:
-            raise ValueError(f"Unknown error code: {self.errorCode}")
+        if self.code not in errors:
+            raise ValueError(f"Unknown error code: {self.code}")
 
-        message, offset, errorType = errors[self.errorCode]()
+        message, offset, errorType = errors[self.code]()
 
         raise errorType(
             f"{Back.RED}{message}{Back.RESET}",
             (str(path), cmd.lineNum, offset, context)
         )
- 
+
 
 
 @dataclass
@@ -146,19 +133,19 @@ class ZBool:
 
 
     @property
-    def compiledValue(self) -> bool|ZError:
+    def compiledValue(self) -> bool:
         return self.lookUpTable[self.value]
 
-    def setCompileValue(self, newRawValue: bool) -> ZError|None:
+    def setCompileValue(self, newRawValue: bool) -> None:
         "This function takes a Python bool converts it into ZBool and sets it to current value"
         newValue = self.lookUpTable2[newRawValue]
         self.setValue(newValue)
 
 
 
-    def setValue(self, value: str) -> None|ZError:
+    def setValue(self, value: str) -> None:
         if value not in self.lookUpTable:
-            return ZError(106)
+            raise ZError(106)
         self.value = value
 
 @dataclass
@@ -188,10 +175,10 @@ class ZValue:
             return core.isdigit() or (core.startswith("-") and core[1:].isdigit())
         return s.isdigit() or (s.startswith("-") and s[1:].isdigit())
 
-    def setValue(self, newValue: str, targetType: str) -> None|ZError:
+    def setValue(self, newValue: str, targetType: str) -> None:
         try:
             if not self.supportedTypes(newValue)[targetType]:
-                return ZError(105)
+                raise ZError(105)
         except KeyError:
             pass
             
@@ -204,51 +191,43 @@ class ZValue:
         else:
             return False
 
-    def increment(self, incrementValue: str, currentType: str) -> None|ZError:
-        error = None
+    def increment(self, incrementValue: str, currentType: str) -> None:
         if not self.supportedTypes(incrementValue)[currentType]:
-            return ZError(105)
+            raise ZError(105)
         
         # Long and complicated statement. Dont know what it does#
         if currentType == "PT":
             if incrementValue == "":
                 self.incrementValue = "1"
             
-            error = self.setValue(self.value + (self.value)*int(incrementValue), currentType)
+            self.setValue(self.value + (self.value)*int(incrementValue), currentType)
 
 
 
         else:
             newValue = float(self.value) + float(incrementValue)
             if currentType == "INT":
-                error = self.setValue(str(newValue).split(".")[0], currentType)
+                self.setValue(str(newValue).split(".")[0], currentType)
             elif currentType == "FLOAT":
-                error = self.setValue(str(newValue), currentType)
+                self.setValue(str(newValue), currentType)
             else:
-                return ZError(110)
-        
-        return error if error else None
+                raise ZError(110)
 
-    def decrement(self, decrementValue: str, currentType: str) -> None|ZError:
-        error = None
+    def decrement(self, decrementValue: str, currentType: str) -> None:
         if not self.supportedTypes(decrementValue)[currentType]:
-            return ZError(105)
+            raise ZError(105)
 
         if currentType == "PT":
-            error = self.setValue("", currentType)
+            self.setValue("", currentType)
 
         else:
             newValue = float(self.value) - float(decrementValue)
             if currentType == "INT":
-                error = self.setValue(str(newValue).split(".")[0], currentType)
+                self.setValue(str(newValue).split(".")[0], currentType)
             elif currentType == "FLOAT":
-                error = self.setValue(str(newValue), currentType)
+                self.setValue(str(newValue), currentType)
             else:
-                error = ZError(110)
-        
-
-
-        return error if error else None
+                raise ZError(110)
 
 
 def getRequiredArgs(function: Callable[..., Any]):
@@ -261,12 +240,12 @@ def getRequiredArgs(function: Callable[..., Any]):
     ]
     return required_args
 
-
 def register(name: str = ""):
     def wrapper(cls: type):
         typeRegistry[name or cls.__name__] = cls
         return cls
     return wrapper
+
 
 
 def matchValueToVar(name: str, activeVars: ActiveVars) -> ZValue:
@@ -301,8 +280,7 @@ class Variable:
         self.varType = cmd.func
 
         self.value: ZValue = ZValue()
-        error = self.value.setValue(cmd.args[0], self.varType)
-        if error: error.raiseException(cmd)  # noqa: E701
+        self.value.setValue(cmd.args[0], self.varType)
 
 
         self.const: ZBool = ZBool()
@@ -310,12 +288,10 @@ class Variable:
 
 
         self.functionRegistry: dict[str, Callable[..., Any]] = {}
-
-        self.registerFunc(self.w)
-        self.registerFunc(self.CT)
+        self.registerFunc({self.CT: ""})
 
 
-    def registerFunc(self, func: Callable[..., Any], name: Optional[str] = "") -> Callable[..., Any]:
+    def registerFunc(self, funcList: dict[Callable[..., Any], str]) -> None:
         """
         Register a function for a type. Its added to the functionRegistry
 
@@ -324,11 +300,11 @@ class Variable:
             name (Optional[str]): The name to use in the docstring. If not provided, the function's name will be used.
 
         """
-        if name:
-            self.functionRegistry[name] = func
-        else:
-            self.functionRegistry[func.__name__] = func
-        return func
+        for func, name in funcList.items():
+            if name:
+                self.functionRegistry[name] = func
+            else:
+                self.functionRegistry[func.__name__] = func
     
     def onChange(self) -> str:
         """
@@ -342,7 +318,7 @@ class Variable:
         targetVarType: str = cmd.args[0]
 
         if targetVarType not in self.supportedVars:
-            ZError(108).raiseException(cmd)
+            raise ZError(108)
 
         targetVarType: str = cmd.args[0]
 
@@ -357,20 +333,7 @@ class Variable:
         return activeVars
     
 
-    def w(self, cmd: ZCommand):
-        if self.const.compiledValue:
-            ZError(107).raiseException(cmd)
 
-
-        match cmd.args[0]:
-            case "++":
-                error = self.value.increment(cmd.args[1] if 1 < len(cmd.args) else "1", self.varType)
-            case "--":
-                error = self.value.decrement(cmd.args[1] if 1 < len(cmd.args) else "1", self.varType)
-
-            case _:
-                error = self.value.setValue(cmd.args[1], self.varType)
-        if error: error.raiseException(cmd)  # noqa: E701
     
     #def __repr__(self):
     #    return f"This is {self.name}. Its a {self.varType}"
@@ -380,12 +343,42 @@ class INT(Variable):
     def __init__(self, cmd: ZCommand) -> None:
         super().__init__(cmd)
         self.supportedVars = ["FLOAT", "PT"]
+        
+        self.registerFunc({self.w: ""})
+    
+    def w(self, cmd: ZCommand):
+        if self.const.compiledValue:
+            raise ZError(107)
+
+
+        match cmd.args[0]:
+            case "++":
+                self.value.increment(cmd.args[1] if 1 < len(cmd.args) else "1", self.varType)
+            case "--":
+                self.value.decrement(cmd.args[1] if 1 < len(cmd.args) else "1", self.varType)
+
+            case _:
+                self.value.setValue(cmd.args[1], self.varType)
 
 @register()
 class FLOAT(Variable):
     def __init__(self, cmd: ZCommand) -> None:
         super().__init__(cmd)
         self.supportedVars = ["INT", "PT"]
+    
+    def w(self, cmd: ZCommand):
+        if self.const.compiledValue:
+            raise ZError(107)
+
+
+        match cmd.args[0]:
+            case "++":
+                self.value.increment(cmd.args[1] if 1 < len(cmd.args) else "1", self.varType)
+            case "--":
+                self.value.decrement(cmd.args[1] if 1 < len(cmd.args) else "1", self.varType)
+
+            case _:
+                self.value.setValue(cmd.args[1], self.varType)
 
 @register()
 class PT(Variable):
@@ -393,7 +386,21 @@ class PT(Variable):
         super().__init__(cmd)
         self.supportedVars = ["INT", "FLOAT"]
 
-        self.registerFunc(self.push)
+        self.registerFunc({self.push: "", self.w: ""})
+    
+    def w(self, cmd: ZCommand):
+        if self.const.compiledValue:
+            raise ZError(107)
+
+
+        match cmd.args[0]:
+            case "++":
+                self.value.increment(cmd.args[1] if 1 < len(cmd.args) else "1", self.varType)
+            case "--":
+                self.value.decrement(cmd.args[1] if 1 < len(cmd.args) else "1", self.varType)
+
+            case _:
+                self.value.setValue(cmd.args[1], self.varType)
     
     
     def push(self, cmd: ZCommand) -> None:
@@ -410,13 +417,15 @@ class CO(Variable):
         self.compiledCondition: str = ""
         self.result: ZBool = ZBool("~0")
 
+        self.registerFunc({self.w: ""})
+
         
-    def w(self, cmd: ZCommand, activeVars: ActiveVars) -> ZError|ActiveVars:
+    def w(self, cmd: ZCommand, activeVars: ActiveVars) -> ActiveVars:
         self.value = ZValue(cmd.args[0])
         self.compile(activeVars)
         return activeVars
     
-    def compile(self, activeVars: ActiveVars) -> ZError|ActiveVars:
+    def compile(self, activeVars: ActiveVars) -> ActiveVars:
         allowedChars: str = "()=!><+-*/"
         inVar = False
         varName = ""
@@ -442,13 +451,13 @@ class CO(Variable):
         self.evaluate()
         return activeVars
     
-    def evaluate(self) -> ZError|None:
+    def evaluate(self) -> None:
         result: bool = False
 
         try:
             result = eval(self.compiledCondition)
         except Exception: 
-            return ZError(111)
+            raise ZError(111)
         
         self.result.setCompileValue(result)
 
@@ -464,7 +473,7 @@ class BUILD_IN(Variable):
     def __init__(self, cmd: ZCommand):
         super().__init__(cmd)
 
-        self.registerFunc(self.wait)
+        self.registerFunc({self.wait: ""})
 
     
     def wait(self, cmd: ZCommand, activeVars: ActiveVars) -> ActiveVars:

@@ -1,1 +1,7 @@
-print(str(1.2 + 1.2))
+dict = {
+    "hi": 1,
+    "ho": 2,
+}
+
+for elem in dict:
+    print(elem)

@@ -1,7 +1,7 @@
 a # INT:5;
 b # INT:7;
 co # CO:;
-co ? w:('b'>'a');
+co ? w:('a'>3);
 
 co # CT:PT;
 co ? push:;
