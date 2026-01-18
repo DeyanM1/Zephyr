@@ -2,13 +2,13 @@
     "a": {
         "name": "a",
         "type": "INT",
-        "value": "5",
+        "value": "11",
         "const: ": false
     },
     "b": {
         "name": "b",
         "type": "INT",
-        "value": "5",
+        "value": "9",
         "const: ": false
     },
     "msg1": {
@@ -26,33 +26,33 @@
     "msg3": {
         "name": "msg3",
         "type": "PT",
-        "value": "FALSE",
+        "value": "SMALLER",
         "const: ": false
-    },
-    "condition2": {
-        "name": "condition2",
-        "type": "CO",
-        "value": "~0",
-        "condition": "5>5"
     },
     "condition": {
         "name": "condition",
         "type": "CO",
         "value": "~1",
-        "condition": "5>=5"
+        "condition": "11>=9"
+    },
+    "condition2": {
+        "name": "condition2",
+        "type": "CO",
+        "value": "~1",
+        "condition": "11>9"
     },
     "statement": {
         "name": "statement",
         "type": "IF",
         "value": true,
         "conditionalObjectName": "condition",
-        "commandsInIF": "1",
+        "commandsInIF": "4",
         "self.commandsInELSE": 0
     },
     "statement2": {
         "name": "statement2",
         "type": "IF",
-        "value": false,
+        "value": true,
         "conditionalObjectName": "condition2",
         "commandsInIF": "1",
         "self.commandsInELSE": 0

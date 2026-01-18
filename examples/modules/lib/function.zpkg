@@ -14,20 +14,20 @@
     "function": {
         "name": "function",
         "type": "PT",
-        "value": "11",
+        "value": "12",
         "const: ": false
     },
     "function2": {
         "name": "function2",
         "type": "FUNC",
-        "value": 13,
-        "const": false,
+        "value": 12,
+        "const": true,
         "MO": {
             "name": "function2",
             "type": "MO",
-            "value": 13,
+            "value": 12,
             "equation": "('a'+'b')",
-            "calculation": "(7+6)"
+            "calculation": "(6+6)"
         }
     }
 }

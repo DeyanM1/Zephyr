@@ -1,4 +1,4 @@
-a # INT:5;
+a # INT:11;
 b # INT:9;
 
 msg1 # PT:SAME OR BIGGER;

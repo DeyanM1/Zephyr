@@ -47,7 +47,15 @@
             ""
         ]
     },
-    "6::c ? push:": {
+    "6::__ ? WAIT:5": {
+        "name": "__",
+        "base": "?",
+        "function": "WAIT",
+        "paramsList": [
+            "5"
+        ]
+    },
+    "7::c ? push:": {
         "name": "c",
         "base": "?",
         "function": "push",
@@ -55,7 +63,7 @@
             ""
         ]
     },
-    "7::__ ? dumpVars:": {
+    "8::__ ? dumpVars:": {
         "name": "__",
         "base": "?",
         "function": "dumpVars",

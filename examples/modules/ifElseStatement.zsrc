@@ -1,18 +1,18 @@
 {
-    "0::a # INT:5": {
+    "0::a # INT:11": {
         "name": "a",
         "base": "#",
         "function": "INT",
         "paramsList": [
-            "5"
+            "11"
         ]
     },
-    "1::b # INT:5": {
+    "1::b # INT:9": {
         "name": "b",
         "base": "#",
         "function": "INT",
         "paramsList": [
-            "5"
+            "9"
         ]
     },
     "2::msg1 # PT:SAME OR BIGGER": {
@@ -31,23 +31,15 @@
             "BIGGER"
         ]
     },
-    "4::msg3 # PT:FALSE": {
+    "4::msg3 # PT:SMALLER": {
         "name": "msg3",
         "base": "#",
         "function": "PT",
         "paramsList": [
-            "FALSE"
+            "SMALLER"
         ]
     },
-    "5::condition2 # CO:('a'>'b')": {
-        "name": "condition2",
-        "base": "#",
-        "function": "CO",
-        "paramsList": [
-            "('a'>'b')"
-        ]
-    },
-    "6::condition # CO:('a'>='b')": {
+    "5::condition # CO:('a'>='b')": {
         "name": "condition",
         "base": "#",
         "function": "CO",
@@ -55,13 +47,21 @@
             "('a'>='b')"
         ]
     },
-    "7::statement # IF:condition|1": {
+    "6::condition2 # CO:('a'>'b')": {
+        "name": "condition2",
+        "base": "#",
+        "function": "CO",
+        "paramsList": [
+            "('a'>'b')"
+        ]
+    },
+    "7::statement # IF:condition|4": {
         "name": "statement",
         "base": "#",
         "function": "IF",
         "paramsList": [
             "condition",
-            "1"
+            "4"
         ]
     },
     "8::msg1 ? push:": {
@@ -105,8 +105,8 @@
             "1"
         ]
     },
-    "13::msg2 ? push:": {
-        "name": "msg2",
+    "13::msg3 ? push:": {
+        "name": "msg3",
         "base": "?",
         "function": "push",
         "paramsList": [

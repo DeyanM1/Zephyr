@@ -2,7 +2,7 @@
     "rng": {
         "name": "rng",
         "type": "RNG",
-        "value": 1,
+        "value": 18,
         "rngType": "INT",
         "rngRange": [
             0,
@@ -12,7 +12,7 @@
     "rng2": {
         "name": "rng2",
         "type": "RNG",
-        "value": 32,
+        "value": 31,
         "rngType": "INT",
         "rngRange": [
             30,

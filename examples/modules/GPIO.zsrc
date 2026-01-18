@@ -1,0 +1,78 @@
+{
+    "0::GPIO # LIB:GPIO": {
+        "name": "GPIO",
+        "base": "#",
+        "function": "LIB",
+        "paramsList": [
+            "GPIO"
+        ]
+    },
+    "1::GPIO # INIT:BCM": {
+        "name": "GPIO",
+        "base": "#",
+        "function": "INIT",
+        "paramsList": [
+            "BCM"
+        ]
+    },
+    "2::GPIO ? SETUP:6|OUT": {
+        "name": "GPIO",
+        "base": "?",
+        "function": "SETUP",
+        "paramsList": [
+            "6",
+            "OUT"
+        ]
+    },
+    "3::GPIO ? SETUP:5|IN": {
+        "name": "GPIO",
+        "base": "?",
+        "function": "SETUP",
+        "paramsList": [
+            "5",
+            "IN"
+        ]
+    },
+    "4::value # INT:0": {
+        "name": "value",
+        "base": "#",
+        "function": "INT",
+        "paramsList": [
+            "0"
+        ]
+    },
+    "5::LOOP # LOOP:~0": {
+        "name": "LOOP",
+        "base": "#",
+        "function": "LOOP",
+        "paramsList": [
+            "~0"
+        ]
+    },
+    "6::GPIO ? READ:5|value": {
+        "name": "GPIO",
+        "base": "?",
+        "function": "READ",
+        "paramsList": [
+            "5",
+            "value"
+        ]
+    },
+    "7::GPIO ? SET:6|'value'": {
+        "name": "GPIO",
+        "base": "?",
+        "function": "SET",
+        "paramsList": [
+            "6",
+            "'value'"
+        ]
+    },
+    "8::LOOP ? END:": {
+        "name": "LOOP",
+        "base": "?",
+        "function": "END",
+        "paramsList": [
+            ""
+        ]
+    }
+}

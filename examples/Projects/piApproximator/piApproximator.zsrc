@@ -15,12 +15,12 @@
             "1.0"
         ]
     },
-    "2::iterations # INT:600000": {
+    "2::iterations # INT:6000": {
         "name": "iterations",
         "base": "#",
         "function": "INT",
         "paramsList": [
-            "600000"
+            "6000"
         ]
     },
     "3::iteration # INT:1": {

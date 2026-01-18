@@ -7,15 +7,23 @@
             "0"
         ]
     },
-    "1::n # INT:500": {
+    "1::n # INT:1": {
         "name": "n",
         "base": "#",
         "function": "INT",
         "paramsList": [
-            "500"
+            "1"
         ]
     },
-    "2::MO # MO:(('n'*('n'+1))/2)": {
+    "2::n ? INPUT:Enter a number to calculate the sum -> ": {
+        "name": "n",
+        "base": "?",
+        "function": "INPUT",
+        "paramsList": [
+            "Enter a number to calculate the sum -> "
+        ]
+    },
+    "3::MO # MO:(('n'*('n'+1))/2)": {
         "name": "MO",
         "base": "#",
         "function": "MO",
@@ -23,7 +31,7 @@
             "(('n'*('n'+1))/2)"
         ]
     },
-    "3::MO # CT:PT": {
+    "4::MO # CT:PT": {
         "name": "MO",
         "base": "#",
         "function": "CT",
@@ -31,7 +39,7 @@
             "PT"
         ]
     },
-    "4::MO ? push:": {
+    "5::MO ? push:": {
         "name": "MO",
         "base": "?",
         "function": "push",

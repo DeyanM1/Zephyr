@@ -1,4 +1,4 @@
-def matchFunction(name, base, function, paramsList, vars):
+def matchFunction(base, function, paramsList, vars):
     match base:
         case "?":
             match function:

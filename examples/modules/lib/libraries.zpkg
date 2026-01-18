@@ -2,7 +2,7 @@
     "moreMath": {
         "name": "moreMath",
         "type": "LIB",
-        "libFolderName": "Examples.lib",
+        "libFolderName": "examples.modules.lib",
         "libName": "moreMath"
     },
     "a": {
