@@ -12,3 +12,5 @@ ZephyrRun.spec
 /cupy
 Isoliert/
 *.pyc
+uv.lock
+./*/*.pyc
