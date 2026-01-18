@@ -1,13 +1,11 @@
 a # INT:9;
 b # INT:7;
 
+c # PT:;
+c ? INPUT:-> ;
 
-mo # MO:('a'+'b');
-fun # FUNC:RES|~1;
-fun ? w:mo;
 
-a ? w:++;
-fun ? call:;
+co # CO:'c';
 
-fun # CT:PT;
-fun ? push:;
+co # CT:PT;
+co ? push:;

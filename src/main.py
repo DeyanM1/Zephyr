@@ -198,7 +198,7 @@ def compile(inputData: ZFile | list[Any]):
 
     
     
-    print(f"\n{Fore.GREEN}Code finished... \n{Fore.MAGENTA}{activeVars}{Fore.RESET}")
+    print(f"\n{Fore.GREEN}Code finished successfully. \n{Fore.MAGENTA}{activeVars}{Fore.RESET}")
 
 
 

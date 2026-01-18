@@ -405,7 +405,7 @@ class PT(Variable):
         self.value: ZValue = ZValue()
         self.value.setValue(cmd.args[0], self.varType, activeVars)
 
-        self.registerFunc({self.push: "", self.w: ""})
+        self.registerFunc({self.push: "", self.w: "", self.INPUT: ""})
     
     def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         if self.const.compiledValue:
@@ -421,6 +421,10 @@ class PT(Variable):
             case _:
                 self.value.setValue(cmd.args[1], self.varType, activeVars)
     
+    def INPUT(self, cmd: ZCommand, activeVars: ActiveVars):
+        newValue = input(cmd.args[0])
+        self.value.setValue(newValue, "PT", activeVars)
+    
     
     def push(self, cmd: ZCommand) -> None:
         print(self.value.value)
@@ -433,7 +437,7 @@ class CO(Variable):
         self.supportedVars = ["INT", "FLOAT", "PT"]
 
         self.value: ZBool = ZBool()
-        self.rawCondition: str = ""
+        self.rawCondition: ZValue = ZValue()
         self.compiledCondition: str = ""
 
 
@@ -447,7 +451,7 @@ class CO(Variable):
 
         
     def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
-        self.rawCondition = cmd.args[0]
+        self.rawCondition.setValue(cmd.args[0], "PT", activeVars)
         self.compile(activeVars)
 
     
@@ -456,7 +460,7 @@ class CO(Variable):
         inVar = False
         varName = ""
         
-        for char in self.rawCondition:
+        for char in self.rawCondition.value:
             if char == "'":
                 if not inVar:
                     inVar = True

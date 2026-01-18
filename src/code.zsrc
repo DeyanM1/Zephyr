@@ -25,57 +25,43 @@
             "7"
         ]
     },
+    "4": {
+        "lineNum": 4,
+        "zfile": {
+            "rawName": "src/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "c",
+        "base": "#",
+        "func": "PT",
+        "args": [
+            ""
+        ]
+    },
     "5": {
         "lineNum": 5,
         "zfile": {
             "rawName": "src/code",
             "basePath": "/home/deyan/dev/Zephyr"
         },
-        "name": "mo",
-        "base": "#",
-        "func": "MO",
-        "args": [
-            "('a'+'b')"
-        ]
-    },
-    "6": {
-        "lineNum": 6,
-        "zfile": {
-            "rawName": "src/code",
-            "basePath": "/home/deyan/dev/Zephyr"
-        },
-        "name": "fun",
-        "base": "#",
-        "func": "FUNC",
-        "args": [
-            "RES",
-            "~1"
-        ]
-    },
-    "7": {
-        "lineNum": 7,
-        "zfile": {
-            "rawName": "src/code",
-            "basePath": "/home/deyan/dev/Zephyr"
-        },
-        "name": "fun",
+        "name": "c",
         "base": "?",
-        "func": "w",
+        "func": "INPUT",
         "args": [
-            "mo"
+            "-> "
         ]
     },
-    "9": {
-        "lineNum": 9,
+    "8": {
+        "lineNum": 8,
         "zfile": {
             "rawName": "src/code",
             "basePath": "/home/deyan/dev/Zephyr"
         },
-        "name": "a",
-        "base": "?",
-        "func": "w",
+        "name": "co",
+        "base": "#",
+        "func": "CO",
         "args": [
-            "++"
+            "'c'"
         ]
     },
     "10": {
@@ -84,33 +70,20 @@
             "rawName": "src/code",
             "basePath": "/home/deyan/dev/Zephyr"
         },
-        "name": "fun",
-        "base": "?",
-        "func": "call",
-        "args": [
-            ""
-        ]
-    },
-    "12": {
-        "lineNum": 12,
-        "zfile": {
-            "rawName": "src/code",
-            "basePath": "/home/deyan/dev/Zephyr"
-        },
-        "name": "fun",
+        "name": "co",
         "base": "#",
         "func": "CT",
         "args": [
             "PT"
         ]
     },
-    "13": {
-        "lineNum": 13,
+    "11": {
+        "lineNum": 11,
         "zfile": {
             "rawName": "src/code",
             "basePath": "/home/deyan/dev/Zephyr"
         },
-        "name": "fun",
+        "name": "co",
         "base": "?",
         "func": "push",
         "args": [
