@@ -1,9 +1,8 @@
 import json
-import time
-from functions import *
 import signal
+import time
 
-
+from functions import *
 
 MEASURE_TIME = False
 
@@ -15,20 +14,20 @@ EXAMPLE_NAMES = ["variables.zph", "buildInFunctions.zph", "list.zph", "MathObjec
 PROJECT_NAMES = ["sumCalculator", "factorialCalculator", "guessNumber", "piApproximator", "moreMath", "nestedLOOP"]
 ERROR_NAMES = ["101.zph", "102.zph", "103.zph", "110.zph", "201.zph", "202.zph", "203.zph", "204.zph", "205.zph"]
 #                 1           2          3         4           5          6          7          8          9
-CURRENT_ELEMENT = 3
+CURRENT_ELEMENT = 1
 
 
-FILE_DIRECTORY = "Examples"
+FILE_DIRECTORY = "examples/modules"
 FILE_NAME = EXAMPLE_NAMES[CURRENT_ELEMENT-1]
 
-#FILE_DIRECTORY = f"Projects/{PROJECT_NAMES[CURRENT_ELEMENT-1]}"
+#FILE_DIRECTORY = f"examples/Projects/{PROJECT_NAMES[CURRENT_ELEMENT-1]}"
 #FILE_NAME = f"{PROJECT_NAMES[CURRENT_ELEMENT-1]}.zph"
 
-#FILE_DIRECTORY = "Errors"
+#FILE_DIRECTORY = "examles/Errors"
 #FILE_NAME = ERROR_NAMES[CURRENT_ELEMENT-1]
 
-FILE_DIRECTORY = f"."
-FILE_NAME = "src/code.zph"
+#FILE_DIRECTORY = f"src"
+#FILE_NAME = "code.zph"
 
 @measureTime
 def lexer(filename: str, fileDirectory: str = ".", measureTime: bool = False):

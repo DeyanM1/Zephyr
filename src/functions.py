@@ -1,13 +1,13 @@
-import re
-import json
-import random
-import os
-import time
 import importlib
-from functools import wraps
+import json
+import os
+import random
+import re
 import signal
 import sys
-
+import time
+from pathlib import Path
+from functools import wraps
 
 INT_reg = r"^\d+$"
 FLOAT_reg = r'^\d+\.\d+$'
@@ -238,7 +238,7 @@ class Variable:
             return False
 
         if newValue.startswith("'"):
-            self.value = getValueFromVariable(newValue, variables, ["PT", "LIST"], self.name, self.base, self.function)
+            self.value = getValueFromVariable(newValue, variables, ["PT", "LIST", "FUNC", "MO"], self.name, self.base, self.function)
             self.dumpConfig = {"name": self.name, "type": self.type, "value": self.value, "const: ": self.const}
 
         elif newValue == "++":
@@ -351,7 +351,7 @@ class LIST:
                 name = pos.replace("'", "")
                 posVar = variables[name]
                 pos = int(posVar.value)
-            except Exception as e:
+            except Exception:
                 raise Error(102, unknownName=name, name=self.name, base=self.base, function=self.function, description="Postion variable")
         if int(pos) == 0:
             raise Error(202, index=pos, description="Position cant be 0", name=self.name, base=self.base, function=self.base)
@@ -499,7 +499,7 @@ class MO:
 
                         self.calculation += str(variables.get(variablestr).value)
                         variablestr, in_var = "", False
-                    except Exception as e:
+                    except Exception:
                         raise Error(102, unknownName=variablestr, name=self.name, base="?", function="()", description="variable for calculation")
                 else:
                     in_var = True
@@ -839,7 +839,7 @@ class RNG:
             rangeMin, rangeMax = rngRange.replace(" ", "").split("->")
             rangeMin, rangeMax = int(rangeMin), int(rangeMax)
             self.rngRange = [rangeMin, rangeMax]
-        except Exception as e:
+        except Exception:
             raise Error(204, descriptionChild=rngRange, description="Invalid RNG-Range!", name=self.name, base=self.base, function=self.function)
 
 
@@ -961,20 +961,23 @@ class LIB:
     def setLib(self):
         zephyrEnvPath = os.getenv("ZEPHYR_PATH")
 
-        try:
-            if zephyrEnvPath:
-                sys.path.append(zephyrEnvPath)
-                self.libPath = "lib"
+        project_root = Path(__file__).resolve().parent.parent
+        sys.path.insert(0, str(project_root))
 
-            module = importlib.import_module(f"{self.libPath}.{self.libName}")
-            self.libObject = module
-            self.dumpConfig = {"name": self.name,
-                            "type": self.type,
-                            "libFolderName": self.libPath,
-                            "libName": self.libName}
+        #try:
+        if zephyrEnvPath:
+            sys.path.append(zephyrEnvPath)
+            self.libPath = "lib"
 
-        except ImportError as e:
-            raise Error(205, libName=self.libName, libPath=self.libPath, name=self.name, base=self.base, function=self.function)
+        module = importlib.import_module(f"{self.libPath}.{self.libName}")
+        self.libObject = module
+        self.dumpConfig = {"name": self.name,
+                        "type": self.type,
+                        "libFolderName": self.libPath,
+                        "libName": self.libName}
+
+        #except ImportError as e:
+        #    raise Error(205, libName=self.libName, libPath=self.libPath, name=self.name, base=self.base, function=self.function)
 
 class FILE:
     def __init__(self, name: str, base: str, function: str, paramsList: list, variables: dict) -> None:
