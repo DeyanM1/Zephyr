@@ -1,6 +1,6 @@
+def test(he):
+    pass
 
 
-
-from main import test
-
-test()
+te = test("hi")
+print(te)
