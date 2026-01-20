@@ -7,9 +7,9 @@
         },
         "name": "a",
         "base": "#",
-        "func": "INT",
+        "func": "PT",
         "args": [
-            "9"
+            "1"
         ]
     },
     "2": {
@@ -20,22 +20,9 @@
         },
         "name": "b",
         "base": "#",
-        "func": "INT",
-        "args": [
-            "7"
-        ]
-    },
-    "4": {
-        "lineNum": 4,
-        "zfile": {
-            "rawName": "src/code",
-            "basePath": "/home/deyan/dev/Zephyr"
-        },
-        "name": "c",
-        "base": "#",
         "func": "PT",
         "args": [
-            ""
+            "2"
         ]
     },
     "5": {
@@ -44,11 +31,11 @@
             "rawName": "src/code",
             "basePath": "/home/deyan/dev/Zephyr"
         },
-        "name": "c",
+        "name": "__",
         "base": "?",
-        "func": "INPUT",
+        "func": "setJump",
         "args": [
-            "-> "
+            "7"
         ]
     },
     "8": {
@@ -57,11 +44,11 @@
             "rawName": "src/code",
             "basePath": "/home/deyan/dev/Zephyr"
         },
-        "name": "co",
-        "base": "#",
-        "func": "CO",
+        "name": "a",
+        "base": "?",
+        "func": "push",
         "args": [
-            "'c'"
+            ""
         ]
     },
     "10": {
@@ -70,20 +57,7 @@
             "rawName": "src/code",
             "basePath": "/home/deyan/dev/Zephyr"
         },
-        "name": "co",
-        "base": "#",
-        "func": "CT",
-        "args": [
-            "PT"
-        ]
-    },
-    "11": {
-        "lineNum": 11,
-        "zfile": {
-            "rawName": "src/code",
-            "basePath": "/home/deyan/dev/Zephyr"
-        },
-        "name": "co",
+        "name": "b",
         "base": "?",
         "func": "push",
         "args": [

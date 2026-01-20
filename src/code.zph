@@ -1,11 +1,10 @@
-a # INT:9;
-b # INT:7;
-
-c # PT:;
-c ? INPUT:-> ;
+a # PT:1;
+b # PT:2;
 
 
-co # CO:'c';
+__ ? setJump:7;
 
-co # CT:PT;
-co ? push:;
+
+a ? push:;
+
+b ? push:;

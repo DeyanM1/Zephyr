@@ -39,6 +39,7 @@ class ZError(Exception):
             112: lambda: ("[112] Given variable isnt correct type!", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
             113: lambda: ("[113] Given variable isnt defined!", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
             114: lambda: ("[114] Missing arguments!", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
+            115: lambda: ("[115] Error at jump function! Index out of range!", len("f"), SyntaxError)
         }
 
         if self.code not in errors:
@@ -694,7 +695,7 @@ class BUILD_IN(Variable):
     def __init__(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         super().__init__(cmd, activeVars)
 
-        self.registerFunc({self.wait: ""})
+        self.registerFunc({self.wait: "", self.jump: "", self.setJump: ""})
 
     
     def wait(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
@@ -703,8 +704,32 @@ class BUILD_IN(Variable):
 
         time.sleep(float(waitTime.value))
 
+    def jump(self, cmd: ZCommand, activeVars: ActiveVars, index: ZIndex) -> tuple[ActiveVars, ZIndex] :
+        indexToAdd: ZValue = ZValue()
+        if len(cmd.args[0]):
+            if cmd.args[0] == "":
+                raise ZError(114)
+            
+            indexToAdd.setValue(cmd.args[0], "INT", activeVars)
 
+            if indexToAdd.value.startswith("-"):
+                return activeVars, ZIndex(index-int(indexToAdd.value.replace("-", ""))-1)
+            else:
+                return activeVars, ZIndex(index+(int(indexToAdd.value)))
 
+        raise ZError(114)
+    
+    def setJump(self, cmd: ZCommand, activeVars: ActiveVars, index: ZIndex) -> tuple[ActiveVars, ZIndex]:
+        indexToJump: ZValue = ZValue()
+        if len(cmd.args[0]):
+            if cmd.args[0] == "":
+                raise ZError(114)
+            
+            indexToJump.setValue(cmd.args[0], "INT", activeVars)
+
+            return activeVars, int(indexToJump.value)-2
+
+        raise ZError(114)
 
 
 if __name__ == "__main__":
