@@ -9,7 +9,7 @@
         "base": "#",
         "func": "PT",
         "args": [
-            "1"
+            "-10.0"
         ]
     },
     "2": {
@@ -22,20 +22,35 @@
         "base": "#",
         "func": "PT",
         "args": [
-            "2"
+            "10.1"
         ]
     },
-    "5": {
-        "lineNum": 5,
+    "4": {
+        "lineNum": 4,
         "zfile": {
             "rawName": "src/code",
             "basePath": "/home/deyan/dev/Zephyr"
         },
-        "name": "__",
-        "base": "?",
-        "func": "setJump",
+        "name": "c",
+        "base": "#",
+        "func": "PT",
         "args": [
-            "7"
+            "a"
+        ]
+    },
+    "6": {
+        "lineNum": 6,
+        "zfile": {
+            "rawName": "src/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "rng",
+        "base": "#",
+        "func": "RNG",
+        "args": [
+            "'a'",
+            "'b'",
+            "FLOAT"
         ]
     },
     "8": {
@@ -44,24 +59,37 @@
             "rawName": "src/code",
             "basePath": "/home/deyan/dev/Zephyr"
         },
-        "name": "a",
+        "name": "c",
+        "base": "?",
+        "func": "w",
+        "args": [
+            "'rng'"
+        ]
+    },
+    "9": {
+        "lineNum": 9,
+        "zfile": {
+            "rawName": "src/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "c",
         "base": "?",
         "func": "push",
         "args": [
             ""
         ]
     },
-    "10": {
-        "lineNum": 10,
+    "11": {
+        "lineNum": 11,
         "zfile": {
             "rawName": "src/code",
             "basePath": "/home/deyan/dev/Zephyr"
         },
-        "name": "b",
+        "name": "__",
         "base": "?",
-        "func": "push",
+        "func": "jump",
         "args": [
-            ""
+            "-3"
         ]
     }
 }

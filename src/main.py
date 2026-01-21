@@ -195,8 +195,7 @@ def compile(inputData: ZFile | list[Any]):
             index += 1
         except ZError as e:
             e.process(cmd)
-        except IndexError:
-            ZError(115).process(cmd)
+
 
     
     

@@ -5,6 +5,7 @@ import time
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable, Dict, Optional, TypeAlias
+import random
 
 from colorama import Back
 
@@ -32,7 +33,7 @@ class ZError(Exception):
             105: lambda: ("[105]  Variable Type doesn't match given Value ", 1, SyntaxError),
             106: lambda: ("[106]  Invalid Boolean type. Allowed: ~0 | ~1 ", len(f"{cmd.name} {cmd.base} {cmd.func} "), SyntaxError),
             107: lambda: ("[107]  Value cannot be changed. Variable is constant! ", len(f"{cmd.name} {cmd.base} "), SyntaxError),
-            108: lambda: ("[108]  Current Variable type doenst support new variable type! ", len(f"{cmd.name} {cmd.base} {cmd.func} "), SyntaxError),
+            108: lambda: ("[108]  Current Variable type doesnt support new variable type! ", len(f"{cmd.name} {cmd.base} {cmd.func} "), SyntaxError),
             109: lambda: (f"[109]  List ({cmd.name}) doesn't support position 0! ", len(f"{cmd.name}")+7, SyntaxError),
             110: lambda: ("[110]  Only INT, PT, FLOAT are in- and decrementable! ", 1, SyntaxError),
             111: lambda: ("[111]  Error in Condition. ", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
@@ -420,7 +421,7 @@ class PT(Variable):
                 self.value.decrement(cmd.args[1] if 1 < len(cmd.args) else "1", self.varType, activeVars)
 
             case _:
-                self.value.setValue(cmd.args[1], self.varType, activeVars)
+                self.value.setValue(cmd.args[0], self.varType, activeVars)
     
     def INPUT(self, cmd: ZCommand, activeVars: ActiveVars):
         newValue = input(cmd.args[0])
@@ -689,6 +690,53 @@ class FUNC(Variable):
         
         self.value.setValue(str(result), "FLOAT", activeVars)
 
+@register()
+class RNG(Variable):
+    def __init__(self, cmd: ZCommand, activeVars: Dict[str, Variable]) -> None:
+        super().__init__(cmd, activeVars)
+
+        self.supportedVars = ["INT", "FLOAT", "PT"]
+
+
+        self.value: ZValue = ZValue()
+
+        self.randomNumberType: ZValue = ZValue()
+        self.allowedTypes: list[str] = ["INT", "FLOAT"]
+        self.rangeMin: ZValue = ZValue()
+        self.rangeMax: ZValue = ZValue()
+
+        if len(cmd.args) > 2 and cmd.args[0] != "" and cmd.args[1] != "" and cmd.args[2] != "":
+            self.w(cmd, activeVars)
+        
+        self.registerFunc({self.w: ""})
+
+    def w(self, cmd: ZCommand, activeVars: ActiveVars):
+        # Check if all arguments are available
+        if not len(cmd.args) > 2 or cmd.args[0] == "" or cmd.args[1] == "" or cmd.args[2] == "":
+            raise ZError(114)
+        
+
+        self.randomNumberType.setValue(cmd.args[2], "PT", activeVars)
+        if self.randomNumberType.value not in self.allowedTypes:
+            raise ZError(114)
+
+
+        self.rangeMin.setValue(cmd.args[0], self.randomNumberType.value, activeVars)
+        self.rangeMax.setValue(cmd.args[1], self.randomNumberType.value, activeVars)
+
+        self.generate(activeVars)
+
+    def generate(self, activeVars: ActiveVars):
+        newValue = 0
+        match self.randomNumberType.value:
+            case "INT":
+                newValue = random.randint(int(self.rangeMin.value), int(self.rangeMax.value))
+            case "FLOAT":
+                newValue = random.uniform(float(self.rangeMin.value), float(self.rangeMax.value))
+            case _:
+                pass
+
+        self.value.setValue(str(newValue), self.randomNumberType.value, activeVars)
 
 @register(name="__")
 class BUILD_IN(Variable):
@@ -730,6 +778,8 @@ class BUILD_IN(Variable):
             return activeVars, int(indexToJump.value)-2
 
         raise ZError(114)
+
+
 
 
 if __name__ == "__main__":

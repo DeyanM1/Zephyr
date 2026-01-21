@@ -1,10 +1,11 @@
-a # PT:1;
-b # PT:2;
+a # PT:-10.0;
+b # PT:10.1;
 
+c # PT:a;
 
-__ ? setJump:7;
+rng # RNG:'a'|'b'|FLOAT;
 
+c ? w:'rng';
+c ? push:;
 
-a ? push:;
-
-b ? push:;
+__ ? jump:-3;
