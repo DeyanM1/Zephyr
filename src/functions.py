@@ -300,7 +300,6 @@ class Variable:
         self.const: ZBool = ZBool()
         self.supportedVars: list[str] = [] # Supported Variables to change to
 
-
         self.functionRegistry: dict[str, Callable[..., Any]] = {}
         self.registerFunc({self.CT: ""})
 
@@ -343,7 +342,7 @@ class Variable:
         activeVars.update({newVar.name: newVar})
 
         return activeVars
-    
+
 
 
     
@@ -359,7 +358,11 @@ class INT(Variable):
         self.value: ZValue = ZValue()
         self.value.setValue(cmd.args[0], self.varType, activeVars)
         
-        self.registerFunc({self.w: ""})
+        self.registerFunc({self.w: "", self.INPUT: ""})
+
+    def INPUT(self, cmd: ZCommand, activeVars: ActiveVars):
+        newValue = input(cmd.args[0])
+        self.value.setValue(newValue, "INT", activeVars)
     
     def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         if self.const.compiledValue:
@@ -426,11 +429,10 @@ class PT(Variable):
     def INPUT(self, cmd: ZCommand, activeVars: ActiveVars):
         newValue = input(cmd.args[0])
         self.value.setValue(newValue, "PT", activeVars)
-    
-    
+        
     def push(self, cmd: ZCommand) -> None:
         print(self.value.value)
-   
+
 @register()
 class CO(Variable):
     def __init__(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
@@ -458,6 +460,7 @@ class CO(Variable):
 
     
     def compile(self, activeVars: ActiveVars) -> None:
+        self.compiledCondition = ""
         allowedChars: str = "()=!><+-*/"
         inVar = False
         varName = ""
@@ -738,12 +741,88 @@ class RNG(Variable):
 
         self.value.setValue(str(newValue), self.randomNumberType.value, activeVars)
 
+@register()
+class LOOP(Variable):
+    def __init__(self, cmd: ZCommand, activeVars: Dict[str, Variable], index: ZIndex) -> None:
+        super().__init__(cmd, activeVars)
+
+        self.supportedVars = ["INT", "FLOAT", "PT"]
+
+        self.startIndex: ZIndex = index
+        self.countCommandsInLoop: ZValue = ZValue()
+        self.active: bool = False
+        self.countLooped: int = 0
+
+        self.conditionalObjectName: ZValue = ZValue()
+        self.conditionalObject: CO
+        
+
+
+        if len(cmd.args) > 0 and cmd.args[0] != "":
+            self.w(cmd, activeVars)
+        
+        self.registerFunc({self.w: "", self.START: "", self.END: ""})
+
+    def w(self, cmd: ZCommand, activeVars: ActiveVars):
+        if len(cmd.args) > 0 and cmd.args[0] != "":
+            self.conditionalObjectName.setValue(cmd.args[0], "PT", activeVars)
+
+            self.conditionalObject: CO = activeVars.get(self.conditionalObjectName.value)
+
+            if isinstance(self.conditionalObject, CO): # type: ignore
+                self.conditionalObjectValue = self.conditionalObject.value # type: ignore
+            else:
+                raise ZError(112)
+        else:
+            raise ZError(114)
+        
+        self.checkCondition(activeVars)
+        
+    def checkCondition(self, activeVars: ActiveVars):
+        self.conditionalObject.compile(activeVars) # type: ignore
+        if self.conditionalObject.value.getBool(): # type: ignore
+            self.active = True
+        else:
+            self.active = False
+
+
+
+    def START(self, cmd: ZCommand, activeVars: ActiveVars, index: ZIndex):
+        self.startIndex = index
+
+        if len(cmd.args) > 0 and cmd.args[0] != "":
+            self.countCommandsInLoop.setValue(cmd.args[0], "INT", activeVars)
+        else:
+            raise ZError(114)
+
+
+        self.checkCondition(activeVars)
+        if not self.active:
+            return activeVars, self.startIndex + int(self.countCommandsInLoop.value)
+        
+        
+        return activeVars, index
+
+    def END(self, cmd: ZCommand, activeVars: ActiveVars, index: ZIndex):
+        self.checkCondition(activeVars)
+
+        if self.active:
+            self.countLooped += 1
+            return activeVars, self.startIndex
+        else:
+            return activeVars, index
+
+    def onChange(self) -> str:
+        return str(self.countLooped)
+
+
+
 @register(name="__")
 class BUILD_IN(Variable):
     def __init__(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         super().__init__(cmd, activeVars)
 
-        self.registerFunc({self.wait: "", self.jump: "", self.setJump: ""})
+        self.registerFunc({self.wait: "", self.jump: "", self.jumpTo: ""})
 
     
     def wait(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
@@ -767,7 +846,7 @@ class BUILD_IN(Variable):
 
         raise ZError(114)
     
-    def setJump(self, cmd: ZCommand, activeVars: ActiveVars, index: ZIndex) -> tuple[ActiveVars, ZIndex]:
+    def jumpTo(self, cmd: ZCommand, activeVars: ActiveVars, index: ZIndex) -> tuple[ActiveVars, ZIndex]:
         indexToJump: ZValue = ZValue()
         if len(cmd.args[0]):
             if cmd.args[0] == "":
@@ -778,9 +857,17 @@ class BUILD_IN(Variable):
             return activeVars, int(indexToJump.value)-2
 
         raise ZError(114)
+ 
+"""@register(name="PredefVars")
+class PredefVariables(Variable):
+    def __init__(self, cmd: ZCommand, activeVars: Dict[str, Variable]) -> None:
+        super().__init__(cmd, activeVars)
 
+        self.supportedVars = []
 
+    def save(self, cmd: ZCommand, activeVars: ActiveVars):
 
+"""
 
 if __name__ == "__main__":
     import subprocess

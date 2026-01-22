@@ -1,7 +1,7 @@
 - [x] Usable buildin jump function
 - [ ] loop
 - [x] random number generator
-- [ ] predefined variablesa
+- [ ] predefined variables
 - [ ] files
 - [ ] libraries
 - [ ] gpip library

@@ -18,7 +18,6 @@ from functions import (
 )
 
 
-
 def lexer(zfile: ZFile) -> list[ZCommand]:
     """
     Parses a .zph file associated with the given ZFile object and extracts commands.
@@ -141,8 +140,11 @@ def compile(inputData: ZFile | list[Any]):
                             try:
                                 hasActiveVars = "activeVars" in getRequiredArgs(functions.typeRegistry[cmd.func])
                                 hasIndex = "index" in getRequiredArgs(functions.typeRegistry[cmd.func])
-                                if hasActiveVars:
+                                
+                                if hasActiveVars and not hasIndex:
                                     var = functions.typeRegistry[cmd.func](cmd, activeVars)
+                                elif hasActiveVars and hasIndex:
+                                    var = functions.typeRegistry[cmd.func](cmd, activeVars, index)
                                 else:
                                     var = functions.typeRegistry[cmd.func](cmd)
 
