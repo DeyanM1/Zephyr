@@ -1,0 +1,264 @@
+{
+    "1": {
+        "lineNum": 1,
+        "zfile": {
+            "rawName": "examples/Projects/factorialCalc/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "number",
+        "base": "#",
+        "func": "INT",
+        "args": [
+            "3"
+        ]
+    },
+    "2": {
+        "lineNum": 2,
+        "zfile": {
+            "rawName": "examples/Projects/factorialCalc/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "result",
+        "base": "#",
+        "func": "INT",
+        "args": [
+            "1"
+        ]
+    },
+    "4": {
+        "lineNum": 4,
+        "zfile": {
+            "rawName": "examples/Projects/factorialCalc/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "number",
+        "base": "?",
+        "func": "INPUT",
+        "args": [
+            "Enter number to factorize > "
+        ]
+    },
+    "7": {
+        "lineNum": 7,
+        "zfile": {
+            "rawName": "examples/Projects/factorialCalc/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "funcMath",
+        "base": "#",
+        "func": "MO",
+        "args": [
+            "('result'*'number')func # FUNC:RES",
+            "~0",
+            "funcMath"
+        ]
+    },
+    "9": {
+        "lineNum": 9,
+        "zfile": {
+            "rawName": "examples/Projects/factorialCalc/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "noNegErrorMessage",
+        "base": "#",
+        "func": "PT",
+        "args": [
+            "ERROR! Number cant be negative"
+        ]
+    },
+    "10": {
+        "lineNum": 10,
+        "zfile": {
+            "rawName": "examples/Projects/factorialCalc/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "noNeg",
+        "base": "#",
+        "func": "CO",
+        "args": [
+            "('number'<0)"
+        ]
+    },
+    "11": {
+        "lineNum": 11,
+        "zfile": {
+            "rawName": "examples/Projects/factorialCalc/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "noNegIF",
+        "base": "#",
+        "func": "IF",
+        "args": [
+            "noNeg"
+        ]
+    },
+    "12": {
+        "lineNum": 12,
+        "zfile": {
+            "rawName": "examples/Projects/factorialCalc/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "noNegIF",
+        "base": "?",
+        "func": "START",
+        "args": [
+            "2"
+        ]
+    },
+    "13": {
+        "lineNum": 13,
+        "zfile": {
+            "rawName": "examples/Projects/factorialCalc/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "noNegErrorMessage",
+        "base": "?",
+        "func": "push",
+        "args": [
+            ""
+        ]
+    },
+    "14": {
+        "lineNum": 14,
+        "zfile": {
+            "rawName": "examples/Projects/factorialCalc/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "__",
+        "base": "?",
+        "func": "jump",
+        "args": [
+            "10"
+        ]
+    },
+    "15": {
+        "lineNum": 15,
+        "zfile": {
+            "rawName": "examples/Projects/factorialCalc/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "noNegIF",
+        "base": "?",
+        "func": "END",
+        "args": [
+            ""
+        ]
+    },
+    "18": {
+        "lineNum": 18,
+        "zfile": {
+            "rawName": "examples/Projects/factorialCalc/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "condition",
+        "base": "#",
+        "func": "CO",
+        "args": [
+            "('number'!=1)"
+        ]
+    },
+    "19": {
+        "lineNum": 19,
+        "zfile": {
+            "rawName": "examples/Projects/factorialCalc/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "loop",
+        "base": "#",
+        "func": "LOOP",
+        "args": [
+            "condition"
+        ]
+    },
+    "20": {
+        "lineNum": 20,
+        "zfile": {
+            "rawName": "examples/Projects/factorialCalc/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "loop",
+        "base": "?",
+        "func": "START",
+        "args": [
+            "3"
+        ]
+    },
+    "21": {
+        "lineNum": 21,
+        "zfile": {
+            "rawName": "examples/Projects/factorialCalc/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "func",
+        "base": "?",
+        "func": "call",
+        "args": [
+            ""
+        ]
+    },
+    "22": {
+        "lineNum": 22,
+        "zfile": {
+            "rawName": "examples/Projects/factorialCalc/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "result",
+        "base": "?",
+        "func": "w",
+        "args": [
+            "'func'"
+        ]
+    },
+    "24": {
+        "lineNum": 24,
+        "zfile": {
+            "rawName": "examples/Projects/factorialCalc/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "number",
+        "base": "?",
+        "func": "w",
+        "args": [
+            "--"
+        ]
+    },
+    "25": {
+        "lineNum": 25,
+        "zfile": {
+            "rawName": "examples/Projects/factorialCalc/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "loop",
+        "base": "?",
+        "func": "END",
+        "args": [
+            ""
+        ]
+    },
+    "27": {
+        "lineNum": 27,
+        "zfile": {
+            "rawName": "examples/Projects/factorialCalc/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "result",
+        "base": "#",
+        "func": "CT",
+        "args": [
+            "PT"
+        ]
+    },
+    "28": {
+        "lineNum": 28,
+        "zfile": {
+            "rawName": "examples/Projects/factorialCalc/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "result",
+        "base": "?",
+        "func": "push",
+        "args": [
+            ""
+        ]
+    }
+}

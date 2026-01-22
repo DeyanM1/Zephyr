@@ -6,8 +6,8 @@ import random
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable, Dict, Optional, TypeAlias
 from types import ModuleType
+from typing import Any, Callable, Dict, Optional, TypeAlias
 
 from colorama import Back
 
@@ -41,7 +41,7 @@ class ZError(Exception):
             111: lambda: ("[111]  Error in Condition. ", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
             112: lambda: ("[112] Given variable isnt correct type!", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
             113: lambda: ("[113] Given variable isnt defined!", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
-            114: lambda: ("[114] Missing arguments!", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
+            114: lambda: ("[114] Error in arguments!", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
             115: lambda: ("[115] Error at jump function! Index out of range!", len("f"), SyntaxError)
         }
 
@@ -648,7 +648,7 @@ class FUNC(Variable):
         if len(cmd.args) > 1 and cmd.args[1] != "":
             self.disableVariableChange.setValue(cmd.args[1])
         if len(cmd.args) > 2 and cmd.args[2]:
-            mathObject: MO = activeVars.get(cmd.args[0])
+            mathObject: MO = activeVars.get(cmd.args[2])
             if not mathObject:
                 raise ZError(113)
             if isinstance(mathObject, MO):
@@ -845,8 +845,8 @@ class LOOP(Variable):
     def onChange(self) -> str:
         return str(self.countLooped)
 
-@register("LIB")
-class Library(Variable):
+@register()
+class LIB(Variable):
     def __init__(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         super().__init__(cmd, activeVars)
 
@@ -917,16 +917,26 @@ class BUILD_IN(Variable):
 
         raise ZError(114)
  
-"""@register(name="PredefVars")
-class PredefVariables(Variable):
+
+
+    
+"""@register()
+class PredefVars(Variable):
     def __init__(self, cmd: ZCommand, activeVars: Dict[str, Variable]) -> None:
         super().__init__(cmd, activeVars)
 
-        self.supportedVars = []
+        self.filePath: ZValue = ZValue()
 
-    def save(self, cmd: ZCommand, activeVars: ActiveVars):
+        self.registerFunc({self.w: "", self.export: "", self.load: ""})
+    
 
-"""
+    def w(self, cmd: ZCommand, activeVars: ActiveVars):
+        if len(cmd.args) > 0 and cmd.args[0] != "":
+            self.filePath.setValue(cmd.args[0], "PT", activeVars)
+        else:
+            raise ZError(114)"""
+
+
 
 if __name__ == "__main__":
     import subprocess

@@ -1,0 +1,28 @@
+number # INT:3;
+result # INT:1;
+
+number ? INPUT:Enter number to factorize > ;
+
+funcMath # MO:('result'*'number');
+func # FUNC:RES|~0|funcMath;
+
+noNegErrorMessage # PT:ERROR! Number cant be negative;
+noNeg # CO:('number'<0);
+noNegIF # IF:noNeg;
+noNegIF ? START:2;
+    noNegErrorMessage ? push:;
+    __ ? jump:10;
+noNegIF ? END:;
+
+
+condition # CO:('number'!=1);
+loop # LOOP:condition;
+loop ? START:3;
+    func ? call:;
+    result ? w:'func';
+
+    number ? w:--;
+loop ? END:;
+
+result # CT:PT;
+result ? push:;

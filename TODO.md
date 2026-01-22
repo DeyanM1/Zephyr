@@ -3,5 +3,5 @@
 - [x] random number generator
 - [ ] predefined variables
 - [ ] files
-- [ ] libraries
+- [x] libraries
 - [ ] gpip library
