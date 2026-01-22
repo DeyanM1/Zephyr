@@ -5,24 +5,24 @@
             "rawName": "src/code",
             "basePath": "/home/deyan/dev/Zephyr"
         },
-        "name": "number",
+        "name": "lib",
         "base": "#",
-        "func": "INT",
+        "func": "LIB",
         "args": [
-            "3"
+            "math"
         ]
     },
-    "2": {
-        "lineNum": 2,
+    "3": {
+        "lineNum": 3,
         "zfile": {
             "rawName": "src/code",
             "basePath": "/home/deyan/dev/Zephyr"
         },
-        "name": "result",
+        "name": "m",
         "base": "#",
-        "func": "INT",
+        "func": "MoreMath",
         "args": [
-            "1"
+            ""
         ]
     },
     "5": {
@@ -31,11 +31,11 @@
             "rawName": "src/code",
             "basePath": "/home/deyan/dev/Zephyr"
         },
-        "name": "t",
+        "name": "a",
         "base": "#",
         "func": "INT",
         "args": [
-            "1"
+            "5"
         ]
     },
     "7": {
@@ -44,11 +44,24 @@
             "rawName": "src/code",
             "basePath": "/home/deyan/dev/Zephyr"
         },
-        "name": "number",
+        "name": "m",
         "base": "?",
-        "func": "INPUT",
+        "func": "fact",
         "args": [
-            "Enter number to factorize > "
+            "a"
+        ]
+    },
+    "9": {
+        "lineNum": 9,
+        "zfile": {
+            "rawName": "src/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "a",
+        "base": "#",
+        "func": "CT",
+        "args": [
+            "PT"
         ]
     },
     "10": {
@@ -57,137 +70,7 @@
             "rawName": "src/code",
             "basePath": "/home/deyan/dev/Zephyr"
         },
-        "name": "mo",
-        "base": "#",
-        "func": "MO",
-        "args": [
-            "('result'*'number')"
-        ]
-    },
-    "11": {
-        "lineNum": 11,
-        "zfile": {
-            "rawName": "src/code",
-            "basePath": "/home/deyan/dev/Zephyr"
-        },
-        "name": "func",
-        "base": "#",
-        "func": "FUNC",
-        "args": [
-            "INT"
-        ]
-    },
-    "12": {
-        "lineNum": 12,
-        "zfile": {
-            "rawName": "src/code",
-            "basePath": "/home/deyan/dev/Zephyr"
-        },
-        "name": "func",
-        "base": "?",
-        "func": "w",
-        "args": [
-            "mo"
-        ]
-    },
-    "15": {
-        "lineNum": 15,
-        "zfile": {
-            "rawName": "src/code",
-            "basePath": "/home/deyan/dev/Zephyr"
-        },
-        "name": "condition",
-        "base": "#",
-        "func": "CO",
-        "args": [
-            "('number'!='t')"
-        ]
-    },
-    "16": {
-        "lineNum": 16,
-        "zfile": {
-            "rawName": "src/code",
-            "basePath": "/home/deyan/dev/Zephyr"
-        },
-        "name": "loop",
-        "base": "#",
-        "func": "LOOP",
-        "args": [
-            "condition"
-        ]
-    },
-    "17": {
-        "lineNum": 17,
-        "zfile": {
-            "rawName": "src/code",
-            "basePath": "/home/deyan/dev/Zephyr"
-        },
-        "name": "func",
-        "base": "?",
-        "func": "call",
-        "args": [
-            ""
-        ]
-    },
-    "18": {
-        "lineNum": 18,
-        "zfile": {
-            "rawName": "src/code",
-            "basePath": "/home/deyan/dev/Zephyr"
-        },
-        "name": "result",
-        "base": "?",
-        "func": "w",
-        "args": [
-            "'func'"
-        ]
-    },
-    "20": {
-        "lineNum": 20,
-        "zfile": {
-            "rawName": "src/code",
-            "basePath": "/home/deyan/dev/Zephyr"
-        },
-        "name": "number",
-        "base": "?",
-        "func": "w",
-        "args": [
-            "--"
-        ]
-    },
-    "21": {
-        "lineNum": 21,
-        "zfile": {
-            "rawName": "src/code",
-            "basePath": "/home/deyan/dev/Zephyr"
-        },
-        "name": "loop",
-        "base": "?",
-        "func": "END",
-        "args": [
-            ""
-        ]
-    },
-    "23": {
-        "lineNum": 23,
-        "zfile": {
-            "rawName": "src/code",
-            "basePath": "/home/deyan/dev/Zephyr"
-        },
-        "name": "result",
-        "base": "#",
-        "func": "CT",
-        "args": [
-            "PT"
-        ]
-    },
-    "24": {
-        "lineNum": 24,
-        "zfile": {
-            "rawName": "src/code",
-            "basePath": "/home/deyan/dev/Zephyr"
-        },
-        "name": "result",
+        "name": "a",
         "base": "?",
         "func": "push",
         "args": [
