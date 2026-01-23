@@ -409,7 +409,7 @@ class FLOAT(Variable):
                 self.value.decrement(cmd.args[1] if 1 < len(cmd.args) else "1", self.varType, activeVars)
 
             case _:
-                self.value.setValue(cmd.args[1], self.varType, activeVars)
+                self.value.setValue(cmd.args[0], self.varType, activeVars)
 
 @register()
 class PT(Variable):
@@ -751,6 +751,7 @@ class RNG(Variable):
 
         self.randomNumberType.setValue(cmd.args[2], "PT", activeVars)
         if self.randomNumberType.value not in self.allowedTypes:
+            print("HO")
             raise ZError(114)
 
 

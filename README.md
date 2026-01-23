@@ -10,6 +10,8 @@ Variable can be changed into: INT, PT, FLOAT
 ```
 var # <Vartype>:<*- Value>; // Define SimpleVar| Vartype can be INT, PT, FLOAT
 var ? w:<*NewValue>; // change Value
+var ? w:++|<*- incrementBy>; // Increment INT/FLOAT by incrementBy. if not set increment 1
+var ? w:-|<*- decrementBy>; // Decrement INT/FLOAT by decrementBy. if not set decrement 1
 var ? push:; // Print value of PT to console 
 var ? INPUT:<*- Message> // Takes input and overrides previous value. optionalMessage is printed Before
 ```
@@ -67,8 +69,8 @@ func ? call:;
 Variable can be changed into: INT, PT, FLOAT
 OnChange: value is generated random Number
 ```
-rng # RNG:<*- numberType>|<*- rangeMin><*- rangeMax>;
-rng ? w:<* numberType>|<* rangeMin><* rangeMax>;
+rng # RNG:<*- rangeMin>|<*- rangeMax>|<*- numberType>;
+rng ? w:<* rangeMin>|<* rangeMax>|<* numberType>;
 
 ```
 
