@@ -207,7 +207,7 @@ def compile(inputData: ZFile | list[Any]):
 
 if __name__ == "__main__":
 
-    ZFILE: ZFile = ZFile("examples/Projects/piApproximator/code")
+    ZFILE: ZFile = ZFile("examples/Projects/sumCalc/code")
 
     lexer(ZFILE)
     compile(ZFILE)

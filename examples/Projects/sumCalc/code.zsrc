@@ -1,0 +1,80 @@
+{
+    "1": {
+        "lineNum": 1,
+        "zfile": {
+            "rawName": "examples/Projects/sumCalc/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "sum",
+        "base": "#",
+        "func": "INT",
+        "args": [
+            "0"
+        ]
+    },
+    "2": {
+        "lineNum": 2,
+        "zfile": {
+            "rawName": "examples/Projects/sumCalc/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "n",
+        "base": "#",
+        "func": "INT",
+        "args": [
+            "1"
+        ]
+    },
+    "3": {
+        "lineNum": 3,
+        "zfile": {
+            "rawName": "examples/Projects/sumCalc/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "n",
+        "base": "?",
+        "func": "INPUT",
+        "args": [
+            "Enter a number to calculate the sum -> "
+        ]
+    },
+    "6": {
+        "lineNum": 6,
+        "zfile": {
+            "rawName": "examples/Projects/sumCalc/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "MO",
+        "base": "#",
+        "func": "MO",
+        "args": [
+            "(('n'*('n'+1))/2)"
+        ]
+    },
+    "8": {
+        "lineNum": 8,
+        "zfile": {
+            "rawName": "examples/Projects/sumCalc/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "MO",
+        "base": "#",
+        "func": "CT",
+        "args": [
+            "PT"
+        ]
+    },
+    "10": {
+        "lineNum": 10,
+        "zfile": {
+            "rawName": "examples/Projects/sumCalc/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "MO",
+        "base": "?",
+        "func": "push",
+        "args": [
+            ""
+        ]
+    }
+}
