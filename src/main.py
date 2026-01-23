@@ -40,12 +40,18 @@ def lexer(zfile: ZFile) -> list[ZCommand]:
     # Read the file and process commands line by line
     currentCommand = ""
     for lineNum, line in enumerate(zfile.zphPath.read_text().splitlines(), start=1):
+        skipLine: bool = False
         for char in line:
+            if char == "~":
+                skipLine = True
+                break
             if char == ";":
                 compiledData.append((lineNum, currentCommand))
                 currentCommand = ""
             elif char not in forbiddenChars:
                 currentCommand += char
+        if skipLine:
+            continue
 
 
     ZCommandData: list[ZCommand] = []
@@ -207,7 +213,7 @@ def compile(inputData: ZFile | list[Any]):
 
 if __name__ == "__main__":
 
-    ZFILE: ZFile = ZFile("examples/Projects/sumCalc/code")
+    ZFILE: ZFile = ZFile("examples/Projects/birthdayParadox/code")
 
     lexer(ZFILE)
     compile(ZFILE)

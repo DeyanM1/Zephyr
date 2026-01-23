@@ -594,6 +594,7 @@ class MO(Variable):
         self.compile(activeVars)
     
     def compile(self, activeVars: ActiveVars) -> None:
+        self.compiledEquation = ""
         allowedChars: str = "+-*/%=()1234567890"
         inVar = False
         varName = ""
