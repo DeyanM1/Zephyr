@@ -1,0 +1,198 @@
+{
+    "1": {
+        "lineNum": 1,
+        "zfile": {
+            "rawName": "examples/Projects/piApproximator/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "pi",
+        "base": "#",
+        "func": "FLOAT",
+        "args": [
+            "0.0"
+        ]
+    },
+    "2": {
+        "lineNum": 2,
+        "zfile": {
+            "rawName": "examples/Projects/piApproximator/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "divisor",
+        "base": "#",
+        "func": "FLOAT",
+        "args": [
+            "1.0"
+        ]
+    },
+    "5": {
+        "lineNum": 5,
+        "zfile": {
+            "rawName": "examples/Projects/piApproximator/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "iterations",
+        "base": "#",
+        "func": "INT",
+        "args": [
+            "6000"
+        ]
+    },
+    "6": {
+        "lineNum": 6,
+        "zfile": {
+            "rawName": "examples/Projects/piApproximator/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "iteration",
+        "base": "#",
+        "func": "INT",
+        "args": [
+            "1"
+        ]
+    },
+    "8": {
+        "lineNum": 8,
+        "zfile": {
+            "rawName": "examples/Projects/piApproximator/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "iLoopCO",
+        "base": "#",
+        "func": "CO",
+        "args": [
+            "('iteration'<'iterations')"
+        ]
+    },
+    "9": {
+        "lineNum": 9,
+        "zfile": {
+            "rawName": "examples/Projects/piApproximator/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "iLoop",
+        "base": "#",
+        "func": "LOOP",
+        "args": [
+            "iLoopCO"
+        ]
+    },
+    "11": {
+        "lineNum": 11,
+        "zfile": {
+            "rawName": "examples/Projects/piApproximator/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "iLoop",
+        "base": "?",
+        "func": "START",
+        "args": [
+            "10"
+        ]
+    },
+    "12": {
+        "lineNum": 12,
+        "zfile": {
+            "rawName": "examples/Projects/piApproximator/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "piMO",
+        "base": "#",
+        "func": "MO",
+        "args": [
+            ""
+        ]
+    },
+    "13": {
+        "lineNum": 13,
+        "zfile": {
+            "rawName": "examples/Projects/piApproximator/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "piMO",
+        "base": "?",
+        "func": "w",
+        "args": [
+            "('pi'+4/'divisor'-4/('divisor'+2))"
+        ]
+    },
+    "15": {
+        "lineNum": 15,
+        "zfile": {
+            "rawName": "examples/Projects/piApproximator/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "pi",
+        "base": "?",
+        "func": "w",
+        "args": [
+            "'piMO'"
+        ]
+    },
+    "17": {
+        "lineNum": 17,
+        "zfile": {
+            "rawName": "examples/Projects/piApproximator/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "piMO",
+        "base": "#",
+        "func": "CT",
+        "args": [
+            "PT"
+        ]
+    },
+    "18": {
+        "lineNum": 18,
+        "zfile": {
+            "rawName": "examples/Projects/piApproximator/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "piMO",
+        "base": "?",
+        "func": "push",
+        "args": [
+            ""
+        ]
+    },
+    "21": {
+        "lineNum": 21,
+        "zfile": {
+            "rawName": "examples/Projects/piApproximator/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "divisor",
+        "base": "?",
+        "func": "w",
+        "args": [
+            "++",
+            "4"
+        ]
+    },
+    "23": {
+        "lineNum": 23,
+        "zfile": {
+            "rawName": "examples/Projects/piApproximator/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "iteration",
+        "base": "?",
+        "func": "w",
+        "args": [
+            "++"
+        ]
+    },
+    "25": {
+        "lineNum": 25,
+        "zfile": {
+            "rawName": "examples/Projects/piApproximator/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "iLoop",
+        "base": "?",
+        "func": "END",
+        "args": [
+            ""
+        ]
+    }
+}

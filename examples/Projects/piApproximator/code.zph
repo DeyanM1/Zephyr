@@ -1,0 +1,24 @@
+pi # FLOAT:0.0;
+divisor # FLOAT:1.0;                                         
+
+
+iterations # INT:6000;
+iteration # INT:1;
+
+iLoopCO # CO:('iteration'<'iterations');
+iLoop # LOOP:iLoopCO;
+
+iLoop ? START:10;
+    piMO # MO:;
+    piMO ? w:('pi'+4/'divisor'-4/('divisor'+2));
+
+    pi ? w:'piMO';
+
+    piMO # CT:PT;
+    piMO ? push:;
+    
+    divisor ? w:++|4;
+
+    iteration ? w:++;
+
+iLoop ? END:;
