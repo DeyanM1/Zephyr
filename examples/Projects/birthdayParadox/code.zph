@@ -1,0 +1,32 @@
+n # INT:1;
+countPersons # INT:2;
+i # INT:0;
+
+prob # FLOAT:1.0;
+
+iLoopCO # CO:('i' < 'countPersons');
+iLoop # LOOP:iLoopCO;
+
+iLoop ? START:8;
+    probMO # MO:;
+    probMO ? w:('prob'*((365-('n'-1))/365));
+
+    prob ? w:'probMO';
+
+    probMO ? w:((1-'prob')*100);
+    
+    
+    ~ Uncomment to show number of people
+    
+    ~i # CT:PT;
+    ~i ? push:;
+    ~i # CT:INT;
+
+
+    probMO # CT:PT;
+    probMO ? push:;
+   
+
+    n ? w:++;
+    i ? w:++;
+iLoop ? END:;

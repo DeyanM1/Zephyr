@@ -1,0 +1,210 @@
+{
+    "1": {
+        "lineNum": 1,
+        "zfile": {
+            "rawName": "examples/Projects/birthdayParadox/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "n",
+        "base": "#",
+        "func": "INT",
+        "args": [
+            "1"
+        ]
+    },
+    "2": {
+        "lineNum": 2,
+        "zfile": {
+            "rawName": "examples/Projects/birthdayParadox/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "countPersons",
+        "base": "#",
+        "func": "INT",
+        "args": [
+            "2"
+        ]
+    },
+    "3": {
+        "lineNum": 3,
+        "zfile": {
+            "rawName": "examples/Projects/birthdayParadox/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "i",
+        "base": "#",
+        "func": "INT",
+        "args": [
+            "0"
+        ]
+    },
+    "5": {
+        "lineNum": 5,
+        "zfile": {
+            "rawName": "examples/Projects/birthdayParadox/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "prob",
+        "base": "#",
+        "func": "FLOAT",
+        "args": [
+            "1.0"
+        ]
+    },
+    "7": {
+        "lineNum": 7,
+        "zfile": {
+            "rawName": "examples/Projects/birthdayParadox/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "iLoopCO",
+        "base": "#",
+        "func": "CO",
+        "args": [
+            "('i' < 'countPersons')"
+        ]
+    },
+    "8": {
+        "lineNum": 8,
+        "zfile": {
+            "rawName": "examples/Projects/birthdayParadox/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "iLoop",
+        "base": "#",
+        "func": "LOOP",
+        "args": [
+            "iLoopCO"
+        ]
+    },
+    "10": {
+        "lineNum": 10,
+        "zfile": {
+            "rawName": "examples/Projects/birthdayParadox/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "iLoop",
+        "base": "?",
+        "func": "START",
+        "args": [
+            "8"
+        ]
+    },
+    "11": {
+        "lineNum": 11,
+        "zfile": {
+            "rawName": "examples/Projects/birthdayParadox/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "probMO",
+        "base": "#",
+        "func": "MO",
+        "args": [
+            ""
+        ]
+    },
+    "12": {
+        "lineNum": 12,
+        "zfile": {
+            "rawName": "examples/Projects/birthdayParadox/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "probMO",
+        "base": "?",
+        "func": "w",
+        "args": [
+            "('prob'*((365-('n'-1))/365))"
+        ]
+    },
+    "14": {
+        "lineNum": 14,
+        "zfile": {
+            "rawName": "examples/Projects/birthdayParadox/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "prob",
+        "base": "?",
+        "func": "w",
+        "args": [
+            "'probMO'"
+        ]
+    },
+    "16": {
+        "lineNum": 16,
+        "zfile": {
+            "rawName": "examples/Projects/birthdayParadox/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "probMO",
+        "base": "?",
+        "func": "w",
+        "args": [
+            "((1-'prob')*100)"
+        ]
+    },
+    "26": {
+        "lineNum": 26,
+        "zfile": {
+            "rawName": "examples/Projects/birthdayParadox/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "probMO",
+        "base": "#",
+        "func": "CT",
+        "args": [
+            "PT"
+        ]
+    },
+    "27": {
+        "lineNum": 27,
+        "zfile": {
+            "rawName": "examples/Projects/birthdayParadox/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "probMO",
+        "base": "?",
+        "func": "push",
+        "args": [
+            ""
+        ]
+    },
+    "30": {
+        "lineNum": 30,
+        "zfile": {
+            "rawName": "examples/Projects/birthdayParadox/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "n",
+        "base": "?",
+        "func": "w",
+        "args": [
+            "++"
+        ]
+    },
+    "31": {
+        "lineNum": 31,
+        "zfile": {
+            "rawName": "examples/Projects/birthdayParadox/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "i",
+        "base": "?",
+        "func": "w",
+        "args": [
+            "++"
+        ]
+    },
+    "32": {
+        "lineNum": 32,
+        "zfile": {
+            "rawName": "examples/Projects/birthdayParadox/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "iLoop",
+        "base": "?",
+        "func": "END",
+        "args": [
+            ""
+        ]
+    }
+}
