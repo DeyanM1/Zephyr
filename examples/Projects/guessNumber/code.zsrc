@@ -1,0 +1,394 @@
+{
+    "1": {
+        "lineNum": 1,
+        "zfile": {
+            "rawName": "examples/Projects/guessNumber/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "number",
+        "base": "#",
+        "func": "RNG",
+        "args": [
+            "1",
+            "10",
+            "INT"
+        ]
+    },
+    "2": {
+        "lineNum": 2,
+        "zfile": {
+            "rawName": "examples/Projects/guessNumber/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "number",
+        "base": "#",
+        "func": "CT",
+        "args": [
+            "INT"
+        ]
+    },
+    "4": {
+        "lineNum": 4,
+        "zfile": {
+            "rawName": "examples/Projects/guessNumber/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "tries",
+        "base": "#",
+        "func": "INT",
+        "args": [
+            "0"
+        ]
+    },
+    "5": {
+        "lineNum": 5,
+        "zfile": {
+            "rawName": "examples/Projects/guessNumber/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "guess",
+        "base": "#",
+        "func": "INT",
+        "args": [
+            "0"
+        ]
+    },
+    "6": {
+        "lineNum": 6,
+        "zfile": {
+            "rawName": "examples/Projects/guessNumber/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "guess",
+        "base": "?",
+        "func": "INPUT",
+        "args": [
+            "Enter Guess> "
+        ]
+    },
+    "8": {
+        "lineNum": 8,
+        "zfile": {
+            "rawName": "examples/Projects/guessNumber/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "winMessage",
+        "base": "#",
+        "func": "PT",
+        "args": [
+            "Congratulations, you won! With tries> "
+        ]
+    },
+    "10": {
+        "lineNum": 10,
+        "zfile": {
+            "rawName": "examples/Projects/guessNumber/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "higherMessage",
+        "base": "#",
+        "func": "PT",
+        "args": [
+            "The Number is higher! try again!"
+        ]
+    },
+    "11": {
+        "lineNum": 11,
+        "zfile": {
+            "rawName": "examples/Projects/guessNumber/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "lowerMessage",
+        "base": "#",
+        "func": "PT",
+        "args": [
+            "The Number is lower! try again!"
+        ]
+    },
+    "13": {
+        "lineNum": 13,
+        "zfile": {
+            "rawName": "examples/Projects/guessNumber/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "winCO",
+        "base": "#",
+        "func": "CO",
+        "args": [
+            "('number'=='guess')"
+        ]
+    },
+    "14": {
+        "lineNum": 14,
+        "zfile": {
+            "rawName": "examples/Projects/guessNumber/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "winIF",
+        "base": "#",
+        "func": "IF",
+        "args": [
+            "winCO"
+        ]
+    },
+    "15": {
+        "lineNum": 15,
+        "zfile": {
+            "rawName": "examples/Projects/guessNumber/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "winIF",
+        "base": "?",
+        "func": "START",
+        "args": [
+            "1"
+        ]
+    },
+    "16": {
+        "lineNum": 16,
+        "zfile": {
+            "rawName": "examples/Projects/guessNumber/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "__",
+        "base": "?",
+        "func": "JUMP",
+        "args": [
+            "24"
+        ]
+    },
+    "17": {
+        "lineNum": 17,
+        "zfile": {
+            "rawName": "examples/Projects/guessNumber/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "winIF",
+        "base": "?",
+        "func": "END",
+        "args": [
+            ""
+        ]
+    },
+    "19": {
+        "lineNum": 19,
+        "zfile": {
+            "rawName": "examples/Projects/guessNumber/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "mainCondition",
+        "base": "#",
+        "func": "CO",
+        "args": [
+            "('number'!='guess')"
+        ]
+    },
+    "20": {
+        "lineNum": 20,
+        "zfile": {
+            "rawName": "examples/Projects/guessNumber/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "LOOP",
+        "base": "#",
+        "func": "LOOP",
+        "args": [
+            "mainCondition"
+        ]
+    },
+    "21": {
+        "lineNum": 21,
+        "zfile": {
+            "rawName": "examples/Projects/guessNumber/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "LOOP",
+        "base": "?",
+        "func": "START",
+        "args": [
+            "8"
+        ]
+    },
+    "22": {
+        "lineNum": 22,
+        "zfile": {
+            "rawName": "examples/Projects/guessNumber/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "higherCondition",
+        "base": "#",
+        "func": "CO",
+        "args": [
+            "('number'>'guess')"
+        ]
+    },
+    "24": {
+        "lineNum": 24,
+        "zfile": {
+            "rawName": "examples/Projects/guessNumber/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "higherIF",
+        "base": "#",
+        "func": "IF",
+        "args": [
+            "higherCondition"
+        ]
+    },
+    "25": {
+        "lineNum": 25,
+        "zfile": {
+            "rawName": "examples/Projects/guessNumber/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "higherIF",
+        "base": "?",
+        "func": "START",
+        "args": [
+            "1"
+        ]
+    },
+    "26": {
+        "lineNum": 26,
+        "zfile": {
+            "rawName": "examples/Projects/guessNumber/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "higherMessage",
+        "base": "?",
+        "func": "push",
+        "args": [
+            ""
+        ]
+    },
+    "27": {
+        "lineNum": 27,
+        "zfile": {
+            "rawName": "examples/Projects/guessNumber/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "higherIF",
+        "base": "?",
+        "func": "ELSE",
+        "args": [
+            "1"
+        ]
+    },
+    "28": {
+        "lineNum": 28,
+        "zfile": {
+            "rawName": "examples/Projects/guessNumber/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "lowerMessage",
+        "base": "?",
+        "func": "push",
+        "args": [
+            ""
+        ]
+    },
+    "29": {
+        "lineNum": 29,
+        "zfile": {
+            "rawName": "examples/Projects/guessNumber/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "higherIF",
+        "base": "?",
+        "func": "END",
+        "args": [
+            ""
+        ]
+    },
+    "31": {
+        "lineNum": 31,
+        "zfile": {
+            "rawName": "examples/Projects/guessNumber/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "tries",
+        "base": "?",
+        "func": "w",
+        "args": [
+            "++"
+        ]
+    },
+    "33": {
+        "lineNum": 33,
+        "zfile": {
+            "rawName": "examples/Projects/guessNumber/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "guess",
+        "base": "?",
+        "func": "INPUT",
+        "args": [
+            "Enter Guess> "
+        ]
+    },
+    "35": {
+        "lineNum": 35,
+        "zfile": {
+            "rawName": "examples/Projects/guessNumber/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "LOOP",
+        "base": "?",
+        "func": "END",
+        "args": [
+            ""
+        ]
+    },
+    "36": {
+        "lineNum": 36,
+        "zfile": {
+            "rawName": "examples/Projects/guessNumber/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "tries",
+        "base": "?",
+        "func": "w",
+        "args": [
+            "++"
+        ]
+    },
+    "39": {
+        "lineNum": 39,
+        "zfile": {
+            "rawName": "examples/Projects/guessNumber/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "winMessage",
+        "base": "?",
+        "func": "push",
+        "args": [
+            ""
+        ]
+    },
+    "41": {
+        "lineNum": 41,
+        "zfile": {
+            "rawName": "examples/Projects/guessNumber/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "tries",
+        "base": "#",
+        "func": "CT",
+        "args": [
+            "PT"
+        ]
+    },
+    "42": {
+        "lineNum": 42,
+        "zfile": {
+            "rawName": "examples/Projects/guessNumber/code",
+            "basePath": "/home/deyan/dev/Zephyr"
+        },
+        "name": "tries",
+        "base": "?",
+        "func": "push",
+        "args": [
+            ""
+        ]
+    }
+}
