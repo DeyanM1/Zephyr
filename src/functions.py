@@ -930,11 +930,11 @@ class FILE(Variable):
         text = ZValue()
         text.setValue(cmd.args[0], "PT", activeVars)
 
-        with open(self.path, "w") as openFile:
+        with self.path.open("w") as openFile:
             openFile.write(text.value)
 
     def cFLUSH(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
-        with open(self.path, "w"):
+        with self.path.open("w"):
             pass
 
     def gRENAME(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
@@ -950,7 +950,7 @@ class FILE(Variable):
 
     def onChange(self) -> str:
         ret = ""
-        with open(self.path, "r") as openFile:
+        with self.path.open("r") as openFile:
             ret = openFile.readlines()
         
         return str(*ret)
