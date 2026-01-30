@@ -1,13 +1,4 @@
-Here’s a fully revised version of your Zephyr documentation. I standardized formatting, clarified ambiguous points, removed inconsistencies, and made explanations more precise without adding new features.
-
----
-
 # Zephyr Documentation
-
-Welcome to the Zephyr documentation. This guide uses specific notation to describe the syntax of each command:
-
-* **`*`**: Represents a value that can be a variable name or input (must be enclosed in `' '` where specified).
-* **`-`**: Represents an optional parameter in the command.
 
 ---
 
@@ -77,6 +68,10 @@ python src/cli.py <path_to_file.zph>
 ---
 
 # Overview
+
+* **`*`**: Represents a value that can be a variable name or input (must be enclosed in `' '` where specified).
+* **`-`**: Represents an optional parameter in the command.
+
 
 ## Declaring Variables
 
