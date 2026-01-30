@@ -245,6 +245,7 @@ class ZValue:
                 raise ZError(110)
 
 
+
 def getRequiredArgs(function: Callable[..., Any]):
     sig = inspect.signature(function)
     params = sig.parameters
@@ -875,7 +876,85 @@ class LIB(Variable):
         for cls in newTypes:
             register()(cls)
 
+@register()
+class FILE(Variable):
+    def __init__(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        super().__init__(cmd, activeVars)
+        self.supportedVars = []
 
+        self.value: ZValue = ZValue()
+
+        self.path: Path = Path()
+
+
+        if len(cmd.args) > 0:
+            self.w(cmd, activeVars)
+        
+
+        self.registerFunc({self.w: ""})
+        self.registerFunc({self.cSET: "", self.cFLUSH: ""})
+        self.registerFunc({self.gRENAME: "", self.gDEL: ""})
+
+    def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        """
+        Only sets the filePath
+        
+        """
+        if len(cmd.args) > 0 and cmd.args[0] == "":
+            self.path = Path.cwd() / "unnamed_file.txt"
+
+        elif len(cmd.args) > 0 and cmd.args[0] != "":
+            rawPath = ZValue()
+            rawPath.setValue(cmd.args[0], "PT", activeVars)
+            path = Path(rawPath.value)
+
+            if not path.is_absolute():
+                path = (Path.cwd() / path).resolve()
+            
+            self.path = path
+        
+        else:
+            raise ZError(114)
+
+
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self.path.touch(exist_ok=True)
+
+        self.value.value = self.path.as_posix()
+
+
+    def cSET(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        if len(cmd.args) < 0 and cmd.args[0] == "":
+            raise ZError(14)
+        
+        text = ZValue()
+        text.setValue(cmd.args[0], "PT", activeVars)
+
+        with open(self.path, "w") as openFile:
+            openFile.write(text.value)
+
+    def cFLUSH(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        with open(self.path, "w"):
+            pass
+
+    def gRENAME(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        if len(cmd.args) > 0 and cmd.args[0] != "":
+            newName = ZValue()
+            newName.setValue(cmd.args[0], "PT", activeVars)
+            self.path.rename(newName.value)
+        else:
+            raise ZError(114)
+
+    def gDEL(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        self.path.unlink()
+
+    def onChange(self) -> str:
+        ret = ""
+        with open(self.path, "r") as openFile:
+            ret = openFile.readlines()
+        
+        return str(*ret)
+    
 
 
 @register(name="__")

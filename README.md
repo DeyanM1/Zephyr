@@ -91,3 +91,19 @@ lib # LIB:<*- libName>;
 lib ? w:<* libName>;
 
 ```
+
+
+## File
+Variable cant be changed.
+OnChange: value is absolute Path of opened File
+```
+file # FILE:<*- path>; // <path> is absolute or relative path to current working dir. if not set uses unnamed_file.txt in cwd.
+file ? w:<* path>; // <path> is absolute or relative path to current working dir.
+
+file ? cSET:<* content>; // cSET replaces all the content of the opened file with <content>
+file ? cFLUSH:; // cleares the content of the FILE
+
+file ? gRENAME:<* newName>; // renames the current file to <newName>
+file ? gDEL:; // deletes the current FILE
+
+```

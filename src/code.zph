@@ -1,8 +1,9 @@
-hh # PT:HIHI;
+file # FILE:./src/file.txt;
 
-hh ? w:ooo; ~ wasdwasdwasd
+content # PT:;
 
-~ wasdwasd
+file ? w:./src/file2.txt;
+file ? cSET:HOMEOMEOME;
 
-
-hh ? push:;
+content ? w:'file';
+content ? push:;

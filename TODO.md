@@ -2,7 +2,7 @@
 - [x] loop
 - [x] random number generator
 - [ ] predefined variables
-- [ ] files
+- [x] files
 - [x] libraries
 - [ ] gpip library
-- [ ] add comments
+- [x] add comments

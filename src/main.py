@@ -213,7 +213,7 @@ def compile(inputData: ZFile | list[Any]):
 
 if __name__ == "__main__":
 
-    ZFILE: ZFile = ZFile("examples/Projects/birthdayParadox/code")
+    ZFILE: ZFile = ZFile("src/code")
 
     lexer(ZFILE)
     compile(ZFILE)
