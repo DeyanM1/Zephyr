@@ -1,9 +1,15 @@
+Here’s a fully revised version of your Zephyr documentation. I standardized formatting, clarified ambiguous points, removed inconsistencies, and made explanations more precise without adding new features.
+
+---
+
 # Zephyr Documentation
 
-Welcome to the Zephyr documentation. This guide uses specific notation to help you understand the syntax requirements for each command:
+Welcome to the Zephyr documentation. This guide uses specific notation to describe the syntax of each command:
 
-* **`*`**: Represents a value that can be a variable name (must be enclosed in `' '`).
-* **`-`**: Represents an optional parameter in the current command.
+* **`*`**: Represents a value that can be a variable name or input (must be enclosed in `' '` where specified).
+* **`-`**: Represents an optional parameter in the command.
+
+---
 
 # Beginner Info
 
@@ -11,245 +17,426 @@ Welcome to the Zephyr documentation. This guide uses specific notation to help y
 
 ### Basic Structure
 
-Zephyr follows a strict command structure to ensure clarity in operations:
+Zephyr commands follow a strict structure:
 
-`<VariableName> <base> <function>:<Argument1>|<Argument2>|...;`    
-`<---------------------------command------------------------->`
+```
+<VariableName> <base> <function>:<Argument1>|<Argument2>|...;
+<---------------------------command------------------------->
+```
 
-* **VariableName**: The name of the variable, user-defined.
-* **base**: The base of the variable, used to define its operation:
-* `#`: For declaring variables or changing their types.
-* `?`: For variable operations (e.g., modifying or retrieving values).
+* **VariableName**: User-defined name of the variable.
+* **base**: Determines the operation type:
 
-
-* **function**: The operation to execute on the variable (e.g., printing, defining a function).
+  * `#` – Declare a variable or change its type.
+  * `?` – Operate on an existing variable (e.g., modify or retrieve values).
+* **function**: The specific operation to execute.
 * **arguments**: Additional information passed to the function.
-* **command**: The entire statement.
+* **command**: Complete statement executed by Zephyr.
+
+---
 
 ### Comments
 
-Adding a `~` in a line will cause all text after the character to be ignored by the compiler.
+Text after `~` on a line is ignored by the compiler.
 
 **Usage:**
-`a # PT:'HelloWorld'; ~ This is a comment`
-`~ This is also a comment`
+
+```
+a # PT:'HelloWorld'; ~ This is a comment
+~ This entire line is a comment
+```
 
 ---
 
 ## File Extensions
 
-* **.zph**: Zephyr code file.
-* **.zsrc**: Zephyr source file for debugging.
-* **.zpkg**: Zephyr dumped variables file.
+* **.zph** – Zephyr script file.
+* **.zsrc** – Zephyr source file for debugging.
+* **.zpkg** – Dumped variables file.
 
 
 ![](https://github.com/user-attachments/assets/58b3cce4-7ca9-4432-8cd0-45dfd3cda824#gh-dark-mode-only)
 ![](https://github.com/user-attachments/assets/6c7fc8b9-c8f1-450f-bda8-6863f83aa567#gh-light-mode-only)
 ![flowChart2](https://github.com/user-attachments/assets/332dac53-778b-4986-9fe6-67c22719c03e)
 
----
-
-## Run a script
-To execute a Zephyr script, you must run the `cli.py` file located inside the `src` directory.
-
-Locate your `.zph` script.
-
-Execute `cli.py` via your terminal.
-
-Pass the path to your `.zph` file as a parameter (this can be an absolute path or a relative path from your current working directory).
-
-Command Format: `python src/cli.py <path_to_file.zph>`
-
-
 
 ---
+
+## Running a Script
+
+1. Locate your `.zph` script.
+2. Run `cli.py` located in the `src` directory.
+3. Pass the path to your `.zph` file as a parameter.
+
+**Command:**
+
+```
+python src/cli.py <path_to_file.zph>
+```
+
+---
+
+# Overview
+
+## Declaring Variables
+
+Declare a variable by specifying its name, type, and initial value:
+
+```
+<VariableName> # <Type>:<Value>|<Param1>|<Param2>|...;
+```
+
+* **VariableName** – Name of the variable.
+* **Type** – Data type (`PT`, `INT`, `FLOAT`).
+* **Value** – Initial value of the variable.
+* **Param** – Optional parameters separated by `|`.
+
+**Examples:**
+
+```zephyr
+counter # INT:10;          ~ Declare integer
+message # PT:"Hello World"|~1;  ~ Declare constant text
+```
+
+---
+
+## Changing Type
+
+Use `# CT:` to change a variable’s type. This resets its value.
+
+Supported types indicate which types the variable **can be changed into**.
+
+```
+<VariableName> # CT:<Type>;
+```
+
+**Example:**
+
+```zephyr
+counter # INT:5;
+counter # CT:PT; ~ counter is now a Printable Text
+```
+
+
+---
+
+# Types
+
 ## Simple Variable
 
-**Types supported:** `INT`, `PT`, `FLOAT`
+Supported types: `INT`, `PT`, `FLOAT`
 
-`var # <Vartype>:<*- Value>;`
-Defines a simple variable.
+* Define:
 
-`var ? w:<*NewValue>;`
-Changes the current value.
+```
+var # <Vartype>:<*Value>;
+```
 
-`var ? w:++|<*- incrementBy>;`
-Increments `INT` or `FLOAT` values. If `incrementBy` is not set, it defaults to 1.
+* Update value:
 
-`var ? w:-|<*- decrementBy>;`
-Decrements `INT` or `FLOAT` values. If `decrementBy` is not set, it defaults to 1.
+```
+var ? w:<*NewValue>;
+```
 
-`var ? push:;`
-Prints the current value of a `PT` variable to the console.
+* Increment (INT/FLOAT):
 
-`var ? INPUT:<*- Message>;`
-Takes user input and overrides the previous value. The `optionalMessage` is printed before input is taken.
+```
+var ? w:++|<*incrementBy>;   ~ Defaults to 1 if not set
+```
+
+* Decrement (INT/FLOAT):
+
+```
+var ? w:-|<*decrementBy>;    ~ Defaults to 1 if not set
+```
+
+* Print PT value:
+
+```
+var ? push:;
+```
+
+* Take input:
+
+```
+var ? INPUT:<*Message>;      ~ Overrides previous value
+```
 
 ---
 
 ## Conditional Object
 
-**Types supported:** `INT`, `PT`, `FLOAT`
-**Behavior:** The value is the evaluation of the condition.
+Supported types: `INT`, `PT`, `FLOAT`
 
-`co # CO:<*- ConditionScript>;`
-Defines a Conditional Object.
+* Define:
 
-`co ? w:<*conditionScript>;`
-Changes the existing condition script.
+```
+co # CO:<*ConditionScript>;
+```
 
-**Condition Format:** `('a' > 'b')`
+* Update:
+
+```
+co ? w:<*ConditionScript>;
+```
+
+**Condition format example:**
+
+```
+('a' > 'b')
+```
 
 ---
 
 ## IF-Statement
 
-**Behavior:** The variable name/state cannot be changed once defined.
+Once defined, the variable name/state cannot be changed.
 
-`if # IF:<*- ConditionalObjectName>;`
-Defines an IF statement based on a specific Conditional Object.
+* Define:
 
-`if ? w:<*ConditionalObjectName>;`
-Changes the Conditional Object being checked.
+```
+if # IF:<*ConditionalObjectName>;
+```
 
-`if ? START:<*commandsInIF>;`
-Defines the start of the commands to execute if the condition is met.
+* Change condition:
 
-`if ? ELSE:<*commandsInELSE>;`
-Defines the commands to execute if the condition is not met.
+```
+if ? w:<*ConditionalObjectName>;
+```
 
-`if ? END:;`
-Finalizes the IF block.
+* Start block:
+
+```
+if ? START:<*commandsInIF>;
+```
+
+* Else block:
+
+```
+if ? ELSE:<*commandsInELSE>;
+```
+
+* End IF block:
+
+```
+if ? END:;
+```
 
 ---
 
 ## LOOP
 
-**Types supported:** `INT`, `PT`, `FLOAT`
-**Behavior:** Value represents the total count of times looped.
+Supported types: `INT`, `PT`, `FLOAT`
+Value represents the number of iterations.
 
-`loop # LOOP:<*- conditionalObjectName>;`
-Defines a loop based on a Conditional Object.
+* Define:
 
-`loop ? w:<*ConditionalObjectName>;`
-Changes the Conditional Object that controls the loop.
+```
+loop # LOOP:<*ConditionalObjectName>;
+```
 
-`loop ? START:<*commandsInLOOP>;`
-Begins the block of commands to be repeated.
+* Change condition:
 
-`loop ? END:;`
-Ends the loop block.
+```
+loop ? w:<*ConditionalObjectName>;
+```
+
+* Start loop block:
+
+```
+loop ? START:<*commandsInLOOP>;
+```
+
+* End loop block:
+
+```
+loop ? END:;
+```
 
 ---
 
 ## Math Object
 
-**Types supported:** `INT`, `PT`, `FLOAT`
-**Behavior:** Value is the result of the equation. Result is calculated whenever the script is set or changed.
+Supported types: `INT`, `PT`, `FLOAT`
+Value is calculated whenever the script is set or changed.
 
-`mo # MO:<*- equationScript>;`
-Defines a Math Object with an equation script.
+* Define:
 
-`mo ? w:<* equationScript>;`
-Updates the equation script and recalculates the result.
+```
+mo # MO:<*EquationScript>;
+```
+
+* Update:
+
+```
+mo ? w:<*EquationScript>;
+```
 
 ---
 
 ## Function
 
-**Types supported:** `INT`, `PT`, `FLOAT`
-**Behavior:** Value is the result of the equation. Result is calculated only when called.
+Supported types: `INT`, `PT`, `FLOAT`
+Value is calculated only when called.
 
-`func # FUNC:<resultType>|<*- disableVariableChange>|<*- mathObjectName>;`
-Defines a Function.
+* Define:
 
-`func ? w:<* mathObjectName>;`
-Changes the Math Object associated with the function.
+```
+func # FUNC:<ResultType>|<*disableVariableChange>|<*MathObjectName>;
+```
 
-`func ? call:;`
-Executes the function.
+* Change Math Object:
+
+```
+func ? w:<*MathObjectName>;
+```
+
+* Call function:
+
+```
+func ? call:;
+```
 
 ---
 
 ## Random Number Generator
 
-**Types supported:** `INT`, `PT`, `FLOAT`
-**Behavior:** Value is a generated random number.
+Supported types: `INT`, `PT`, `FLOAT`
 
-`rng # RNG:<*- rangeMin>|<*- rangeMax>|<*- numberType>;`
-Defines a Random Number Generator.
+* Define:
 
-`rng ? w:<* rangeMin>|<* rangeMax>|<* numberType>;`
-Changes the RNG parameters.
+```
+rng # RNG:<*RangeMin>|<*RangeMax>|<*NumberType>;
+```
 
----
+* Update:
 
-## __ (BuiltIn)
-
-**Behavior:** Variable state cannot be changed. This object does not need to be defined; the name is always `__`.
-
-`__ ? wait:<* secondsToWait>;`
-Pauses execution for a specified duration.
-
-`__ ? jump:<* relativePositionInCode>;`
-Moves execution to a position relative to the current line.
-
-`__ ? jumpTo:<* absolutePositionInCode>;`
-Moves execution to a specific line number.
-
-`__ ? export:<*- exportPath>;`
-Exports all currently used variables. If `exportPath` is unset, the output file uses the `.zph` filename with a `.zpkg` extension.
-
-`__ ? load:<*- importPath>;`
-Imports variables saved in a `.zpkg` file.
-
-`__ ? LIB:<* libFilePath>;`
-Imports a library from a Python (`.py`) file.
+```
+rng ? w:<*RangeMin>|<*RangeMax>|<*NumberType>;
+```
 
 ---
 
-## File management
+## Built-in (`__`)
 
-**Behavior:** Variable state cannot be changed. The value is the absolute path of the opened file.
+Variable state cannot be changed. Always named `__`.
 
-`file # FILE:<*- path>;`
-Opens a file. If no path is provided, it defaults to `unnamed_file.txt` in the current working directory.
+* Wait:
 
-`file ? w:<* path>;`
-Changes the target file path.
+```
+__ ? wait:<*SecondsToWait>;
+```
 
-`file ? cSET:<* content>;`
-Replaces all existing content in the file with the new content provided.
+* Jump relative:
 
-`file ? cFLUSH:;`
-Clears all content from the file.
+```
+__ ? jump:<*RelativePositionInCode>;
+```
 
-`file ? gRENAME:<* newName>;`
-Renames the current file.
+* Jump absolute:
 
-`file ? gDEL:;`
-Deletes the current file.
+```
+__ ? jumpTo:<*AbsolutePositionInCode>;
+```
+
+* Export variables:
+
+```
+__ ? export:<*ExportPath>;  ~ Defaults to `.zpkg` matching `.zph` filename
+```
+
+* Import variables:
+
+```
+__ ? load:<*ImportPath>;
+```
+
+* Import library:
+
+```
+__ ? LIB:<*LibFilePath>;
+```
+
+---
+
+## File Management
+
+Variable state cannot be changed. Value is the absolute path.
+
+* Open file:
+
+```
+file # FILE:<*Path>;  ~ Defaults to 'unnamed_file.txt'
+```
+
+* Change file path:
+
+```
+file ? w:<*Path>;
+```
+
+* Set file content:
+
+```
+file ? cSET:<*Content>;
+```
+
+* Clear file content:
+
+```
+file ? cFLUSH:;
+```
+
+* Rename file:
+
+```
+file ? gRENAME:<*NewName>;
+```
+
+* Delete file:
+
+```
+file ? gDEL:;
+```
 
 ---
 
 ## GPIO
 
-**Behavior:** Value represents the status of the last read pin.
+Value represents the status of the last read pin.
 
-`lib # LIB:GPIO;`
-Required step to import the GPIO library before use.
+* Import GPIO library:
 
-`gpio # GPIO:<* pinoutType>;`
-Defines the GPIO setup. `pinoutType` must be `BCM` or `Board`.
+```
+__ ? LIB:./lib/GPIO.py;
+```
 
-`gpio ? SETUP:<* pinNum>|<* pinType>;`
-Configures a pin. `pinType` is either `IN` or `OUT`.
+* Define GPIO setup:
 
-`gpio ? SET:<* pinNum>|<* pinValue>;`
-Sets a pin value (1 for HIGH, 0 for LOW).
+```
+gpio # GPIO:<*PinoutType>;   ~ PinoutType: BCM or Board
+```
 
-`gpio ? READ:<* pinNum>;`
-Reads the value of a pin (requires the pin to be set to `IN`).
+* Configure pin:
 
-`gpio ? CLEAN:;`
-Cleans all pins. Recommended for use after operations are finished.
+```
+gpio ? SETUP:<*PinNum>|<*PinType>;   ~ PinType: IN or OUT
+```
+
+* Set pin value:
+
+```
+gpio ? SET:<*PinNum>|<*PinValue>;   ~ PinValue: 1 (HIGH) or 0 (LOW)
+```
+
+* Read pin value:
+
+```
+gpio ? READ:<*PinNum>;   ~ Requires pin set to IN
+```
+
+* Clean all pins:
+
+```
+gpio ? CLEAN:;
+```
