@@ -1,9 +1,4 @@
-file # FILE:./src/file.txt;
+content # PT:heoleo;
 
-content # PT:;
 
-file ? w:./src/file2.txt;
-file ? cSET:HOMEOMEOME;
-
-content ? w:'file';
 content ? push:;

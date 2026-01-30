@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import asdict
+from pathlib import Path
 
 from colorama import Fore
 
@@ -92,8 +93,6 @@ def lexer(zfile: ZFile) -> list[ZCommand]:
 
     return ZCommandData
 
-
-
 def compile(inputData: ZFile):
     ## Reform data. Force ZCommandData = list[ZCommand]
     ZCommandData: list[ZCommand]
@@ -123,84 +122,84 @@ def compile(inputData: ZFile):
 
     ## Loop through commands
 
-    
     cmd = ZCommand(-1, "", "", "", [""])
     activeVars: ActiveVars = {}
     activeVars.update({"__": functions.typeRegistry["__"](ZCommand(0, "__", ZBase.define, "", [""]), activeVars)})
     index: ZIndex = 0
-    while index != len(ZCommandData):
-        try:
-            cmd: ZCommand = ZCommandData[index]
+    try:
+        while index != len(ZCommandData):
+            
+                cmd: ZCommand = ZCommandData[index]
 
 
-            match cmd.base:
-                case "#":
-                    match cmd.func:
+                match cmd.base:
+                    case "#":
+                        match cmd.func:
 
-                        case "CT":
-                            activeVars = activeVars[cmd.name].functionRegistry[cmd.func](cmd, activeVars)
-                        
-                        case _:
-                            try:
-                                hasActiveVars = "activeVars" in getRequiredArgs(functions.typeRegistry[cmd.func])
-                                hasIndex = "index" in getRequiredArgs(functions.typeRegistry[cmd.func])
+                            case "CT":
+                                activeVars = activeVars[cmd.name].functionRegistry[cmd.func](cmd, activeVars)
+                            
+                            case _:
+                                try:
+                                    hasActiveVars = "activeVars" in getRequiredArgs(functions.typeRegistry[cmd.func])
+                                    hasIndex = "index" in getRequiredArgs(functions.typeRegistry[cmd.func])
+                                    
+                                    if hasActiveVars and not hasIndex:
+                                        var = functions.typeRegistry[cmd.func](cmd, activeVars)
+                                    elif hasActiveVars and hasIndex:
+                                        var = functions.typeRegistry[cmd.func](cmd, activeVars, index)
+                                    else:
+                                        var = functions.typeRegistry[cmd.func](cmd)
+
+                                    activeVars.update({cmd.name: var})
+                                except KeyError:
+                                    raise ZError(103)
                                 
+                    
+                    
+                
+                    case "?":
+                        if activeVars and cmd.name in activeVars or cmd.name == "__":
+                            var = activeVars.get(cmd.name)
+                            if var and hasattr(var, "functionRegistry"):
+                                if cmd.func not in var.functionRegistry:
+                                    raise ZError(103)
+
+                                hasActiveVars = "activeVars" in getRequiredArgs(var.functionRegistry[cmd.func])
+                                hasIndex = "index" in getRequiredArgs(var.functionRegistry[cmd.func])
+
+                                newActiveVars = None
+                                newIndex = None
+
+
+                
                                 if hasActiveVars and not hasIndex:
-                                    var = functions.typeRegistry[cmd.func](cmd, activeVars)
+                                    newActiveVars = var.functionRegistry[cmd.func](cmd, activeVars)
+                                elif hasIndex and not hasActiveVars:
+                                    newIndex = var.functionRegistry[cmd.func](cmd, index)
                                 elif hasActiveVars and hasIndex:
-                                    var = functions.typeRegistry[cmd.func](cmd, activeVars, index)
+                                    newActiveVars, newIndex = var.functionRegistry[cmd.func](cmd, activeVars, index)
                                 else:
-                                    var = functions.typeRegistry[cmd.func](cmd)
+                                    var.functionRegistry[cmd.func](cmd)
+                                
+                                if newActiveVars is not None:
+                                    activeVars = newActiveVars
+                                if newIndex is not None:
+                                    index = newIndex
+                                
 
-                                activeVars.update({cmd.name: var})
-                            except KeyError:
-                                raise ZError(103)
-                            
+                        else:
+                            # Variable not found or declared
+                            raise ZError(102)
+
+
+                    case _:
+                        # Unknown Base
+                        raise ZError(101)
                 
-                
-            
-                case "?":
-                    if activeVars and cmd.name in activeVars or cmd.name == "__":
-                        var = activeVars.get(cmd.name)
-                        if var and hasattr(var, "functionRegistry"):
-                            if cmd.func not in var.functionRegistry:
-                                raise ZError(103)
-
-                            hasActiveVars = "activeVars" in getRequiredArgs(var.functionRegistry[cmd.func])
-                            hasIndex = "index" in getRequiredArgs(var.functionRegistry[cmd.func])
-
-                            newActiveVars = None
-                            newIndex = None
-
-
-            
-                            if hasActiveVars and not hasIndex:
-                                newActiveVars = var.functionRegistry[cmd.func](cmd, activeVars)
-                            elif hasIndex and not hasActiveVars:
-                                newIndex = var.functionRegistry[cmd.func](cmd, index)
-                            elif hasActiveVars and hasIndex:
-                                newActiveVars, newIndex = var.functionRegistry[cmd.func](cmd, activeVars, index)
-                            else:
-                                var.functionRegistry[cmd.func](cmd)
-                            
-                            if newActiveVars is not None:
-                                activeVars = newActiveVars
-                            if newIndex is not None:
-                                index = newIndex
-                            
-
-                    else:
-                        # Variable not found or declared
-                        raise ZError(102)
-
-
-                case _:
-                    # Unknown Base
-                    raise ZError(101)
-            
-            index += 1
-        except ZError as e:
-            e.process(cmd, inputData)
+                index += 1
+    except ZError as e:
+        e.process(cmd, inputData)
 
 
     
@@ -210,7 +209,7 @@ def compile(inputData: ZFile):
 
 
 if __name__ == "__main__":
-    ZFILE: ZFile = ZFile("src/code")
+    ZFILE: ZFile = ZFile(Path("src/code.zph"))
 
     lexer(ZFILE)
     compile(ZFILE)

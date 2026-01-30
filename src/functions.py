@@ -7,7 +7,7 @@ import time
 from dataclasses import dataclass, field
 from pathlib import Path
 from types import ModuleType
-from typing import Any, Callable, Dict, Optional, TypeAlias
+from typing import Any, Callable, Dict, TypeAlias
 
 from colorama import Back
 
@@ -60,30 +60,33 @@ class ZError(Exception):
 @dataclass
 class ZFile:
     """
-    A class representing a Zephyr file with paths for different file types.
-
-    Attributes:
-        rawName (str): The base name of the file without extensions.
-        basePath (Path | None): The base directory where the file resides. Defaults to the current working directory.
-        zphPath (Path): The path to the .zph file.
-        zsrcPath (Path): The path to the .zsrc file.
-        zpkgPath (Path): The path to the .zpkg file.
+    Represents a Zephyr file with automatically computed paths for
+    .zph, .zsrc, and .zpkg files. Accepts relative or absolute paths
+    with or without the .zph extension.
     """
     
-    rawName: str = ""
-    basePath: Optional[Path] = None
-
-    zphPath: Path = Path()
-    zsrcPath: Path = Path()
-    zpkgPath: Path = Path()
-
+    path: Path = field(default_factory=Path)
+    
+    zphPath: Path = field(init=False)
+    zsrcPath: Path = field(init=False)
+    zpkgPath: Path = field(init=False)
+    rawName: str = field(init=False)
+    
     def __post_init__(self):
-        self.basePath = self.basePath or Path.cwd()
-        self.zphPath = self.basePath / f"{self.rawName}.zph"
-        self.zsrcPath = self.basePath / f"{self.rawName}.zsrc"
-        self.zpkgPath = self.basePath / f"{self.rawName}.zpkg"
+        self.path = Path(self.path).expanduser().resolve() # Convert to absolute path
 
-    @classmethod
+        if self.path.suffix == ".zph":
+            self.zphPath = self.path
+        #else:
+        #    self.zphPath = self.path.with_suffix(".zph")
+
+
+        # create other paths from the base path
+        self.rawName = self.zphPath.stem
+        self.zsrcPath = self.zphPath.with_suffix(".zsrc")
+        self.zpkgPath = self.zphPath.with_suffix(".zpkg")
+
+    """@classmethod
     def from_json(cls, data: Dict[str, Any]) -> "ZFile":
         raw: str = data.get("rawName", "")
         base: Optional[str] = data.get("basePath")
@@ -98,7 +101,7 @@ class ZFile:
         if "zpkgPath" in data:
             obj.zpkgPath = Path(data["zpkgPath"])
 
-        return obj
+        return obj"""
 
 @dataclass
 class ZBase:

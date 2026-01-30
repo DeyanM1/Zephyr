@@ -1,75 +1,15 @@
 {
     "1": {
         "lineNum": 1,
-        "zfile": {
-            "rawName": "src/code",
-            "basePath": "/home/deyan/dev/Zephyr"
-        },
-        "name": "file",
-        "base": "#",
-        "func": "FILE",
-        "args": [
-            "./src/file.txt"
-        ]
-    },
-    "3": {
-        "lineNum": 3,
-        "zfile": {
-            "rawName": "src/code",
-            "basePath": "/home/deyan/dev/Zephyr"
-        },
         "name": "content",
         "base": "#",
         "func": "PT",
         "args": [
-            ""
+            "heoleo"
         ]
     },
-    "5": {
-        "lineNum": 5,
-        "zfile": {
-            "rawName": "src/code",
-            "basePath": "/home/deyan/dev/Zephyr"
-        },
-        "name": "file",
-        "base": "?",
-        "func": "w",
-        "args": [
-            "./src/file2.txt"
-        ]
-    },
-    "6": {
-        "lineNum": 6,
-        "zfile": {
-            "rawName": "src/code",
-            "basePath": "/home/deyan/dev/Zephyr"
-        },
-        "name": "file",
-        "base": "?",
-        "func": "cSET",
-        "args": [
-            "HOMEOMEOME"
-        ]
-    },
-    "8": {
-        "lineNum": 8,
-        "zfile": {
-            "rawName": "src/code",
-            "basePath": "/home/deyan/dev/Zephyr"
-        },
-        "name": "content",
-        "base": "?",
-        "func": "w",
-        "args": [
-            "'file'"
-        ]
-    },
-    "9": {
-        "lineNum": 9,
-        "zfile": {
-            "rawName": "src/code",
-            "basePath": "/home/deyan/dev/Zephyr"
-        },
+    "4": {
+        "lineNum": 4,
         "name": "content",
         "base": "?",
         "func": "push",
