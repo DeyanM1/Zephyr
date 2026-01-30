@@ -1,0 +1,51 @@
+site_name: Zephyr documentation
+site_url: https://deyan.is-a.dev/Zephyr
+
+
+theme:
+  name: material
+  font:
+    text: Roboto
+    code: JetBrains Mono
+  logo: assets/logo.svg
+  favicon: assets/favicon.ico
+  features:
+    - navigation.footer
+  palette:
+  # Palette toggle for light mode
+    - scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+      primary: pink
+      accent: deep purple
+
+    # Palette toggle for dark mode
+    - scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+      primary: purple
+      accent: pink
+
+markdown_extensions:
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+
+  - admonition
+  - pymdownx.details
+
+plugins:
+  - search
+  - awesome-pages
