@@ -8,14 +8,14 @@ theme:
     text: Roboto
     code: JetBrains Mono
   logo: assets/logo.svg
-  favicon: assets/favicon.ico
+  favicon: img/favicon.ico
   features:
     - navigation.footer
   palette:
   # Palette toggle for light mode
     - scheme: default
       toggle:
-        icon: material/brightness-7
+        icon: material/brightness-5
         name: Switch to dark mode
       primary: pink
       accent: deep purple
@@ -47,5 +47,4 @@ markdown_extensions:
   - pymdownx.details
 
 plugins:
-  - search
   - awesome-pages
