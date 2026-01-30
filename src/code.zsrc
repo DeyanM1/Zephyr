@@ -1,8 +1,8 @@
 {
     "1": {
         "lineNum": 1,
-        "name": "lib",
-        "base": "#",
+        "name": "__",
+        "base": "?",
         "func": "LIB",
         "args": [
             "GPIO"

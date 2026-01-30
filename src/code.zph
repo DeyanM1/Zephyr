@@ -1,4 +1,4 @@
-lib # LIB:GPIO;
+__ ? LIB:GPIO;
 
 gpio # gpio:BCM;
 gpio ? READ:1;

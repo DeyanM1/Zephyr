@@ -849,33 +849,6 @@ class LOOP(Variable):
     def onChange(self) -> str:
         return str(self.countLooped)
 
-@register()
-class LIB(Variable):
-    def __init__(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
-        super().__init__(cmd, activeVars)
-
-        self.libraryName: ZValue = ZValue()
-        self.module: ModuleType
-
-        if len(cmd.args) > 0 and cmd.args[0] != "":
-            self.w(cmd, activeVars)
-
-    
-    def w(self, cmd: ZCommand, activeVars: ActiveVars):
-        if len(cmd.args) > 0 and cmd.args[0] != "":
-            self.libraryName.setValue(cmd.args[0], "PT", activeVars)
-        else:
-            raise ZError(114)
-        
-        self.importLib()
-        
-    def importLib(self):
-        self.module = importlib.import_module(f"lib.{self.libraryName.value}")
-        
-        newTypes = self.module.load()   
-        
-        for cls in newTypes:
-            register()(cls)
 
 @register()
 class FILE(Variable):
@@ -965,7 +938,7 @@ class BUILD_IN(Variable):
 
         self.zfile: ZFile = zfile
 
-        self.registerFunc({self.wait: "", self.jump: "", self.jumpTo: "", self.export: "", self.load: ""})
+        self.registerFunc({self.wait: "", self.jump: "", self.jumpTo: "", self.export: "", self.load: "", self.LIB: ""})
 
     
     def wait(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
@@ -1001,6 +974,15 @@ class BUILD_IN(Variable):
 
         raise ZError(114)
  
+
+    def LIB(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        if len(cmd.args[0]) > 0 and cmd.args[0] != "":
+            self.module = importlib.import_module(f"lib.{cmd.args[0]}")
+            
+            newTypes = self.module.load()   
+            
+            for cls in newTypes:
+                register()(cls)
 
 
     def export(self, cmd: ZCommand, activeVars: ActiveVars):
