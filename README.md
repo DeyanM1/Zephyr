@@ -13,7 +13,7 @@ Welcome to the Zephyr documentation. This guide uses specific notation to help y
 
 Zephyr follows a strict command structure to ensure clarity in operations:
 
-`<VariableName> <base> <function>:<Argument1>|<Argument2>|...;`
+`<VariableName> <base> <function>:<Argument1>|<Argument2>|...;`    
 `<---------------------------command------------------------->`
 
 * **VariableName**: The name of the variable, user-defined.
