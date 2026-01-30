@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable, Dict, Optional, TypeAlias
+from typing import Any, Callable, TypeAlias
 
 from colorama import Back
 
@@ -33,8 +33,8 @@ class ZError(Exception):
     def __init__(self, code: int) -> None:
         self.code = code
     
-    def process(self, cmd: ZCommand) -> None:
-        path: Path = cmd.zfile.zphPath
+    def process(self, cmd: ZCommand, zfile: ZFile) -> None:
+        path: Path = zfile.zphPath
         context: str = path.read_text().splitlines()[cmd.lineNum - 1]
 
         # errorCode: (message, offset_function)
@@ -52,8 +52,9 @@ class ZError(Exception):
             111: lambda: ("[111]  Error in Condition. ", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
             112: lambda: ("[112] Given variable isnt correct type!", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
             113: lambda: ("[113] Given variable isnt defined!", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
-            114: lambda: ("[114] Missing arguments!", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
-            115: lambda: ("[115] Error at jump function! Index out of range!", len("f"), SyntaxError)
+            114: lambda: ("[114] Error in arguments!", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
+            115: lambda: ("[115] Error at jump function! Index out of range!", len("f"), SyntaxError),
+            116: lambda: ("[116] zpkg file cannot be found!", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError)
         }
 
         if self.code not in errors:
@@ -67,34 +68,36 @@ class ZError(Exception):
         )
 
 
-
 @dataclass
 class ZFile:
     """
-    A class representing a Zephyr file with paths for different file types.
-
-    Attributes:
-        rawName (str): The base name of the file without extensions.
-        basePath (Path | None): The base directory where the file resides. Defaults to the current working directory.
-        zphPath (Path): The path to the .zph file.
-        zsrcPath (Path): The path to the .zsrc file.
-        zpkgPath (Path): The path to the .zpkg file.
+    Represents a Zephyr file with automatically computed paths for
+    .zph, .zsrc, and .zpkg files. Accepts relative or absolute paths
+    with or without the .zph extension.
     """
     
-    rawName: str = ""
-    basePath: Optional[Path] = None
-
-    zphPath: Path = Path()
-    zsrcPath: Path = Path()
-    zpkgPath: Path = Path()
-
+    path: Path = field(default_factory=Path)
+    
+    zphPath: Path = field(init=False)
+    zsrcPath: Path = field(init=False)
+    zpkgPath: Path = field(init=False)
+    rawName: str = field(init=False)
+    
     def __post_init__(self):
-        self.basePath = self.basePath or Path.cwd()
-        self.zphPath = self.basePath / f"{self.rawName}.zph"
-        self.zsrcPath = self.basePath / f"{self.rawName}.zsrc"
-        self.zpkgPath = self.basePath / f"{self.rawName}.zpkg"
+        self.path = Path(self.path).expanduser().resolve() # Convert to absolute path
 
-    @classmethod
+        if self.path.suffix == ".zph":
+            self.zphPath = self.path
+        else:
+            self.zphPath = self.path.with_suffix(".zph")
+
+
+        # create other paths from the base path
+        self.rawName = self.zphPath.stem
+        self.zsrcPath = self.zphPath.with_suffix(".zsrc")
+        self.zpkgPath = self.zphPath.with_suffix(".zpkg")
+
+    """@classmethod
     def from_json(cls, data: Dict[str, Any]) -> "ZFile":
         raw: str = data.get("rawName", "")
         base: Optional[str] = data.get("basePath")
@@ -109,7 +112,7 @@ class ZFile:
         if "zpkgPath" in data:
             obj.zpkgPath = Path(data["zpkgPath"])
 
-        return obj
+        return obj"""
 
 @dataclass
 class ZBase:
@@ -129,7 +132,6 @@ class ZCommand:
         args (list[str]): The arguments provided to the command.
     """
     lineNum: int
-    zfile: ZFile
     name: str
     base: str
     func: str
@@ -201,7 +203,7 @@ class ZValue:
         return s.isdigit() or (s.startswith("-") and s[1:].isdigit())
 
     def setValue(self, newValue: str, targetType: str, activeVars: ActiveVars) -> None:
-        compiledValue = compileValue(newValue, activeVars)
+        compiledValue = self.compileValue(newValue, activeVars)
         try:
             if not self.supportedTypes(compiledValue)[targetType]:
                 raise ZError(105)
@@ -209,6 +211,23 @@ class ZValue:
             pass
             
         self.value = compiledValue
+
+    def compileValue(self, rawValue: str, activeVars: ActiveVars) -> str:
+        # This function ignores the type of the variable!
+        # This function returns the raw Value
+        returnValue: str = rawValue
+
+        if rawValue.startswith("'"):
+            varName = rawValue.replace("'", "")
+
+            var = activeVars.get(varName)
+            if not var:
+                raise ZError(113)
+            
+            returnValue = var.onChange()
+        
+        return returnValue
+
 
     def getValueIfVarType(self, targetType: str) -> str|bool:
         # Return value if current Value is supported by target Type
@@ -254,3 +273,4 @@ class ZValue:
                 self.setValue(str(newValue), currentType, activeVars)
             else:
                 raise ZError(110)
+

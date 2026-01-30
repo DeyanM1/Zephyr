@@ -6,4 +6,8 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "colorama>=0.4.6",
+    "fake-rpi",
 ]
+
+[tool.uv.sources]
+fake-rpi = { git = "https://github.com/sn4k3/FakeRPi" }

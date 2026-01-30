@@ -870,9 +870,9 @@ class LIB(Variable):
         self.importLib()
         
     def importLib(self):
-        self.module = importlib.import_module("lib.math")
+        self.module = importlib.import_module(f"lib.{self.libraryName.value}")
         
-        newTypes = self.module.load()
+        newTypes = self.module.load()   
         
         for cls in newTypes:
             register()(cls)

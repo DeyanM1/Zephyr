@@ -1,8 +1,8 @@
 - [x] Usable buildin jump function
 - [x] loop
 - [x] random number generator
-- [ ] predefined variables
+- [x] predefined variables
 - [x] files
 - [x] libraries
-- [ ] gpip library
+- [x] gpip library
 - [x] add comments

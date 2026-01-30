@@ -1,16 +1,43 @@
 {
     "1": {
         "lineNum": 1,
-        "name": "__",
-        "base": "?",
-        "func": "load",
+        "name": "lib",
+        "base": "#",
+        "func": "LIB",
         "args": [
-            ""
+            "GPIO"
         ]
     },
     "3": {
         "lineNum": 3,
-        "name": "content",
+        "name": "gpio",
+        "base": "#",
+        "func": "gpio",
+        "args": [
+            "BCM"
+        ]
+    },
+    "4": {
+        "lineNum": 4,
+        "name": "gpio",
+        "base": "?",
+        "func": "READ",
+        "args": [
+            "1"
+        ]
+    },
+    "6": {
+        "lineNum": 6,
+        "name": "t",
+        "base": "#",
+        "func": "PT",
+        "args": [
+            "'gpio'"
+        ]
+    },
+    "7": {
+        "lineNum": 7,
+        "name": "t",
         "base": "?",
         "func": "push",
         "args": [

@@ -81,6 +81,9 @@ Info: doesnt have to be defined. name is always __
 __ ? wait:<* secondsToWait>;
 __ ? jump:<* relativePositionInCode>;
 __ ? jumpTo:<* absolutePositionInCode>;
+
+__ ? export:<*- exportPath>; // exports all currently used Variables. <exportPath> can be relative to cwd or absolute. if unset output file is the name of the .zph file with .zpkg ending
+__ ? load:<*- importPath>; // imports all variables saved in .zpkg                                                                                                . <importPath> is the same as exportPath
 ```
 
 
@@ -89,7 +92,6 @@ Variable cant be changed.
 ```
 lib # LIB:<*- libName>;
 lib ? w:<* libName>;
-
 ```
 
 
@@ -106,4 +108,17 @@ file ? cFLUSH:; // cleares the content of the FILE
 file ? gRENAME:<* newName>; // renames the current file to <newName>
 file ? gDEL:; // deletes the current FILE
 
+```
+
+
+## GPIO
+OnChange: value is status of last read pin
+```
+lib # LIB:GPIO; // Import GPIO
+
+gpio # GPIO:<* pinoutType>; // define the GPIO library. <pinoutType> is BCM or Board
+gpio ? SETUP:<* pinNum>|<* pinType>; // Set pin to input or output. <pinNum> is integer id of the pin. <pinType> is either IN or OUT
+gpio ? SET:<* pinNum>|<* pinValue>; // Set pin to HIGH or LOW. <pinValue> is integer 1/0.
+gpio ? READ:<* pinNum>; // Read value of pin. only works if pin is set to INPUT
+gpio ? CLEAN:; // cleans all pins. Good practise to cleanup after usage
 ```

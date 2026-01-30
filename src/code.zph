@@ -1,3 +1,7 @@
-__ ? load:;
+lib # LIB:GPIO;
 
-content ? push:;
+gpio # gpio:BCM;
+gpio ? READ:1;
+
+t # PT:'gpio';
+t ? push:; 
