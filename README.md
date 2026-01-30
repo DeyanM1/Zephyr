@@ -84,15 +84,10 @@ __ ? jumpTo:<* absolutePositionInCode>;
 
 __ ? export:<*- exportPath>; // exports all currently used Variables. <exportPath> can be relative to cwd or absolute. if unset output file is the name of the .zph file with .zpkg ending
 __ ? load:<*- importPath>; // imports all variables saved in .zpkg                                                                                                . <importPath> is the same as exportPath
+
+__ ? LIB:<* libFilePath>; // import library. <libFilePath> is the relative or absolute path of the python file with .py extension
 ```
 
-
-## Library
-Variable cant be changed.
-```
-lib # LIB:<*- libName>;
-lib ? w:<* libName>;
-```
 
 
 ## File

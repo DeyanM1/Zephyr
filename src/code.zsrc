@@ -5,7 +5,7 @@
         "base": "?",
         "func": "LIB",
         "args": [
-            "GPIO"
+            "/home/deyan/dev/Zephyr/src/lib/GPIO.py"
         ]
     },
     "3": {

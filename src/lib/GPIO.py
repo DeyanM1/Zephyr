@@ -101,5 +101,5 @@ class gpio:
                 self.functionRegistry[func.__name__] = func
  
 
-def load() -> list[type]:
-    return [gpio]
+def load() -> dict[str, type]:
+    return {"": gpio}

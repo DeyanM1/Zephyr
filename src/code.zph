@@ -1,4 +1,4 @@
-__ ? LIB:GPIO;
+__ ? LIB:/home/deyan/dev/Zephyr/src/lib/GPIO.py;
 
 gpio # gpio:BCM;
 gpio ? READ:1;

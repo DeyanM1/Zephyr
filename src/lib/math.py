@@ -36,5 +36,5 @@ class MoreMath:
                 self.functionRegistry[func.__name__] = func
  
 
-def load() -> list[type]:
-    return [MoreMath]
+def load() -> dict[str, type]:
+    return {"": MoreMath}

@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-import importlib
+import importlib.util
 import inspect
 import pickle
 import random
+import sys
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from types import ModuleType
 from typing import Any, Callable, Dict, TypeAlias
 
 from colorama import Back
@@ -44,7 +44,8 @@ class ZError(Exception):
             113: lambda: ("[113] Given variable isnt defined!", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
             114: lambda: ("[114] Error in arguments!", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
             115: lambda: ("[115] Error at jump function! Index out of range!", len("f"), SyntaxError),
-            116: lambda: ("[116] zpkg file cannot be found!", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError)
+            116: lambda: ("[116] file cannot be found!", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
+            117: lambda: ("[117] Target file isnt a correct type!", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
         }
 
         if self.code not in errors:
@@ -977,12 +978,34 @@ class BUILD_IN(Variable):
 
     def LIB(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         if len(cmd.args[0]) > 0 and cmd.args[0] != "":
-            self.module = importlib.import_module(f"lib.{cmd.args[0]}")
+            path = Path(cmd.args[0])
+
+            if not path.is_absolute():
+                path = Path.cwd() / path
+
+            path = path.resolve()
+
+            if not path.exists():
+                raise ZError(116)
+
+            if path.suffix != ".py":
+                raise ZError(117)
+
+            module_name = path.stem
+
+            spec = importlib.util.spec_from_file_location(module_name, path)
+            if spec is None or spec.loader is None:
+                raise ImportError(f"Failed to create spec for {path}")
+
+            self.module = importlib.util.module_from_spec(spec)
+            sys.modules[module_name] = self.module
+            spec.loader.exec_module(self.module)
+
             
-            newTypes = self.module.load()   
+            newTypes: dict[str, type] = self.module.load()   
             
-            for cls in newTypes:
-                register()(cls)
+            for name, cls in newTypes.items():
+                register(name)(cls)
 
 
     def export(self, cmd: ZCommand, activeVars: ActiveVars):
