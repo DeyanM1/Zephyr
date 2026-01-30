@@ -22,8 +22,8 @@ class ZError(Exception):
     def __init__(self, code: int) -> None:
         self.code = code
     
-    def process(self, cmd: ZCommand) -> None:
-        path: Path = cmd.zfile.zphPath
+    def process(self, cmd: ZCommand, zfile: ZFile) -> None:
+        path: Path = zfile.zphPath
         context: str = path.read_text().splitlines()[cmd.lineNum - 1]
 
         # errorCode: (message, offset_function)
@@ -118,7 +118,6 @@ class ZCommand:
         args (list[str]): The arguments provided to the command.
     """
     lineNum: int
-    zfile: ZFile
     name: str
     base: str
     func: str
@@ -338,7 +337,7 @@ class Variable:
         oldVar: Variable = activeVars[cmd.name]
 
 
-        newVarCmd: ZCommand = ZCommand(cmd.lineNum, cmd.zfile, cmd.name, ZBase.define, targetVarType, [oldVar.onChange()])
+        newVarCmd: ZCommand = ZCommand(cmd.lineNum, cmd.name, ZBase.define, targetVarType, [oldVar.onChange()])
         newVar = typeRegistry[targetVarType](newVarCmd, activeVars)
 
         activeVars.update({newVar.name: newVar})

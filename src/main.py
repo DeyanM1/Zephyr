@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 from dataclasses import asdict
-from typing import Any
 
 from colorama import Fore
 
@@ -55,7 +54,7 @@ def lexer(zfile: ZFile) -> list[ZCommand]:
 
 
     ZCommandData: list[ZCommand] = []
-    cmd = ZCommand(-1, ZFILE, "", "", "", [""])
+    cmd = ZCommand(-1, "", "", "", [""])
     try:
         # Parse each command into ZCommand objects
         ZCommandData: list[ZCommand] = []
@@ -68,10 +67,10 @@ def lexer(zfile: ZFile) -> list[ZCommand]:
                 raise ZError(104)
 
             args = arguments.split("|")
-            ZCommandData.append(ZCommand(line, ZFILE, name, base, func, args))
+            ZCommandData.append(ZCommand(line, name, base, func, args))
         #ZCommandData.append(ZCommand(ZCommandData[-1].lineNum+1, ZFILE, "EOF", "#", "EOF", []))
     except ZError as e:
-        e.process(cmd)
+        e.process(cmd, zfile)
 
 
 
@@ -95,7 +94,7 @@ def lexer(zfile: ZFile) -> list[ZCommand]:
 
 
 
-def compile(inputData: ZFile | list[Any]):
+def compile(inputData: ZFile):
     ## Reform data. Force ZCommandData = list[ZCommand]
     ZCommandData: list[ZCommand]
     match inputData:
@@ -106,7 +105,6 @@ def compile(inputData: ZFile | list[Any]):
             for cmd_dict in data.values():
                 cmd = ZCommand(
                     lineNum=cmd_dict["lineNum"],
-                    zfile=inputData,
                     name=cmd_dict["name"],
                     base=cmd_dict["base"],
                     func=cmd_dict["func"],
@@ -114,9 +112,9 @@ def compile(inputData: ZFile | list[Any]):
                 )
                 ZCommandData.append(cmd)
 
-        case [*commands] if all(isinstance(cmd, ZCommand) for cmd in commands):
+            """case [*commands] if all(isinstance(cmd, ZCommand) for cmd in commands):
             ZCommandData = inputData
-            #print(ZCommandData)
+            #print(ZCommandData)"""
 
         case _:
             raise TypeError("Input must be a ZFile or a list of ZCommand instances")
@@ -126,9 +124,9 @@ def compile(inputData: ZFile | list[Any]):
     ## Loop through commands
 
     
-    cmd = ZCommand(-1, ZFILE, "", "", "", [""])
+    cmd = ZCommand(-1, "", "", "", [""])
     activeVars: ActiveVars = {}
-    activeVars.update({"__": functions.typeRegistry["__"](ZCommand(0, ZFILE, "__", ZBase.define, "", [""]), activeVars)})
+    activeVars.update({"__": functions.typeRegistry["__"](ZCommand(0, "__", ZBase.define, "", [""]), activeVars)})
     index: ZIndex = 0
     while index != len(ZCommandData):
         try:
@@ -202,7 +200,7 @@ def compile(inputData: ZFile | list[Any]):
             
             index += 1
         except ZError as e:
-            e.process(cmd)
+            e.process(cmd, inputData)
 
 
     
@@ -212,7 +210,6 @@ def compile(inputData: ZFile | list[Any]):
 
 
 if __name__ == "__main__":
-
     ZFILE: ZFile = ZFile("src/code")
 
     lexer(ZFILE)
