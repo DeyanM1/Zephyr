@@ -1,15 +1,15 @@
 {
     "1": {
         "lineNum": 1,
-        "name": "content",
-        "base": "#",
-        "func": "PT",
+        "name": "__",
+        "base": "?",
+        "func": "load",
         "args": [
-            "heoleo"
+            ""
         ]
     },
-    "4": {
-        "lineNum": 4,
+    "3": {
+        "lineNum": 3,
         "name": "content",
         "base": "?",
         "func": "push",

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib
 import inspect
+import pickle
 import random
 import time
 from dataclasses import dataclass, field
@@ -42,7 +43,8 @@ class ZError(Exception):
             112: lambda: ("[112] Given variable isnt correct type!", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
             113: lambda: ("[113] Given variable isnt defined!", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
             114: lambda: ("[114] Error in arguments!", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
-            115: lambda: ("[115] Error at jump function! Index out of range!", len("f"), SyntaxError)
+            115: lambda: ("[115] Error at jump function! Index out of range!", len("f"), SyntaxError),
+            116: lambda: ("[116] zpkg file cannot be found!", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError)
         }
 
         if self.code not in errors:
@@ -77,8 +79,8 @@ class ZFile:
 
         if self.path.suffix == ".zph":
             self.zphPath = self.path
-        #else:
-        #    self.zphPath = self.path.with_suffix(".zph")
+        else:
+            self.zphPath = self.path.with_suffix(".zph")
 
 
         # create other paths from the base path
@@ -192,7 +194,7 @@ class ZValue:
         return s.isdigit() or (s.startswith("-") and s[1:].isdigit())
 
     def setValue(self, newValue: str, targetType: str, activeVars: ActiveVars) -> None:
-        compiledValue = compileValue(newValue, activeVars)
+        compiledValue = self.compileValue(newValue, activeVars)
         try:
             if not self.supportedTypes(compiledValue)[targetType]:
                 raise ZError(105)
@@ -200,6 +202,23 @@ class ZValue:
             pass
             
         self.value = compiledValue
+
+    def compileValue(self, rawValue: str, activeVars: ActiveVars) -> str:
+        # This function ignores the type of the variable!
+        # This function returns the raw Value
+        returnValue: str = rawValue
+
+        if rawValue.startswith("'"):
+            varName = rawValue.replace("'", "")
+
+            var = activeVars.get(varName)
+            if not var:
+                raise ZError(113)
+            
+            returnValue = var.onChange()
+        
+        return returnValue
+
 
     def getValueIfVarType(self, targetType: str) -> str|bool:
         # Return value if current Value is supported by target Type
@@ -264,33 +283,6 @@ def register(name: str = ""):
         return cls
     return wrapper
 
-
-
-def matchValueToVar(name: str, activeVars: ActiveVars) -> ZValue:
-    
-    if name.startswith("'"):
-        varName = name.replace("'", "")
-        var: Variable = activeVars[varName]
-
-        return var.value
-
-    return ZValue(name)
-
-def compileValue(rawValue: str, activeVars: ActiveVars) -> str:
-    # This function ignores the type of the variable!
-    # This function returns the raw Value
-    returnValue: str = rawValue
-
-    if rawValue.startswith("'"):
-        varName = rawValue.replace("'", "")
-
-        var = activeVars.get(varName)
-        if not var:
-            raise ZError(113)
-        
-        returnValue = var.onChange()
-    
-    return returnValue
 
 
 
@@ -484,7 +476,9 @@ class CO(Variable):
                     inVar = True
                     
                 else:
-                    self.compiledCondition += compileValue(varName, activeVars)
+                    varValue = ZValue()
+                    varValue.setValue(varName, "FLOAT", activeVars)
+                    self.compiledCondition += varValue.value
                     inVar = False
                     varName = ""
                     
@@ -608,7 +602,10 @@ class MO(Variable):
                     inVar = True
                     
                 else:
-                    self.compiledEquation += compileValue(varName, activeVars)
+                    varValue = ZValue()
+                    varValue.setValue(varName, "FLOAT", activeVars)
+                    self.compiledEquation += varValue.value
+
                     inVar = False
                     varName = ""
                     
@@ -703,7 +700,9 @@ class FUNC(Variable):
                     inVar = True
                     
                 else:
-                    self.compiledEquation += compileValue(varName, activeVars)
+                    varValue = ZValue()
+                    varValue.setValue(varName, "FLOAT", activeVars)
+                    self.compiledEquation += varValue.value
                     inVar = False
                     varName = ""
                     
@@ -961,10 +960,12 @@ class FILE(Variable):
 
 @register(name="__")
 class BUILD_IN(Variable):
-    def __init__(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+    def __init__(self, cmd: ZCommand, activeVars: ActiveVars, zfile: ZFile) -> None:
         super().__init__(cmd, activeVars)
 
-        self.registerFunc({self.wait: "", self.jump: "", self.jumpTo: ""})
+        self.zfile: ZFile = zfile
+
+        self.registerFunc({self.wait: "", self.jump: "", self.jumpTo: "", self.export: "", self.load: ""})
 
     
     def wait(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
@@ -1002,22 +1003,40 @@ class BUILD_IN(Variable):
  
 
 
-    
-"""@register()
-class PredefVars(Variable):
-    def __init__(self, cmd: ZCommand, activeVars: Dict[str, Variable]) -> None:
-        super().__init__(cmd, activeVars)
-
-        self.filePath: ZValue = ZValue()
-
-        self.registerFunc({self.w: "", self.export: "", self.load: ""})
-    
-
-    def w(self, cmd: ZCommand, activeVars: ActiveVars):
+    def export(self, cmd: ZCommand, activeVars: ActiveVars):
         if len(cmd.args) > 0 and cmd.args[0] != "":
-            self.filePath.setValue(cmd.args[0], "PT", activeVars)
+            fileName = ZValue()
+            fileName.setValue(cmd.args[0], "PT", activeVars)
+
+            zfile = ZFile(Path(fileName.value))
+
+            zfile.zphPath.parent.mkdir(parents=True, exist_ok=True)
+
+            with zfile.zpkgPath.open("wb") as f:
+                pickle.dump(activeVars, f)
         else:
-            raise ZError(114)"""
+            with self.zfile.zpkgPath.open("wb") as f:
+                pickle.dump(activeVars, f)
+
+    def load(self, cmd: ZCommand, activeVars: ActiveVars) -> ActiveVars:
+        if len(cmd.args) > 0 and cmd.args[0] != "":
+            fileName = ZValue()
+            fileName.setValue(cmd.args[0], "PT", activeVars)
+
+            zfile = ZFile(Path(fileName.value))
+
+            if not zfile.zphPath.is_file():
+                raise ZError(116)
+            
+            with zfile.zpkgPath.open("rb") as f:
+                newActiveVars = pickle.load(f)
+
+        else:
+            with self.zfile.zpkgPath.open("rb") as f:
+                newActiveVars = pickle.load(f)
+
+
+        return activeVars|newActiveVars
 
 
 
