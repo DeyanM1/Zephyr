@@ -11,5 +11,6 @@ uv.lock
 .venv
 .vscode
 
+site/
 uv.lock
 tests

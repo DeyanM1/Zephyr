@@ -1,24 +1,19 @@
 # Overview
+**Basic Structure:**
 
-## Basic Structure
-
-Zephyr commands follow a strict structure:
-
-```
+```zephyr
 <VariableName> <base> <function>:<Argument1>|<Argument2>|...;
-<---------------------------command------------------------->
+<--------------------------command------------------------->
 ```
 
-* **VariableName**: User-defined name of the variable.
-* **base**: Determines the operation type:
+- **`VariableName`**: The name of the variable, user-defined.
+- **`base`**: The base of the variable, used to define its operation:
+  - **`?`**: For variable operations (e.g., modifying or retrieving values).
+  - **`#`**: For declaring variables or changing their types.
+- **`function`**: The operation to execute on the variable (e.g., printing, defining a function).
+- **`arguments`**: Additional information passed to the function.
+- **`command`:** The entire statement.
 
-  * `#` – Declare a variable or change its type.
-  * `?` – Operate on an existing variable (e.g., modify or retrieve values).
-* **function**: The specific operation to execute.
-* **arguments**: Additional information passed to the function.
-* **command**: Complete statement executed by Zephyr.
-
----
 
 
 ## File Extensions
@@ -64,21 +59,22 @@ a # PT:'HelloWorld'; ~ This is a comment
 
 ## Starting Info
 
-* **`*`**: Represents a value that can be a variable name or input (must be enclosed in `' '` where specified).
+* **`*`**: Represents a value that can be a replaced by a variable name (var names must be enclosed in `' '`).
 * **`-`**: Represents an optional parameter in the command.
+* all parameters in functions are absolute. you **can't change** the order!
 
 
 ## Declaring Variables
 
-Declare a variable by specifying its name, type, and initial value:
+You declare a variable by specifying its name, type, and optional initial value:
 
 ```
 <VariableName> # <Type>:<Value>|<Param1>|<Param2>|...;
 ```
 
 * **VariableName** – Name of the variable.
-* **Type** – Data type (`PT`, `INT`, `FLOAT`).
-* **Value** – Initial value of the variable.
+* **Type** – Type of the Variable.
+* **Value** – Optional initial value of the variable.
 * **Param** – Optional parameters separated by `|`.
 
 **Examples:**
@@ -92,12 +88,15 @@ message # PT:"Hello World"|~1;  ~ Declare constant text
 
 ## Changing Type
 
-Use `# CT:` to change a variable’s type. This resets its value.
+Use `# CT:` to change a variable’s type.
 
-Supported types indicate which types the variable **can be changed into**.
+Future references of Supported types indicate which types the variable **can be changed into**.
+If none is specified type cant be changed.
+
+All variables can be redeclared just be creating a new Variable with the same name
 
 ```
-<VariableName> # CT:<Type>;
+<VariableName> # CT:<NewType>;
 ```
 
 **Example:**

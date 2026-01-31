@@ -1,4 +1,4 @@
-# Built-in (`__`)
+# Built-in
 
 Variable state cannot be changed. Always named `__`.
 

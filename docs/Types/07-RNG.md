@@ -6,16 +6,18 @@ RNG objects generate a random number within a specified range. They are useful f
 
 * Define:
 
+*`NumberType`* is the type of the result variable either *`INT`* or *`FLOAT`*
+
 ```
 
 rng # RNG:<*RangeMin>|<*RangeMax>|<*NumberType>;
 
 ```
 
-* Update:
+* change Range:
 
 ```
 
-rng ? w:<*RangeMin>|<*RangeMax>|<*NumberType>;
+rng ? w:<*RangeMin>|<*RangeMax>|<*- NumberType>;
 
 ```

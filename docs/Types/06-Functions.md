@@ -7,6 +7,9 @@ Functions wrap a Math Object to allow reusable calculations. They only compute a
 
 * Define:
 
+*`ResultType`* is currently developed. It can be set to any value
+
+*`disableVarialbeChange`* if set makes the function ignore if a variable changes and uses only the values saved at decleration
 ```
 
 func # FUNC:<ResultType>|<*disableVariableChange>|<*MathObjectName>;
