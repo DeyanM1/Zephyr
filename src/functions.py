@@ -18,6 +18,9 @@ typeRegistry: dict[str, type] = {}
 ActiveVars: TypeAlias = dict[str, "Variable"]
 ZIndex: TypeAlias = int
 
+MATH_ALLOWEDCHARS: str = "+-*/%=()1234567890."
+CO_ALLOWEDCHARS: str = "()=!><1234567890."
+
 
 class ZError(Exception):
     def __init__(self, code: int) -> None:
@@ -476,7 +479,6 @@ class CO(Variable):
     
     def compile(self, activeVars: ActiveVars) -> None:
         self.compiledCondition = ""
-        allowedChars: str = "()=!><1234567890"
         inVar = False
         varName = ""
         
@@ -497,7 +499,7 @@ class CO(Variable):
                 varName += char
                 continue
             
-            if char in allowedChars:
+            if char in CO_ALLOWEDCHARS:
                 self.compiledCondition += char
 
         self.evaluate()
@@ -602,7 +604,6 @@ class MO(Variable):
     
     def compile(self, activeVars: ActiveVars) -> None:
         self.compiledEquation = ""
-        allowedChars: str = "+-*/%=()1234567890"
         inVar = False
         varName = ""
 
@@ -624,7 +625,7 @@ class MO(Variable):
                 varName += char
                 continue
             
-            if char in allowedChars:
+            if char in MATH_ALLOWEDCHARS:
                 self.compiledEquation += char
 
         self.calculate(activeVars)
@@ -700,7 +701,6 @@ class FUNC(Variable):
         
     def compile(self, activeVars: ActiveVars) -> None:
         self.compiledEquation = ""
-        allowedChars: str = "+-*/%=()"
         inVar = False
         varName = ""
 
@@ -721,7 +721,7 @@ class FUNC(Variable):
                 varName += char
                 continue
             
-            if char in allowedChars:
+            if char in MATH_ALLOWEDCHARS:
                 self.compiledEquation += char
 
         self.calculate(activeVars)
