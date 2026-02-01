@@ -1,0 +1,35 @@
+~ calculate a logarithm using exponent approximation (Newton's method)
+
+base # INT:3;
+y # INT:8;
+
+message # PT:-> ;
+
+epsilon # FLOAT:0.0000000001;
+
+
+x # FLOAT:1.0;
+fx # MO:('base'**'x' - 'y');
+fpx # MO:(('base'**'x')*0.69314718056);
+x_new # MO:('x'-'fx'/'fpx');
+
+
+epsTimesEps # MO:('epsilon'*'epsilon');
+x_newTimes # MO:(('x_new' - 'x') * ('x_new' - 'x'));
+
+loopCO # CO:('x_newTimes' >= 'epsTimesEps');
+loop # LOOP:loopCO;
+loop ? START:4;
+
+    x # FLOAT:'x_new';
+    fx # MO:('base'**'x' - 'y');
+    fpx # MO:(('base'**'x')*0.69314718056);
+    x_new # MO:('x'-'fx'/'fpx');
+
+    epsTimesEps # MO:('epsilon'*'epsilon');
+    x_newTimes # MO:(('x_new' - 'x') * ('x_new' - 'x'));
+
+loop ? END:;
+
+message ? w:++|'x_new';
+message ? push:;
