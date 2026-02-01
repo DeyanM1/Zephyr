@@ -305,7 +305,7 @@ class Variable:
         self.supportedVars: list[str] = [] # Supported Variables to change to
 
         self.functionRegistry: dict[str, Callable[..., Any]] = {}
-        self.registerFunc({self.CT: ""})
+        self.registerFunc({self.CT: "", self.debug: ""})
 
 
     def registerFunc(self, funcList: dict[Callable[..., Any], str]) -> None:
@@ -347,7 +347,9 @@ class Variable:
 
         return activeVars
 
-
+    def debug(self, cmd: ZCommand, activeVars: ActiveVars):
+        pass
+        #print(self.value)
 
     
     #def __repr__(self):
@@ -655,7 +657,6 @@ class FUNC(Variable):
         if len(cmd.args) > 0 and cmd.args[0] != "":
             self.returnType = cmd.args[0]
         if len(cmd.args) > 1 and cmd.args[1] != "":
-            print(cmd.args[1])
             self.disableVariableChange.setValue(cmd.args[1])
         if len(cmd.args) > 2 and cmd.args[2]:
             mathObject: MO = activeVars.get(cmd.args[2])
