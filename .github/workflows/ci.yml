@@ -28,6 +28,11 @@ jobs:
       - run: pip install mkdocs-material mkdocs-awesome-pages-plugin
       - run: mkdocs gh-deploy --force
 
+      - name: Debug paths
+        run: |
+          echo "Workspace: ${{ github.workspace }}"
+          ls -l ${{ github.workspace }}
+
       - name: Wait for GitHub Pages
         run: |
           sleep 30
