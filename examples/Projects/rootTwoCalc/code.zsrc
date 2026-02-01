@@ -1,0 +1,121 @@
+{
+    "1": {
+        "lineNum": 1,
+        "name": "digits",
+        "base": "#",
+        "func": "INT",
+        "args": [
+            "2149"
+        ]
+    },
+    "3": {
+        "lineNum": 3,
+        "name": "message",
+        "base": "#",
+        "func": "PT",
+        "args": [
+            "-> "
+        ]
+    },
+    "5": {
+        "lineNum": 5,
+        "name": "n",
+        "base": "#",
+        "func": "MO",
+        "args": [
+            "(2*10**(2*'digits'))"
+        ]
+    },
+    "6": {
+        "lineNum": 6,
+        "name": "x",
+        "base": "#",
+        "func": "MO",
+        "args": [
+            "(10**'digits')"
+        ]
+    },
+    "9": {
+        "lineNum": 9,
+        "name": "loopCO",
+        "base": "#",
+        "func": "CO",
+        "args": [
+            "('digits'!=0)"
+        ]
+    },
+    "10": {
+        "lineNum": 10,
+        "name": "loop",
+        "base": "#",
+        "func": "LOOP",
+        "args": [
+            "loopCO"
+        ]
+    },
+    "11": {
+        "lineNum": 11,
+        "name": "loop",
+        "base": "?",
+        "func": "START",
+        "args": [
+            "2"
+        ]
+    },
+    "13": {
+        "lineNum": 13,
+        "name": "x",
+        "base": "?",
+        "func": "w",
+        "args": [
+            "(('x'+'n'//'x')//2)"
+        ]
+    },
+    "14": {
+        "lineNum": 14,
+        "name": "digits",
+        "base": "?",
+        "func": "w",
+        "args": [
+            "--"
+        ]
+    },
+    "16": {
+        "lineNum": 16,
+        "name": "loop",
+        "base": "?",
+        "func": "END",
+        "args": [
+            ""
+        ]
+    },
+    "19": {
+        "lineNum": 19,
+        "name": "message",
+        "base": "?",
+        "func": "w",
+        "args": [
+            "++",
+            "'x'"
+        ]
+    },
+    "20": {
+        "lineNum": 20,
+        "name": "message",
+        "base": "?",
+        "func": "insertAt",
+        "args": [
+            ".",
+            "5"
+        ]
+    },
+    "22": {
+        "lineNum": 22,
+        "name": "message",
+        "base": "?",
+        "func": "push",
+        "args": [
+            ""
+        ]
+    }
+}

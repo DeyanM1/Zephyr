@@ -1,0 +1,23 @@
+digits # INT:10;
+~digits # INT:2149; ~ Maximum
+
+message # PT:-> ;
+
+n # MO:(2*10**(2*'digits'));
+x # MO:(10**'digits');
+
+
+loopCO # CO:('digits'!=0);
+loop # LOOP:loopCO;
+loop ? START:2;
+
+    x ? w:(('x'+'n'//'x')//2);
+    digits ? w:--;
+
+loop ? END:;
+
+
+message ? w:++|'x';
+message ? insertAt:.|5;
+
+message ? push:;
