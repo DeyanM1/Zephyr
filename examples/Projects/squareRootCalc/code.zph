@@ -1,0 +1,31 @@
+iterations # INT:100;
+num # INT:25112346547395323452345234532453;
+
+message # PT:Square root is: ;
+errorMessage # PT:Error! Number must not be negative;
+
+if1CO # CO:('num'<0);
+if1 # IF:if1CO;
+if1 ? START:1;
+    errorMessage ? push:;
+
+if1 ? ELSE:14;
+    guess # MO:(0);
+
+    if2CO # CO:('num'!=0);
+    if2 # IF:if2CO;
+    if2 ? START:7;
+        guess # MO:('num'/2);
+
+
+        loop1CO # CO:('iterations'!=0);
+        loop1 # LOOP:loop1CO;
+        loop1 ? START:2;
+            guess ? w:(('guess'+'num'/'guess')/2);
+            iterations ? w:--;
+        loop1 ? END:;
+    if2 ? END:;
+
+    message ? w:++|'guess';
+    message ? push:;
+if1 ? END:;
