@@ -1,7 +1,7 @@
-__ ? LIB:/home/deyan/dev/Zephyr/src/lib/GPIO.py;
+a # PT:123;
 
-gpio # gpio:BCM;
-gpio ? READ:1;
+b # PT:11;
 
-t # PT:'gpio';
-t ? push:; 
+a ? w:++|'b';
+
+a ? push:;

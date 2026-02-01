@@ -228,21 +228,28 @@ class ZValue:
         else:
             return False
 
-    def increment(self, incrementValue: str, currentType: str, activeVars: ActiveVars) -> None:
-        if not self.supportedTypes(incrementValue)[currentType]:
+    def increment(self, incrementValueRaw: str, currentType: str, activeVars: ActiveVars) -> None:
+        if not self.supportedTypes(incrementValueRaw)[currentType]:
             raise ZError(105)
         
         # Long and complicated statement. Dont know what it does#
         if currentType == "PT":
-            if incrementValue == "":
-                self.incrementValue = "1"
+            if incrementValueRaw == "":
+                incrementValueRaw = "1"
+
+            incrementValue = ZValue()
+            incrementValue.setValue(incrementValueRaw, "PT", activeVars)
+
             
-            self.setValue(self.value + (self.value)*int(incrementValue), currentType, activeVars)
+            
+            self.value = f"{self.value}{incrementValue.value}"
+
+            #self.setValue(self.value + (self.value)*int(incrementValue), currentType, activeVars)
 
 
 
         else:
-            newValue = float(self.value) + float(incrementValue)
+            newValue = float(self.value) + float(incrementValueRaw)
             if currentType == "INT":
                 self.setValue(str(newValue).split(".")[0], currentType, activeVars)
             elif currentType == "FLOAT":

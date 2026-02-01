@@ -1,43 +1,35 @@
 {
     "1": {
         "lineNum": 1,
-        "name": "__",
-        "base": "?",
-        "func": "LIB",
+        "name": "a",
+        "base": "#",
+        "func": "PT",
         "args": [
-            "/home/deyan/dev/Zephyr/src/lib/GPIO.py"
+            "123"
         ]
     },
     "3": {
         "lineNum": 3,
-        "name": "gpio",
-        "base": "#",
-        "func": "gpio",
-        "args": [
-            "BCM"
-        ]
-    },
-    "4": {
-        "lineNum": 4,
-        "name": "gpio",
-        "base": "?",
-        "func": "READ",
-        "args": [
-            "1"
-        ]
-    },
-    "6": {
-        "lineNum": 6,
-        "name": "t",
+        "name": "b",
         "base": "#",
         "func": "PT",
         "args": [
-            "'gpio'"
+            "11"
+        ]
+    },
+    "5": {
+        "lineNum": 5,
+        "name": "a",
+        "base": "?",
+        "func": "w",
+        "args": [
+            "++",
+            "'b'"
         ]
     },
     "7": {
         "lineNum": 7,
-        "name": "t",
+        "name": "a",
         "base": "?",
         "func": "push",
         "args": [
