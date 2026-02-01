@@ -1,7 +1,7 @@
-number # INT:3;
+number # INT:5;
 result # INT:1;
 
-number ? INPUT:Enter number to factorize > ;
+~number ? INPUT:Enter number to factorize > ;
 
 funcMath # MO:('result'*'number');
 func # FUNC:RES|~0|funcMath;

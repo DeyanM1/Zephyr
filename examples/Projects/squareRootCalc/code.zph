@@ -1,5 +1,5 @@
 iterations # INT:100;
-num # INT:25112346547395323452345234532453;
+num # INT:25;
 
 message # PT:Square root is: ;
 errorMessage # PT:Error! Number must not be negative;

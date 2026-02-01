@@ -1,4 +1,4 @@
-maxRange # INT:1000;
+maxRange # INT:20;
 currentNum # INT:2;
 
 a # PT:123123;
