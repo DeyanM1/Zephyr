@@ -39,8 +39,9 @@ jobs:
 
       - name: run crawl of test website
         run: |
+          mkdir -p /home/runner/work/Zephyr/Zephyr/output
           docker run \
-            -v $PWD/output:/output \
+            -v /home/runner/work/Zephyr/Zephyr/output:/output \
             ghcr.io/openzim/zimit \
             zimit \
             --seeds https://deyan.is-a.dev/Zephyr/ \
