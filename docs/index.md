@@ -23,3 +23,26 @@ This language is intended for:
 - Intermediate developers who want to expand their understanding of programming language design.
 - Experienced professionals exploring innovative ways to teach or experiment with compilation processes.
 - Curious learners interested in diving deeper into how programming languages work behind the scenes.
+
+
+
+
+### Other
+
+* Build .zim documentation:
+```bash
+mkdocs serve
+
+docker run \
+--network host \
+  -v $(pwd)/docs:/output \
+  ghcr.io/openzim/zimit \
+    zimit \
+      --seeds http://localhost:8000/Zephyr \
+      --name ZephyrDocs.zim \
+      --title "Zephyr Documentation" \
+      --creator "DeyanM1" \
+      --publisher "DeyanM1" \
+      --lang "en" \
+      --description "Full documentation of the Zephyr programming Language by DeyanM1"
+```
