@@ -40,15 +40,15 @@ jobs:
         run: |
           mkdir -p docs
           docker pull ghcr.io/openzim/zimit
-          docker run \
-            --rm \
+          docker run --rm \
             -v ${{ github.workspace }}/docs:/output \
             --shm-size=1gb \
             ghcr.io/openzim/zimit \
-              zimit \
-                --seeds https://deyan.is-a.dev/Zephyr \
-                --output /output/ZephyrDocs.zim \
-                --name ZephyrDocs.zim
+            zimit \
+              --seeds https://deyan.is-a.dev/Zephyr \
+              --output /output \
+              --name ZephyrDocs.zim
+          ls -l docs
 
       - name: Upload ZIM artifact
         uses: actions/upload-artifact@v4
