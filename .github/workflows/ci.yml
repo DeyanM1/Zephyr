@@ -43,7 +43,6 @@ jobs:
           docker run --rm \
             -v $PWD/docs/zim:/output \
             --shm-size=1gb \
-            --user $(id -u):$(id -g) \
             ghcr.io/openzim/zimit \
             zimit \
               --seeds https://deyan.is-a.dev/Zephyr \
