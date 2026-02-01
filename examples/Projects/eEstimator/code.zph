@@ -1,0 +1,39 @@
+~ Monte Carlo estimator for e using random walks
+
+trials # FLOAT:100000;
+
+loopTrials # FLOAT:'trials';
+totalCount # FLOAT:0;
+
+loopCO # CO:('loopTrials' != 1);
+loop # LOOP:loopCO;
+
+printCurrentTrial # PT:;
+
+loop ? START:13;
+    sum # FLOAT:0;
+    count # FLOAT:0;
+
+    loop2CO # CO:('sum' < 1);
+    loop2 # LOOP:loop2CO;
+    loop2 ? START:4;
+        rng # RNG:0|1|FLOAT;
+        sumMath # MO:('sum'+'rng');
+        sum ? w:'sumMath';
+        count ? w:++;
+    loop2 ? END:;
+
+    mo2 # MO:('totalCount'+'count');
+    totalCount ? w:'mo2';
+
+    printCurrentTrial ? w:'loopTrials';
+    printCurrentTrial ? push:;
+
+    loopTrials ? w:--;
+loop ? END:;
+
+
+resultMath # MO:('totalCount'/'trials');
+
+resultMath # CT:PT;
+resultMath ? push:;
