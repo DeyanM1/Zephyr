@@ -4,6 +4,9 @@ on:
     branches:
       - master
       - main
+    paths:
+    - "docs/**"
+    - ".github/workflows/ci.yml"
 permissions:
   contents: write
 jobs:
@@ -42,6 +45,7 @@ jobs:
             ghcr.io/openzim/zimit \
               zimit \
                 --seeds https://deyan.is-a.dev/Zephyr \
+                --output-dir /output \
                 --name ZephyrDocs.zim
 
       - name: Upload ZIM artifact
