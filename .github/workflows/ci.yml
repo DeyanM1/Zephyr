@@ -38,17 +38,18 @@ jobs:
           sleep 30
       - name: Build ZIM from published site
         run: |
-          mkdir -p docs
+          mkdir -p docs/zim
           docker pull ghcr.io/openzim/zimit
           docker run --rm \
-            -v ${{ github.workspace }}/docs:/output \
+            -v ${{ github.workspace }}/docs/zim:/output \
             --shm-size=1gb \
+            --user $(id -u):$(id -g) \
             ghcr.io/openzim/zimit \
             zimit \
               --seeds https://deyan.is-a.dev/Zephyr \
               --output /output \
               --name ZephyrDocs.zim
-          ls -l docs
+          ls -l docs/zim
 
       - name: Upload ZIM artifact
         uses: actions/upload-artifact@v4
