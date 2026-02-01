@@ -35,19 +35,19 @@ jobs:
 
       - name: Wait for GitHub Pages
         run: |
-          sleep 30
-      - name: Build ZIM from published site
+          sleep 20
+
+      - name: run crawl of test website
         run: |
-          mkdir -p docs/zim
-          docker pull ghcr.io/openzim/zimit
-          docker run --rm \
-            -v $PWD/docs/zim:/output \
-            --shm-size=1gb \
+          docker run \
+            -v $PWD/output:/output \
             ghcr.io/openzim/zimit \
             zimit \
-              --seeds https://deyan.is-a.dev/Zephyr \
-              --output /output \
-              --name ZephyrDocs.zim
+            --seeds https://deyan.is-a.dev/Zephyr/ \
+            --name ZephyrDocs \
+            --zim-file ZepyhrDocs.zim
+
+
           ls -l docs/zim
 
       - name: Upload ZIM artifact
