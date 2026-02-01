@@ -34,7 +34,7 @@ class ZError(Exception):
             103: lambda: ("[103]  Unknown Function. Maybe your type is wrong?", len(f"{cmd.name} {cmd.base} "), SyntaxError),
             104: lambda: ("[104]  Wrong command structure. Missing ':' or ';'? ", 1, SyntaxError),
             105: lambda: ("[105]  Variable Type doesn't match given Value ", 1, SyntaxError),
-            106: lambda: ("[106]  Invalid Boolean type. Allowed: ~0 | ~1 ", len(f"{cmd.name} {cmd.base} {cmd.func} "), SyntaxError),
+            106: lambda: ("[106]  Invalid Boolean type. Allowed: b0 | b1 ", len(f"{cmd.name} {cmd.base} {cmd.func} "), SyntaxError),
             107: lambda: ("[107]  Value cannot be changed. Variable is constant! ", len(f"{cmd.name} {cmd.base} "), SyntaxError),
             108: lambda: ("[108]  Current Variable type doesnt support new variable type! ", len(f"{cmd.name} {cmd.base} {cmd.func} "), SyntaxError),
             109: lambda: (f"[109]  List ({cmd.name}) doesn't support position 0! ", len(f"{cmd.name}")+7, SyntaxError),
@@ -131,16 +131,16 @@ class ZCommand:
 
 @dataclass
 class ZBool:
-    value: str = field(default_factory=lambda:"~0")
+    value: str = field(default_factory=lambda:"b0")
 
     lookUpTable: dict[str, bool] = field(default_factory=lambda:{
-        "~0": False,
-        "~1": True,
+        "b0": False,
+        "b1": True,
     })
 
     lookUpTable2: dict[bool, str] = field(default_factory=lambda:{
-        False: "~0",
-        True: "~1"
+        False: "b0",
+        True: "b1"
     })
 
 
@@ -655,6 +655,7 @@ class FUNC(Variable):
         if len(cmd.args) > 0 and cmd.args[0] != "":
             self.returnType = cmd.args[0]
         if len(cmd.args) > 1 and cmd.args[1] != "":
+            print(cmd.args[1])
             self.disableVariableChange.setValue(cmd.args[1])
         if len(cmd.args) > 2 and cmd.args[2]:
             mathObject: MO = activeVars.get(cmd.args[2])
