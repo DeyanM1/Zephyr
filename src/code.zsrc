@@ -21,10 +21,10 @@
         "lineNum": 5,
         "name": "a",
         "base": "?",
-        "func": "w",
+        "func": "insertAt",
         "args": [
-            "++",
-            "'b'"
+            "'b'",
+            "3"
         ]
     },
     "7": {

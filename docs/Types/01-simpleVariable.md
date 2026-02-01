@@ -59,3 +59,11 @@ var ? push:;
 var ? INPUT:<*- Message>;      ~ Overrides previous value
 
 ```
+
+* Insert Value at position (PT)
+
+```
+
+var ? insertAt:<*valueToInsert>|<*position>; ~ position 1 is the first position
+
+```

@@ -2,6 +2,6 @@ a # PT:123;
 
 b # PT:11;
 
-a ? w:++|'b';
+a ? insertAt:'b'|3;
 
 a ? push:;

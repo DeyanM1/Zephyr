@@ -389,6 +389,7 @@ class INT(Variable):
             case _:
                 self.value.setValue(cmd.args[0], self.varType, activeVars)
 
+    
 @register()
 class FLOAT(Variable):
     def __init__(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
@@ -428,7 +429,7 @@ class PT(Variable):
         self.value: ZValue = ZValue()
         self.value.setValue(cmd.args[0], self.varType, activeVars)
 
-        self.registerFunc({self.push: "", self.w: "", self.INPUT: ""})
+        self.registerFunc({self.push: "", self.w: "", self.INPUT: "", self.insertAt: ""})
     
     def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         """if self.const.compiledValue:
@@ -448,7 +449,19 @@ class PT(Variable):
         message = ZValue()
         newValue = input(message.setValue(cmd.args[0], "PT", activeVars))
         self.value.setValue(newValue, "PT", activeVars)
-        
+
+    def insertAt(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        if len(cmd.args) > 1 and cmd.args[0] != "" and cmd.args[1] != "":
+            valueToInsert = ZValue()
+            position = ZValue()
+
+            valueToInsert.setValue(cmd.args[0], "PT", activeVars)
+            position.setValue(cmd.args[1], "INT", activeVars)
+
+            newValue = self.value.value[:int(position.value)-1] + valueToInsert.value + self.value.value[int(position.value)-1:]
+            self.value.setValue(newValue, "PT", activeVars)
+
+
     def push(self, cmd: ZCommand) -> None:
         print(self.value.value)
 
