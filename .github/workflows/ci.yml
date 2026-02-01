@@ -27,3 +27,24 @@ jobs:
             mkdocs-material-
       - run: pip install mkdocs-material mkdocs-awesome-pages-plugin
       - run: mkdocs gh-deploy --force
+
+      - name: Wait for GitHub Pages
+        run: |
+          sleep 60
+      - name: Build ZIM from published site
+        run: |
+          docker pull ghcr.io/openzim/zimit
+          docker run \
+            --rm \
+            -v ${{ github.workspace }}/output:/output \
+            --shm-size=1gb \
+            ghcr.io/openzim/zimit \
+              zimit \
+                --seeds https://deyan.is-a.dev/Zephyr \
+                --name ZephyrDocs.zim
+
+      - name: Upload ZIM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mkdocs-zim
+          path: docs/ZephyrDocs.zim

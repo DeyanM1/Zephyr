@@ -11,3 +11,10 @@ dependencies = [
 
 [tool.uv.sources]
 fake-rpi = { git = "https://github.com/sn4k3/FakeRPi" }
+
+[dependency-groups]
+mkdocs = [
+    "mkdocs>=1.6.1",
+    "mkdocs-awesome-pages-plugin>=2.10.1",
+    "mkdocs-material>=9.7.1",
+]
