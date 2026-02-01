@@ -1,0 +1,54 @@
+maxRange # INT:1000;
+currentNum # INT:2;
+
+a # PT:123123;
+
+mainloopCO # CO:('currentNum' != 'maxRange');
+mainloop # LOOP:mainloopCO;
+mainloop ? START:28;
+     messageTrue # PT:IS Prime ;
+    messageFalse # PT:NO Prime ;
+
+    if1CO # CO:('currentNum' >= 2);
+    if1 # IF:if1CO;
+    if1 ? START:23;
+
+        i # INT:2;
+        prime_flag # INT:1;
+
+
+        mo1 # MO:('i'*'i');
+        fMO1 # FUNC:RES|b0|mo1;
+        fMO1 ? call:;
+
+        loop2CO # CO:('fMO1' <= 'currentNum');
+        loop2 # LOOP:loop2CO;
+        loop2 ? START:8;
+
+            mo2 # MO:('currentNum'%'i');
+            
+            if2CO # CO:('mo2' == 0);
+            if2 # IF:if2CO;
+            if2 ? START:1;
+
+                prime_flag ? w:0;
+            
+            if2 ? END:;
+            i ? w:++;
+            fMO1 ? call:;
+        
+        loop2 ? END:;
+
+        if3CO # CO:('prime_flag' == 1);
+        if3 # IF:if3CO;
+        if3 ? START:2;
+            messageTrue ? w:++|'currentNum';
+            messageTrue ? push:;
+        if3 ? END:;
+
+    if1 ? END:;
+
+
+    currentNum ? w:++;
+mainloop ? END:;
+

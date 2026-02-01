@@ -1,0 +1,338 @@
+{
+    "1": {
+        "lineNum": 1,
+        "name": "maxRange",
+        "base": "#",
+        "func": "INT",
+        "args": [
+            "1000"
+        ]
+    },
+    "2": {
+        "lineNum": 2,
+        "name": "currentNum",
+        "base": "#",
+        "func": "INT",
+        "args": [
+            "2"
+        ]
+    },
+    "4": {
+        "lineNum": 4,
+        "name": "a",
+        "base": "#",
+        "func": "PT",
+        "args": [
+            "123123"
+        ]
+    },
+    "6": {
+        "lineNum": 6,
+        "name": "mainloopCO",
+        "base": "#",
+        "func": "CO",
+        "args": [
+            "('currentNum' != 'maxRange')"
+        ]
+    },
+    "7": {
+        "lineNum": 7,
+        "name": "mainloop",
+        "base": "#",
+        "func": "LOOP",
+        "args": [
+            "mainloopCO"
+        ]
+    },
+    "8": {
+        "lineNum": 8,
+        "name": "mainloop",
+        "base": "?",
+        "func": "START",
+        "args": [
+            "28"
+        ]
+    },
+    "9": {
+        "lineNum": 9,
+        "name": "messageTrue",
+        "base": "#",
+        "func": "PT",
+        "args": [
+            "IS Prime "
+        ]
+    },
+    "10": {
+        "lineNum": 10,
+        "name": "messageFalse",
+        "base": "#",
+        "func": "PT",
+        "args": [
+            "NO Prime "
+        ]
+    },
+    "12": {
+        "lineNum": 12,
+        "name": "if1CO",
+        "base": "#",
+        "func": "CO",
+        "args": [
+            "('currentNum' >= 2)"
+        ]
+    },
+    "13": {
+        "lineNum": 13,
+        "name": "if1",
+        "base": "#",
+        "func": "IF",
+        "args": [
+            "if1CO"
+        ]
+    },
+    "14": {
+        "lineNum": 14,
+        "name": "if1",
+        "base": "?",
+        "func": "START",
+        "args": [
+            "23"
+        ]
+    },
+    "16": {
+        "lineNum": 16,
+        "name": "i",
+        "base": "#",
+        "func": "INT",
+        "args": [
+            "2"
+        ]
+    },
+    "17": {
+        "lineNum": 17,
+        "name": "prime_flag",
+        "base": "#",
+        "func": "INT",
+        "args": [
+            "1"
+        ]
+    },
+    "20": {
+        "lineNum": 20,
+        "name": "mo1",
+        "base": "#",
+        "func": "MO",
+        "args": [
+            "('i'*'i')"
+        ]
+    },
+    "21": {
+        "lineNum": 21,
+        "name": "fMO1",
+        "base": "#",
+        "func": "FUNC",
+        "args": [
+            "RES",
+            "b0",
+            "mo1"
+        ]
+    },
+    "22": {
+        "lineNum": 22,
+        "name": "fMO1",
+        "base": "?",
+        "func": "call",
+        "args": [
+            ""
+        ]
+    },
+    "24": {
+        "lineNum": 24,
+        "name": "loop2CO",
+        "base": "#",
+        "func": "CO",
+        "args": [
+            "('fMO1' <= 'currentNum')"
+        ]
+    },
+    "25": {
+        "lineNum": 25,
+        "name": "loop2",
+        "base": "#",
+        "func": "LOOP",
+        "args": [
+            "loop2CO"
+        ]
+    },
+    "26": {
+        "lineNum": 26,
+        "name": "loop2",
+        "base": "?",
+        "func": "START",
+        "args": [
+            "8"
+        ]
+    },
+    "28": {
+        "lineNum": 28,
+        "name": "mo2",
+        "base": "#",
+        "func": "MO",
+        "args": [
+            "('currentNum'%'i')"
+        ]
+    },
+    "30": {
+        "lineNum": 30,
+        "name": "if2CO",
+        "base": "#",
+        "func": "CO",
+        "args": [
+            "('mo2' == 0)"
+        ]
+    },
+    "31": {
+        "lineNum": 31,
+        "name": "if2",
+        "base": "#",
+        "func": "IF",
+        "args": [
+            "if2CO"
+        ]
+    },
+    "32": {
+        "lineNum": 32,
+        "name": "if2",
+        "base": "?",
+        "func": "START",
+        "args": [
+            "1"
+        ]
+    },
+    "34": {
+        "lineNum": 34,
+        "name": "prime_flag",
+        "base": "?",
+        "func": "w",
+        "args": [
+            "0"
+        ]
+    },
+    "36": {
+        "lineNum": 36,
+        "name": "if2",
+        "base": "?",
+        "func": "END",
+        "args": [
+            ""
+        ]
+    },
+    "37": {
+        "lineNum": 37,
+        "name": "i",
+        "base": "?",
+        "func": "w",
+        "args": [
+            "++"
+        ]
+    },
+    "38": {
+        "lineNum": 38,
+        "name": "fMO1",
+        "base": "?",
+        "func": "call",
+        "args": [
+            ""
+        ]
+    },
+    "40": {
+        "lineNum": 40,
+        "name": "loop2",
+        "base": "?",
+        "func": "END",
+        "args": [
+            ""
+        ]
+    },
+    "42": {
+        "lineNum": 42,
+        "name": "if3CO",
+        "base": "#",
+        "func": "CO",
+        "args": [
+            "('prime_flag' == 1)"
+        ]
+    },
+    "43": {
+        "lineNum": 43,
+        "name": "if3",
+        "base": "#",
+        "func": "IF",
+        "args": [
+            "if3CO"
+        ]
+    },
+    "44": {
+        "lineNum": 44,
+        "name": "if3",
+        "base": "?",
+        "func": "START",
+        "args": [
+            "2"
+        ]
+    },
+    "45": {
+        "lineNum": 45,
+        "name": "messageTrue",
+        "base": "?",
+        "func": "w",
+        "args": [
+            "++",
+            "'currentNum'"
+        ]
+    },
+    "46": {
+        "lineNum": 46,
+        "name": "messageTrue",
+        "base": "?",
+        "func": "push",
+        "args": [
+            ""
+        ]
+    },
+    "47": {
+        "lineNum": 47,
+        "name": "if3",
+        "base": "?",
+        "func": "END",
+        "args": [
+            ""
+        ]
+    },
+    "49": {
+        "lineNum": 49,
+        "name": "if1",
+        "base": "?",
+        "func": "END",
+        "args": [
+            ""
+        ]
+    },
+    "52": {
+        "lineNum": 52,
+        "name": "currentNum",
+        "base": "?",
+        "func": "w",
+        "args": [
+            "++"
+        ]
+    },
+    "53": {
+        "lineNum": 53,
+        "name": "mainloop",
+        "base": "?",
+        "func": "END",
+        "args": [
+            ""
+        ]
+    }
+}
