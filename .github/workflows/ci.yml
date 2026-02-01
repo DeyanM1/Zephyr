@@ -49,6 +49,7 @@ jobs:
             --zim-file ZepyhrDocs.zim
 
 
+          ls -l /home/runner/work/Zephyr/Zephyr/
           ls -l /home/runner/work/Zephyr/Zephyr/output
 
       - name: Upload ZIM artifact
