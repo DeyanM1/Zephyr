@@ -47,7 +47,7 @@ jobs:
             ghcr.io/openzim/zimit \
               zimit \
                 --seeds https://deyan.is-a.dev/Zephyr \
-                --output /output \
+                --output /output/ZephyrDocs.zim \
                 --name ZephyrDocs.zim
 
       - name: Upload ZIM artifact
