@@ -55,4 +55,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: mkdocs-zim
-          path: docs/ZephyrDocs.zim
+          path: /home/runner/work/Zephyr/Zephyr/output/ZephyrDocs.zim
