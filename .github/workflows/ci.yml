@@ -30,13 +30,14 @@ jobs:
 
       - name: Wait for GitHub Pages
         run: |
-          sleep 60
+          sleep 30
       - name: Build ZIM from published site
         run: |
+          mkdir -p docs
           docker pull ghcr.io/openzim/zimit
           docker run \
             --rm \
-            -v ${{ github.workspace }}/output:/output \
+            -v ${{ github.workspace }}/docs:/output \
             --shm-size=1gb \
             ghcr.io/openzim/zimit \
               zimit \
