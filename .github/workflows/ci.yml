@@ -41,7 +41,7 @@ jobs:
           mkdir -p docs/zim
           docker pull ghcr.io/openzim/zimit
           docker run --rm \
-            -v ${{ github.workspace }}/docs/zim:/output \
+            -v $PWD/docs/zim:/output \
             --shm-size=1gb \
             --user $(id -u):$(id -g) \
             ghcr.io/openzim/zimit \
