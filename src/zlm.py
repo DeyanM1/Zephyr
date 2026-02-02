@@ -7,9 +7,10 @@ import requests
 
 
 def install(args: Any, path: Path):
-    
     url = "https://raw.githubusercontent.com/DeyanM1/ZephyrPackages/refs/heads/main/"
 
+
+    args.libraries.append("base.py")
     for library in args.libraries:
         newPath = path / library
 
@@ -21,7 +22,7 @@ def install(args: Any, path: Path):
             with newPath.open("w") as w:
                 w.writelines(file_content)
         else:
-            print(f"Failed to retrieve the file. Status code: {response.status_code}")
+            print(f"Failed to retrieve the library: {library}. Status code: {response.status_code}")
 
 def remove(args: Any):
     pass
