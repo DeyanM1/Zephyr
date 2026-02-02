@@ -11,12 +11,14 @@ def install(args: Any, path: Path):
     url = "https://raw.githubusercontent.com/DeyanM1/ZephyrPackages/refs/heads/main/"
 
     for library in args.libraries:
+        newPath = path / library
+
         response = requests.get(url + library)
         
         if response.status_code == 200:
             # Get the content of the file
             file_content = response.text
-            with path.open("w") as w:
+            with newPath.open("w") as w:
                 w.writelines(file_content)
         else:
             print(f"Failed to retrieve the file. Status code: {response.status_code}")
