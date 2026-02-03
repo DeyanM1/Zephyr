@@ -4,6 +4,7 @@ import argparse
 from pathlib import Path
 from typing import Any
 import requests
+from colorama import Fore
 
 
 def install(args: Any, path: Path):
@@ -12,6 +13,8 @@ def install(args: Any, path: Path):
 
     args.libraries.append("base.py")
     for library in args.libraries:
+        if library != "base.py":
+            print(f"{Fore.MAGENTA}[INSTALL] Installing {library}{Fore.RESET}")
         newPath = path / library
 
         response = requests.get(url + library)
@@ -21,8 +24,11 @@ def install(args: Any, path: Path):
             file_content = response.text
             with newPath.open("w") as w:
                 w.writelines(file_content)
+
+            if library != "base.py":
+                print(f"{Fore.GREEN}[COMPLETE] Installed {library}{Fore.RESET}")
         else:
-            print(f"Failed to retrieve the library: {library}. Status code: {response.status_code}")
+            print(f"{Fore.RED}[ERROR] Failed to install {library}. Status code: {response.status_code}{Fore.RESET}")
 
 def remove(args: Any):
     pass
