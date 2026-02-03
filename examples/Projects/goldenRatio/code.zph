@@ -1,0 +1,24 @@
+a # INT:1;
+b # INT:1;
+n # INT:0;
+limit # INT:30;
+
+aPbMO # MO:('a'+'b');
+aPb # FUNC:RES|b0|aPbMO;
+
+
+loopCO # CO:('n'<'limit');
+loop # LOOP:loopCO;
+loop ? START:5;
+
+    temp # FLOAT:'b';
+    aPb ? call:;
+    b ? w:'aPb';
+    a ? w:'temp';
+    n ? w:++;
+
+loop ? END:;
+
+phiMO # MO:('b'/'a');
+phi # PT:'phiMO';
+phi ? push:;
