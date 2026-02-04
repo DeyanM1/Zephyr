@@ -1,0 +1,27 @@
+message # PT:Welcome to the Calculator! enter 000 to exit!;
+exit # PT:exit;
+
+
+outputMessage # PT:-> ;
+a # PT:;
+b # PT:;
+operator # PT:;
+
+a ? INPUT:Num1 -> ;
+operator ? INPUT: operator -> ;
+b ? INPUT:Num2 -> ;
+
+
+ifCO # CO:('a'!=000);
+if # IF:ifCO;
+if ? START:5;
+    mo # MO:('a' 'operator' 'b');
+    mo ? CT:PT;
+    outputmessage ? w:++|'mo';
+    outputmessage ? push:;
+
+    __ ? jumpTo:3;
+
+if ? ELSE:0;
+
+if ? END:;
