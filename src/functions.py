@@ -201,6 +201,7 @@ class ZValue:
         compiledValue = self.compileValue(newValue, activeVars)
         try:
             if not self.supportedTypes(compiledValue)[targetType]:
+                print(compiledValue)
                 raise ZError(105)
         except KeyError:
             pass
@@ -494,6 +495,7 @@ class CO(Variable):
         self.compiledCondition = ""
         inVar = False
         varName = ""
+
         
         for char in self.rawCondition.value:
             if char == "'":
@@ -501,14 +503,24 @@ class CO(Variable):
                     inVar = True
                     
                 else:
-                    varValue = ZValue()
-                    varValue.setValue(varName, "FLOAT", activeVars)
-                    self.compiledCondition += varValue.value
+                    newValue = ZValue()
+
+                    var = activeVars.get(varName)
+
+                    if var:
+                        if var.varType == "PT":
+                            newValue.value = '"' + var.value.value + '"'
+                        else:
+                            newValue.setValue(var.value.value, "FLOAT", activeVars)
+                    else:
+                        raise ZError(111)
+
+                    self.compiledCondition += newValue.value
                     inVar = False
                     varName = ""
                     
             
-            if inVar:
+            elif inVar:
                 varName += char
                 continue
             
