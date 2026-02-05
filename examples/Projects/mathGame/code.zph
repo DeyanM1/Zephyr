@@ -1,0 +1,70 @@
+blank # PT: ;
+
+
+messageWin # PT:Correct answer with tries: ;
+messageLose # PT:Wrong answer try again.;
+
+
+number_A # RNG:1|100|INT;
+number_B # RNG:1|100|INT;
+operatorNum # RNG:1|4|INT;
+operator # PT:;
+
+tries # INT:1;
+
+
+~ Calculate operator
+
+if1CO # CO:('operatorNum' == 1);
+if2CO # CO:('operatorNum' == 2);
+if3CO # CO:('operatorNum' == 3);
+if4CO # CO:('operatorNum' == 4);
+
+if1 # IF:if1CO;
+if2 # IF:if2CO;
+if3 # IF:if3CO;
+if4 # IF:if4CO;
+
+if1 ? START:1;
+    operator ? w:+;
+if1 ? END:;
+if2 ? START:1;
+    operator ? w:-;
+if2 ? END:;
+if3 ? START:1;
+    operator ? w:*;
+if3 ? END:;
+if4 ? START:1;
+    operator ? w:/;
+if4 ? END:;
+
+equationPrint # PT:-> ;
+equationPrint ? w:++|'number_A;
+equationPrint ? w:++| ;
+equationPrint ? w:++|'operator;
+equationPrint ? w:++| ;
+equationPrint ? w:++|'number_B;
+
+equationPrint ? push:;
+
+
+
+
+userResult # FLOAT:0;
+userResult ? INPUT:-> ;
+
+mo # MO:('number_A' 'operator' 'number_B');
+
+ifCO # CO:('userResult' != 'mo');
+if # IF:ifCO;
+if ? START:3;
+
+    messageLose ? push:;
+    tries ? w:++;
+    __ ? jump:-8;
+
+if ? ELSE:2;
+    messageWin ? w:++|'tries';
+    messageWin ? push:;
+    __ ? jumpTo:1;
+if ? END:;

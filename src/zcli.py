@@ -13,8 +13,8 @@ def start():
     file_path = Path(args.filepath)
     
     # Validate file
-    if not file_path.exists() or not file_path.is_file():
-        print(f"Error: {file_path} does not exist or is not a file")
+    if not file_path.exists() or not file_path.is_file() or file_path.suffix != ".zph":
+        print(f"Error: {file_path} does not exist or is not a zph file")
         return
     
     zfile = ZFile(file_path)
