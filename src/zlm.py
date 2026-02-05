@@ -5,9 +5,11 @@ from pathlib import Path
 from typing import Any
 import requests
 from colorama import Fore
+import os
+import platform
+import subprocess
 
-
-def install(args: Any, path: Path):
+def install(args: Any, path: Path):  
     url = "https://raw.githubusercontent.com/DeyanM1/ZephyrPackages/refs/heads/main/"
 
 
@@ -31,9 +33,116 @@ def install(args: Any, path: Path):
             print(f"{Fore.RED}[ERROR] Failed to install {library}. Status code: {response.status_code}{Fore.RESET}")
 
 def remove(args: Any):
-    pass
+    globalPath = getZephyrPath()
 
 
+    for library in args.libraries:
+        fileToRemove = globalPath / library
+
+
+        if fileToRemove.exists():
+            fileToRemove.unlink()
+            print(f"{Fore.GREEN}[COMPLETE] Removed {library}{Fore.RESET}")
+        else:
+            print(f"{Fore.RED}[ERROR] Failed to remove {library}. library not found{Fore.RESET}")
+
+
+
+def setPath():
+    # Detect OS
+    system_os = platform.system()
+
+    # Windows: check if global/user environment variable already exists
+    if system_os == "Windows":
+        import winreg
+
+        def env_var_exists(name: str):
+            try:
+                # Check user environment variables
+                with winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Environment") as key:
+                    winreg.QueryValueEx(key, name)
+                    return True
+            except FileNotFoundError:
+                return False
+
+    else:
+        # Linux/macOS: check if variable already set in shell config
+        shell_config = Path.home() / ".bashrc"
+        if os.environ.get("SHELL", "").endswith("zsh"):
+            shell_config = Path.home() / ".zshrc"
+
+        def env_var_exists(name: str):
+            if not shell_config.exists():
+                return False
+            with shell_config.open("r") as f:
+                for line in f:
+                    if line.strip().startswith(f"export {name}="):
+                        return True
+            return False
+
+    # Only set the variable if it does not exist globally
+    if not env_var_exists("ZEPHYR_LIB_PATH"):
+
+        # Determine Zephyr library path
+        if system_os == "Windows":
+            username = os.getlogin()
+            zephyr_lib_path = Path(f"C:/Users/{username}/AppData/local/Zephyr/libraries")
+        else:
+            zephyr_lib_path = Path.home() / ".config" / "Zephyr" / "libraries"
+
+        # Create the directory if missing
+        if not zephyr_lib_path.exists():
+            zephyr_lib_path.mkdir(parents=True, exist_ok=True)
+
+        # Set environment variable globally
+        if system_os == "Windows":
+            subprocess.run(
+                ["setx", "ZEPHYR_LIB_PATH", str(zephyr_lib_path)],
+                shell=True,
+                check=True
+            )
+            print(f"{Fore.GREEN}[COMPLETE] Zephyr Path set successfully {Fore.RESET}")
+        else:
+            line = f'export ZEPHYR_LIB_PATH="{zephyr_lib_path}"\n'
+            with shell_config.open("a") as fa: # type: ignore
+                fa.write(line)
+            print(f"Added ZEPHYR_LIB_PATH to {shell_config}") # type: ignore
+
+    else:
+        pass
+
+def getZephyrPath() -> Path:
+    system_os = platform.system()
+
+    # Windows: read from registry (user-level environment variable)
+    if system_os == "Windows":
+        import winreg
+        try:
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Environment") as key:
+                path_str, _ = winreg.QueryValueEx(key, "ZEPHYR_LIB_PATH")
+        except FileNotFoundError:
+            raise RuntimeError("Global environment variable ZEPHYR_LIB_PATH not found.")
+    else:
+        # Linux/macOS: read from shell config (~/.bashrc or ~/.zshrc)
+        shell_config = Path.home() / ".bashrc"
+        if os.environ.get("SHELL", "").endswith("zsh"):
+            shell_config = Path.home() / ".zshrc"
+
+        if not shell_config.exists():
+            raise RuntimeError(f"Shell config {shell_config} does not exist.")
+
+        path_str = None
+        with shell_config.open("r") as f:
+            for line in f:
+                line = line.strip()
+                if line.startswith("export ZEPHYR_LIB_PATH="):
+                    path_str = line.split("=", 1)[1].strip().strip('"')
+                    break
+
+        if path_str is None:
+            raise RuntimeError("Global environment variable ZEPHYR_LIB_PATH not found in shell config.")
+
+    return Path(path_str)
 
 
 def start():
@@ -47,6 +156,7 @@ def start():
     args = parser.parse_args()
 
 
+
     
     if args.path:
         path = Path(args.path)
@@ -56,7 +166,7 @@ def start():
             path = path.resolve()
 
             if not path.exists():
-                print("ERROR! Path doesnt exist")
+                print(Fore.RED, "[ERROR] Path doesnt exist", Fore.RESET)
                 return
     
     else:
@@ -64,13 +174,16 @@ def start():
             
     
     if args.global_flag:
-        pass
+        setPath()
+        path = getZephyrPath()
 
 
     match args.action:
-        case "install":
+        case "install":   
+            setPath()
             install(args, path)
-        case "uninstall":
+        case "remove":
+            setPath()
             remove(args)
         case _:
             pass
