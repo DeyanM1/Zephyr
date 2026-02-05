@@ -37,7 +37,7 @@ class ZError(Exception):
             103: lambda: ("[103]  Unknown Function. Maybe your type is wrong?", len(f"{cmd.name} {cmd.base} "), SyntaxError),
             104: lambda: ("[104]  Wrong command structure. Missing ':' or ';'? ", 1, SyntaxError),
             105: lambda: ("[105]  Variable Type doesn't match given Value ", 1, SyntaxError),
-            106: lambda: ("[106]  Invalid Boolean type. Allowed: b0 | b1 ", len(f"{cmd.name} {cmd.base} {cmd.func} "), SyntaxError),
+            106: lambda: ("[106]  Invalid Boolean type. Allowed: ~0 | ~1 ", len(f"{cmd.name} {cmd.base} {cmd.func} "), SyntaxError),
             107: lambda: ("[107]  Value cannot be changed. Variable is constant! ", len(f"{cmd.name} {cmd.base} "), SyntaxError),
             108: lambda: ("[108]  Current Variable type doesnt support new variable type! ", len(f"{cmd.name} {cmd.base} {cmd.func} "), SyntaxError),
             109: lambda: (f"[109]  List ({cmd.name}) doesn't support position 0! ", len(f"{cmd.name}")+7, SyntaxError),
@@ -134,16 +134,16 @@ class ZCommand:
 
 @dataclass
 class ZBool:
-    value: str = field(default_factory=lambda:"b0")
+    value: str = field(default_factory=lambda:"~0")
 
     lookUpTable: dict[str, bool] = field(default_factory=lambda:{
-        "b0": False,
-        "b1": True,
+        "~0": False,
+        "~1": True,
     })
 
     lookUpTable2: dict[bool, str] = field(default_factory=lambda:{
-        False: "b0",
-        True: "b1"
+        False: "~0",
+        True: "~1"
     })
 
 
@@ -365,7 +365,8 @@ class INT(Variable):
         self.supportedVars = ["FLOAT", "PT"]
 
         self.value: ZValue = ZValue()
-        self.value.setValue(cmd.args[0], self.varType, activeVars)
+        
+        self.w(cmd, activeVars)
         
         self.registerFunc({self.w: "", self.INPUT: ""})
 
@@ -387,7 +388,7 @@ class INT(Variable):
                 self.value.decrement(cmd.args[1] if 1 < len(cmd.args) else "1", self.varType, activeVars)
 
             case _:
-                self.value.setValue(cmd.args[0], self.varType, activeVars)
+                self.value.setValue(cmd.args[0] if cmd.args[0] != "" else "0", self.varType, activeVars)
 
     
 @register()
@@ -397,7 +398,8 @@ class FLOAT(Variable):
         self.supportedVars = ["INT", "PT"]
 
         self.value: ZValue = ZValue()
-        self.value.setValue(cmd.args[0], self.varType, activeVars)
+
+        self.w(cmd, activeVars)
 
         self.registerFunc({self.w: "", self.INPUT: ""})
 
@@ -419,7 +421,7 @@ class FLOAT(Variable):
                 self.value.decrement(cmd.args[1] if 1 < len(cmd.args) else "1", self.varType, activeVars)
 
             case _:
-                self.value.setValue(cmd.args[0], self.varType, activeVars)
+                self.value.setValue(cmd.args[0] if cmd.args[0] != "" else "0", self.varType, activeVars)
 
 @register()
 class PT(Variable):
@@ -428,7 +430,7 @@ class PT(Variable):
         self.supportedVars = ["INT", "FLOAT"]
 
         self.value: ZValue = ZValue()
-        self.value.setValue(cmd.args[0], self.varType, activeVars)
+        self.w(cmd, activeVars)
 
         self.registerFunc({self.push: "", self.w: "", self.INPUT: "", self.insertAt: ""})
     
@@ -708,7 +710,7 @@ class FUNC(Variable):
         
     
                 
-        self.registerFunc({self.w: "", self.call: "call"})
+        self.registerFunc({self.w: "", self.call: ""})
                 
     def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         moName = ZValue()
@@ -746,18 +748,29 @@ class FUNC(Variable):
                     inVar = True
                     
                 else:
-                    varValue = ZValue()
-                    varValue.setValue(varName, "FLOAT", activeVars)
-                    self.compiledEquation += varValue.value
+                    newValue = ZValue()
+                    var = activeVars.get(varName)
+                    if var:
+                        if var.varType == "PT":
+                            newNewValue = ""
+                            for char in var.value.value:
+                                if char in MATH_ALLOWEDCHARS:
+                                    newNewValue += char
+                            newValue.value = newNewValue
+                        else:
+                            newValue.setValue(var.value.value, "FLOAT", activeVars)
+
+                        self.compiledEquation += newValue.value
+
                     inVar = False
                     varName = ""
                     
             
-            if inVar:
+            elif inVar:
                 varName += char
                 continue
             
-            if char in MATH_ALLOWEDCHARS:
+            elif char in MATH_ALLOWEDCHARS:
                 self.compiledEquation += char
 
         self.calculate(activeVars)

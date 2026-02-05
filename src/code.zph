@@ -1,7 +1,15 @@
-a # PT:123;
+a # INT:4;
+b # INT:5;
 
-b # PT:11;
+mo # MO:('a'+'b');
+func # FUNC:RES;
 
-a ? insertAt:'b'|3;
+func ? w:mo;
 
-a ? push:;
+a ? w:++;
+
+func ? call:;
+
+
+func ? CT:PT;
+func ? push:;

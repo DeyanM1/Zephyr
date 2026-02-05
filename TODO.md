@@ -7,5 +7,4 @@
 - [x] gpip library
 - [x] add comments
 - [x] PTs in CO
-- [ ] functions should use mathobjects in code
-- [ ] Float doesnt have a default value on set
+- [x] Float doesnt have a default value on set
