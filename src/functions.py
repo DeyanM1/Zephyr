@@ -201,7 +201,6 @@ class ZValue:
         compiledValue = self.compileValue(newValue, activeVars)
         try:
             if not self.supportedTypes(compiledValue)[targetType]:
-                print(compiledValue)
                 raise ZError(105)
         except KeyError:
             pass
@@ -352,8 +351,8 @@ class Variable:
         return activeVars
 
     def debug(self, cmd: ZCommand, activeVars: ActiveVars):
-        pass
-        #print(self.value)
+        #pass
+        print(self.value)
 
     
     #def __repr__(self):
@@ -404,7 +403,8 @@ class FLOAT(Variable):
 
     def INPUT(self, cmd: ZCommand, activeVars: ActiveVars):
         message = ZValue()
-        newValue = input(message.setValue(cmd.args[0], "PT", activeVars))
+        message.setValue(cmd.args[0], "PT", activeVars)
+        newValue = input(message.value)
         self.value.setValue(newValue, "FLOAT", activeVars)
     
     def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
@@ -448,7 +448,8 @@ class PT(Variable):
     
     def INPUT(self, cmd: ZCommand, activeVars: ActiveVars):
         message = ZValue()
-        newValue = input(message.setValue(cmd.args[0], "PT", activeVars))
+        message.setValue(cmd.args[0], "PT", activeVars)
+        newValue = input(message.value)
         self.value.setValue(newValue, "PT", activeVars)
 
     def insertAt(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
@@ -638,19 +639,29 @@ class MO(Variable):
                     inVar = True
                     
                 else:
-                    varValue = ZValue()
-                    varValue.setValue(varName, "FLOAT", activeVars)
-                    self.compiledEquation += varValue.value
+                    newValue = ZValue()
+                    var = activeVars.get(varName)
+                    if var:
+                        if var.varType == "PT":
+                            newNewValue = ""
+                            for char in var.value.value:
+                                if char in MATH_ALLOWEDCHARS:
+                                    newNewValue += char
+                            newValue.value = newNewValue
+                        else:
+                            newValue.setValue(var.value.value, "FLOAT", activeVars)
+
+                        self.compiledEquation += newValue.value
 
                     inVar = False
                     varName = ""
                     
             
-            if inVar:
+            elif inVar:
                 varName += char
                 continue
             
-            if char in MATH_ALLOWEDCHARS:
+            elif char in MATH_ALLOWEDCHARS:
                 self.compiledEquation += char
 
         self.calculate(activeVars)
@@ -789,7 +800,6 @@ class RNG(Variable):
 
         self.randomNumberType.setValue(cmd.args[2], "PT", activeVars)
         if self.randomNumberType.value not in self.allowedTypes:
-            print("HO")
             raise ZError(114)
 
 

@@ -7,3 +7,4 @@
 - [x] gpip library
 - [x] add comments
 - [x] PTs in CO
+- [ ] functions should use mathobjects in code
