@@ -127,7 +127,7 @@ def compile(inputData: ZFile):
     activeVars.update({"__": functions.typeRegistry["__"](ZCommand(0, "__", ZBase.define, "", [""]), activeVars, inputData)})
     index: ZIndex = 0
     try:
-        while index != len(ZCommandData):
+        while index <= len(ZCommandData):
             
                 cmd: ZCommand = ZCommandData[index]
 
