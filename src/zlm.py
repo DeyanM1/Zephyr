@@ -59,8 +59,8 @@ def setPath():
         def env_var_exists(name: str):
             try:
                 # Check user environment variables
-                with winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Environment") as key:
-                    winreg.QueryValueEx(key, name)
+                with winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Environment") as key: # type: ignore
+                    winreg.QueryValueEx(key, name) # type: ignore
                     return True
             except FileNotFoundError:
                 return False
@@ -118,10 +118,11 @@ def getZephyrPath() -> Path:
     if system_os == "Windows":
         import winreg
         try:
-            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Environment") as key:
-                path_str, _ = winreg.QueryValueEx(key, "ZEPHYR_LIB_PATH")
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Environment") as key: # type: ignore
+                path_str, _ = winreg.QueryValueEx(key, "ZEPHYR_LIB_PATH") # type: ignore
         except FileNotFoundError:
-            raise RuntimeError("Global environment variable ZEPHYR_LIB_PATH not found.")
+            pass
+            #raise RuntimeError("Global environment variable ZEPHYR_LIB_PATH not found.")
     else:
         # Linux/macOS: read from shell config (~/.bashrc or ~/.zshrc)
         shell_config = Path.home() / ".bashrc"
@@ -140,9 +141,10 @@ def getZephyrPath() -> Path:
                     break
 
         if path_str is None:
-            raise RuntimeError("Global environment variable ZEPHYR_LIB_PATH not found in shell config.")
+            pass
+            #raise RuntimeError("Global environment variable ZEPHYR_LIB_PATH not found in shell config.")
 
-    return Path(path_str)
+    return Path(path_str) # type: ignore
 
 
 def start():

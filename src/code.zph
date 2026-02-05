@@ -1,14 +1,2 @@
-__ ? LIB:./src/lib/system.py;
-
-
-sys # system:;
-
-a # PT:;
-
-sys ? getCWD:a;
-
-a ? push:;
-
-a ? push:;
-sys ? quit:2;
+__ ? LIB:python.py;
 

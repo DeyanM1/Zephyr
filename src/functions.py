@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import importlib.util
 import inspect
+import os
 import pickle
+import platform
 import random
 import sys
 import time
@@ -277,6 +279,42 @@ class ZValue:
                 raise ZError(110)
 
 
+
+def getZephyrPath() -> Path|None:
+    system_os = platform.system()
+
+    # Windows: read from registry (user-level environment variable)
+    if system_os == "Windows":
+        import winreg
+        try:
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Environment") as key: # type: ignore
+                path_str, _ = winreg.QueryValueEx(key, "ZEPHYR_LIB_PATH") # type: ignore
+        except FileNotFoundError:
+            return None
+            #raise RuntimeError("Global environment variable ZEPHYR_LIB_PATH not found.")
+    else:
+        # Linux/macOS: read from shell config (~/.bashrc or ~/.zshrc)
+        shell_config = Path.home() / ".bashrc"
+        if os.environ.get("SHELL", "").endswith("zsh"):
+            shell_config = Path.home() / ".zshrc"
+
+        if not shell_config.exists():
+            return None
+            #raise RuntimeError(f"Shell config {shell_config} does not exist.")
+
+        path_str = None
+        with shell_config.open("r") as f:
+            for line in f:
+                line = line.strip()
+                if line.startswith("export ZEPHYR_LIB_PATH="):
+                    path_str = line.split("=", 1)[1].strip().strip('"')
+                    break
+
+        if path_str is None:
+            return None 
+            #raise RuntimeError("Global environment variable ZEPHYR_LIB_PATH not found in shell config.")
+
+    return Path(path_str) # type: ignore
 
 def getRequiredArgs(function: Callable[..., Any]):
     sig = inspect.signature(function)
@@ -1034,36 +1072,67 @@ class BUILD_IN(Variable):
 
     def LIB(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         if len(cmd.args[0]) > 0 and cmd.args[0] != "":
-            pathRaw = ZValue()
-            pathRaw.setValue(cmd.args[0], "PT", activeVars)
-            path = Path(pathRaw.value)
+            userPath = ZValue()
+            userPath.setValue(cmd.args[0], "PT", activeVars)
+            userPath = Path(userPath.value)
 
-            if not path.is_absolute():
-                path = Path.cwd() / path
 
-            path = path.resolve()
+            foundGlobalPath = False
+            path = Path()
+            module_name = ""
 
-            if not path.exists():
+            ### Check for global
+            globalPath = getZephyrPath()
+            if globalPath is not None:
+                foundGlobalPath = True
+                globalPath = globalPath / userPath
+
+                globalPath = globalPath.resolve()
+
+                if globalPath.suffix != ".py":
+                    raise ZError(117)
+
+                module_name = globalPath.stem
+                path = globalPath
+
+
+            ## Check for cwd path
+
+            localPath = userPath
+            
+            if not localPath.is_absolute():
+                localPath = localPath.cwd() / userPath
+
+            localPath = localPath.resolve()
+
+            if localPath.exists():
+                if localPath.suffix == ".py":
+                    module_name = localPath.stem
+
+                    path = localPath
+
+                elif not foundGlobalPath:
+                    raise ZError(117)
+                
+            elif not foundGlobalPath:
                 raise ZError(116)
 
-            if path.suffix != ".py":
+            if module_name and path:
+                spec = importlib.util.spec_from_file_location(module_name, path)
+                if spec is None or spec.loader is None:
+                    raise ImportError(f"Failed to create spec for {path}")
+
+                self.module = importlib.util.module_from_spec(spec)
+                sys.modules[module_name] = self.module
+                spec.loader.exec_module(self.module)
+
+            
+                newTypes: dict[str, type] = self.module.load()   
+                
+                for name, cls in newTypes.items():
+                    register(name)(cls)
+            else:
                 raise ZError(117)
-
-            module_name = path.stem
-
-            spec = importlib.util.spec_from_file_location(module_name, path)
-            if spec is None or spec.loader is None:
-                raise ImportError(f"Failed to create spec for {path}")
-
-            self.module = importlib.util.module_from_spec(spec)
-            sys.modules[module_name] = self.module
-            spec.loader.exec_module(self.module)
-
-            
-            newTypes: dict[str, type] = self.module.load()   
-            
-            for name, cls in newTypes.items():
-                register(name)(cls)
 
 
     def export(self, cmd: ZCommand, activeVars: ActiveVars):
