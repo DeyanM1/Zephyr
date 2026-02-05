@@ -1,15 +1,14 @@
-a # INT:4;
-b # INT:5;
-
-mo # MO:('a'+'b');
-func # FUNC:RES;
-
-func ? w:mo;
-
-a ? w:++;
-
-func ? call:;
+__ ? LIB:./src/lib/system.py;
 
 
-func ? CT:PT;
-func ? push:;
+sys # system:;
+
+a # PT:;
+
+sys ? getCWD:a;
+
+a ? push:;
+
+a ? push:;
+sys ? quit:2;
+

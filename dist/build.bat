@@ -6,7 +6,7 @@ uv run nuitka src/zcli.py --onefile --output-dir=dist/linux --output-filename=zl
 
 uv run nuitka src/zlm.py --onefile --output-dir=dist/windows --output-filename=zlm.exe --assume-yes-for-downloads
 
-Ruv run nuitka src/zlm.py --onefile --output-dir=dist/linux --output-filename=zlm 
+uv run nuitka src/zlm.py --onefile --output-dir=dist/linux --output-filename=zlm 
 
 
 cd .\dist\windows
