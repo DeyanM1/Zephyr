@@ -10,7 +10,7 @@ import platform
 import subprocess
 
 def install(args: Any, path: Path):  
-    url = "https://raw.githubusercontent.com/DeyanM1/ZephyrPackages/refs/heads/main/"
+    url = "https://raw.githubusercontent.com/DeyanM1/ZephyrLibraries/refs/heads/main/"
 
 
     args.libraries.append("base.py")
