@@ -1,27 +1,39 @@
-message # PT:Welcome to the Calculator! enter 000 to exit!;
+message # PT:Welcome to the Calculator! enter exit to leave!;
 exit # PT:exit;
+blank # PT:;
 
-
+message ? push:;
 outputMessage # PT:-> ;
+
+
 a # PT:;
 b # PT:;
 operator # PT:;
 
 a ? INPUT:Num1 -> ;
-operator ? INPUT: operator -> ;
+
+~ Detect if a is exit
+ifCO # CO:('a'=='exit');
+if # IF:ifCO;
+if ? START:1;
+    __ ? jump:99;
+if ? END:;
+
+~ Continue input logic
+operator ? INPUT:operator -> ;
 b ? INPUT:Num2 -> ;
 
+~ build and calculate equation
+a ? CT:INT;
+b ? CT:INT;
+mo # MO:('a' 'operator' 'b');
+mo ? CT:PT;
 
-ifCO # CO:('a'!=000);
-if # IF:ifCO;
-if ? START:5;
-    mo # MO:('a' 'operator' 'b');
-    mo ? CT:PT;
-    outputmessage ? w:++|'mo';
-    outputmessage ? push:;
+~ print the message
+outputMessage ? w:++|'mo';
+outputMessage ? push:;
+blank ? push:;
 
-    __ ? jumpTo:3;
 
-if ? ELSE:0;
-
-if ? END:;
+~ Jump to beginning to repeat.
+__ ? jumpTo:5;
