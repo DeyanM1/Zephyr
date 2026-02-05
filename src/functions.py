@@ -741,7 +741,6 @@ class FUNC(Variable):
         self.compiledEquation = ""
         inVar = False
         varName = ""
-
         for char in self.rawEquation:
             if char == "'":
                 if not inVar:
@@ -1035,7 +1034,9 @@ class BUILD_IN(Variable):
 
     def LIB(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         if len(cmd.args[0]) > 0 and cmd.args[0] != "":
-            path = Path(cmd.args[0])
+            pathRaw = ZValue()
+            pathRaw.setValue(cmd.args[0], "PT", activeVars)
+            path = Path(pathRaw.value)
 
             if not path.is_absolute():
                 path = Path.cwd() / path
