@@ -36,10 +36,10 @@ conditionalObject # CO:('a' > 'b')
 statement # IF:conditionalObject;
 
 statement ? START:0;
-~ A is greater than b
+§ A is greater than b
 
 statement ? ELSE:0;
-~ B is greater than A
+§ B is greater than A
 
 statement ? END:;
 ```

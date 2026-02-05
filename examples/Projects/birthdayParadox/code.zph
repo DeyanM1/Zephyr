@@ -16,11 +16,11 @@ iLoop ? START:8;
     probMO ? w:((1-'prob')*100);
     
     
-    ~ Uncomment to show number of people
+    § Uncomment to show number of people
     
-    ~i # CT:PT;
-    ~i ? push:;
-    ~i # CT:INT;
+    §i # CT:PT;
+    §i ? push:;
+    §i # CT:INT;
 
 
     probMO # CT:PT;

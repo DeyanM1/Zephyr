@@ -32,7 +32,7 @@ var ? w:<*NewValue>;
 
 ```
 
-var ? w:++|<*- incrementBy>;   ~ Defaults to 1 if not set
+var ? w:++|<*- incrementBy>;   § Defaults to 1 if not set
 
 ```
 
@@ -40,7 +40,7 @@ var ? w:++|<*- incrementBy>;   ~ Defaults to 1 if not set
 
 ```
 
-var ? w:-|<*- decrementBy>;    ~ Defaults to 1 if not set
+var ? w:-|<*- decrementBy>;    § Defaults to 1 if not set
 
 ```
 
@@ -56,7 +56,7 @@ var ? push:;
 
 ```
 
-var ? INPUT:<*- Message>;      ~ Overrides previous value
+var ? INPUT:<*- Message>;      § Overrides previous value
 
 ```
 
@@ -64,6 +64,6 @@ var ? INPUT:<*- Message>;      ~ Overrides previous value
 
 ```
 
-var ? insertAt:<*valueToInsert>|<*position>; ~ position 1 is the first position
+var ? insertAt:<*valueToInsert>|<*position>; § position 1 is the first position
 
 ```

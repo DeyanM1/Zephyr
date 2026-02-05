@@ -8,7 +8,7 @@ File objects manage opening, editing, renaming, and deleting files. They allow Z
 
 ```
 
-file # FILE:<*Path>;  ~ Defaults to 'unnamed_file.txt'
+file # FILE:<*Path>;  § Defaults to 'unnamed_file.txt'
 
 ```
 

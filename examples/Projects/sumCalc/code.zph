@@ -1,6 +1,6 @@
 sum # INT:0;
 n # INT:10;
-~n ? INPUT:Enter a number to calculate the sum -> ;
+§n ? INPUT:Enter a number to calculate the sum -> ;
 
                             
 MO # MO:(('n'*('n'+1))/2);

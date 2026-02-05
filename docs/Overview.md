@@ -46,13 +46,13 @@ python src/cli.py <path_to_file.zph>
 
 ## Comments
 
-Text after `~` on a line is ignored by the compiler.
+Text after `§` on a line is ignored by the compiler.
 
 **Usage:**
 
 ```
-a # PT:'HelloWorld'; ~ This is a comment
-~ This entire line is a comment
+a # PT:'HelloWorld'; § This is a comment
+§ This entire line is a comment
 ```
 
 ---
@@ -80,15 +80,15 @@ You declare a variable by specifying its name, type, and optional initial value:
 **Examples:**
 
 ```zephyr
-counter # INT:10;          ~ Declare integer
-message # PT:"Hello World"|~1;  ~ Declare constant text
+counter # INT:10;          § Declare integer
+message # PT:"Hello World"|~1;  § Declare constant text
 ```
 
 ---
 
 ## Changing Type
 
-Use `# CT:` to change a variable’s type.
+Use `? CT:` to change a variable’s type.
 
 Future references of Supported types indicate which types the variable **can be changed into**.
 If none is specified type cant be changed.
@@ -96,12 +96,12 @@ If none is specified type cant be changed.
 All variables can be redeclared just be creating a new Variable with the same name
 
 ```
-<VariableName> # CT:<NewType>;
+<VariableName> ? CT:<NewType>;
 ```
 
 **Example:**
 
 ```zephyr
 counter # INT:5;
-counter # CT:PT; ~ counter is now a Printable Text
+counter ? CT:PT; § counter is now a Printable Text
 ```

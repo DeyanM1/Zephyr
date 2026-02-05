@@ -13,7 +13,7 @@ operator # PT:;
 tries # INT:1;
 
 
-~ Calculate operator
+§ Calculate operator
 
 if1CO # CO:('operatorNum' == 1);
 if2CO # CO:('operatorNum' == 2);

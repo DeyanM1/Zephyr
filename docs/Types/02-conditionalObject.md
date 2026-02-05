@@ -4,8 +4,8 @@ Supported types: `INT`, `PT`, `FLOAT`
 
 Conditional Objects evaluate a condition and store its result as boolean values: 
 
-- **`b1` for `true`** 
-- **`b0` for `false`** 
+- **`~1` for `true`** 
+- **`~0` for `false`** 
 
 They are used to drive decision-making in IF statements or loops. 
 

@@ -135,10 +135,6 @@ def compile(inputData: ZFile):
                 match cmd.base:
                     case "#":
                         match cmd.func:
-
-                            case "CT":
-                                activeVars = activeVars[cmd.name].functionRegistry[cmd.func](cmd, activeVars)
-                            
                             case _:
                                 try:
                                     hasActiveVars = "activeVars" in getRequiredArgs(functions.typeRegistry[cmd.func])

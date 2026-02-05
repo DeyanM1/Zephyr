@@ -16,7 +16,7 @@ Blank lines or lines with just a comment are not counted.
 loop # LOOP:<*ConditionalObjectName>;
 
 loop ? START:<*commandsInLOOP>;
-    ~ this gets repeated
+    § this gets repeated
 loop ? END:;
 
 ```

@@ -12,28 +12,28 @@ operator # PT:;
 
 a ? INPUT:Num1 -> ;
 
-~ Detect if a is exit
+§ Detect if a is exit
 ifCO # CO:('a'=='exit');
 if # IF:ifCO;
 if ? START:1;
     __ ? jump:99;
 if ? END:;
 
-~ Continue input logic
+§ Continue input logic
 operator ? INPUT:operator -> ;
 b ? INPUT:Num2 -> ;
 
-~ build and calculate equation
+§ build and calculate equation
 a ? CT:INT;
 b ? CT:INT;
 mo # MO:('a' 'operator' 'b');
 mo ? CT:PT;
 
-~ print the message
+§ print the message
 outputMessage ? w:++|'mo';
 outputMessage ? push:;
 blank ? push:;
 
 
-~ Jump to beginning to repeat.
+§ Jump to beginning to repeat.
 __ ? jumpTo:5;

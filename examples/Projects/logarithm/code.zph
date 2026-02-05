@@ -1,4 +1,4 @@
-~ calculate a logarithm using exponent approximation (Newton's method)
+§ calculate a logarithm using exponent approximation (Newton's method)
 
 base # INT:3;
 y # INT:8;

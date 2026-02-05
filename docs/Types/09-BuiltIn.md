@@ -32,7 +32,7 @@ __ ? jumpTo:<*AbsolutePositionInCode>;
 
 ```
 
-__ ? export:<*ExportPath>;  ~ Defaults to `.zpkg` matching `.zph` filename
+__ ? export:<*ExportPath>;  § Defaults to `.zpkg` matching `.zph` filename
 
 ```
 

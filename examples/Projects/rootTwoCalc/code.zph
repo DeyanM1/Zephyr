@@ -1,5 +1,5 @@
 digits # INT:10;
-~digits # INT:2149; ~ Maximum
+§digits # INT:2149; § Maximum
 
 message # PT:-> ;
 
