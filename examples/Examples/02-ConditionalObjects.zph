@@ -1,0 +1,19 @@
+a # INT:1;              § ganzahl a definieren
+b # INT:2;              § ganzahl b definieren
+
+output # PT:;           § Text definieren
+
+co # CO:('a'>'b');      § Condition definiren: a ist größer als b
+output ? w:'co';        § wert von co auf output setzen
+output ? push:;         § output ausdrucken
+
+co ? w:('a'<'b');       § condition ändern auf: a ist kleiner als b
+output ? w:'co';        § wert von co auf output setzen
+output ? push:;         § output ausdrucken
+
+c # PT:hello;           § Text c definiren
+d # PT:world;           § Text d definiren
+
+co ? w:('c'!='d');      § condition ändern auf: c ungleich d
+output ? w:'co';        § wert von co auf output setzen
+output ? push:;         § output ausdrucken

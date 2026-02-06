@@ -1,0 +1,36 @@
+a # INT:4;                          § Ganzzahl a definieren
+b # INT:8;                          § Ganzzahl b definieren
+
+message # PT:;                      § Text Message definieren
+
+mo # MO:('a' + 'b' + 2);            § matheobject definieren: a plus b plus 2
+func # FUNC:RES|~0|mo;              § Function definiren: ret type: RES, no disable Var Change, matheobject: mo
+
+message ? w:'func';                 § ergebnis vor call auf message schreiben
+message ? push:;                    § message ausdrucken
+
+func ? call:;
+
+message ? w:'func';                 § ergebnis nach call auf message schreiben
+message ? push:;                    § message ausdrucken
+
+a ? w:++;                           § a um 1 erhöhen
+
+func ? call:;
+
+message ? w:'func';                 § ergebnis nach call, erhöhung auf message schreiben
+message ? push:;                    § message ausdrucken
+
+
+
+§ Ohne variable Change
+§ Werte: a:5 b:8
+
+func # FUNC:RES|~1|mo;              § func neu definiren ohne Variable Change, gleiches matheobject
+
+a ? w:++;                           § a um 1 erhöhen
+
+func ? call:;                       § call wird wegen no Variable Change ignoriert
+
+message ? w:'func';                 § ergebnis nach call, erhöhung auf message schreiben
+message ? push:;                    § message ausdrucken

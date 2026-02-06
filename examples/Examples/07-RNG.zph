@@ -1,0 +1,14 @@
+rangeMin # INT:1;                           § Ganzzahl rangeMin definieren
+rangeMax # INT:6;                           § Ganzzahl rangeMax definieren
+
+message # PT:;                          § Text Message definieren
+
+rng # RNG:'rangeMin'|'rangeMax'|INT;    § Zufallszahl als Ganzzahl von 1 bis 6
+
+message ? w:'rng';                      § zufallszahl auf message schreiben
+message ? push:;                        § message ausdrucken
+
+rng ? w:'rangeMin'|'rangeMax'|FLOAT;    § Zufallszahl als Dezimalzahl von 1 bis 6
+
+message ? w:'rng';                      § zufallszahl auf message schreiben
+message ? push:;                        § message ausdrucken

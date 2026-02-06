@@ -1,0 +1,24 @@
+
+
+a # PT:Hello, World!;           § a definieren
+a ? push:;                      § a ausdrucken
+
+b # PT:;
+b ? INPUT:Name -> ;             § eingabe vom benutzer nehmen.
+b ? insertAt:Hallo, |1;         § bei b "Hallo," auf position 1 einfügen
+b ? push:;
+
+
+c # INT:;                       § Ganzzahl definieren
+c ? w:1;                        § Wert auf 1 setzen
+c ? w:++;                       § c um 1 erhöhen
+c ? w:++|3;                     § c um 3 erhöhen
+
+c ? CT:PT;                      § c in Text umwandeln.
+c ? push:;
+
+d # FLOAT:4.14;                 § Dezimalzahl d definieren
+d ? w:--;                       § d um 1 erniedrigen
+d ? CT:PT;
+d ? push:;
+

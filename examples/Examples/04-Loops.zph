@@ -1,0 +1,16 @@
+a # INT:5;                          § ganzahl a definieren
+b # INT:1;                          § ganzahl b definieren
+
+
+message1 # PT:A is greater than B;  § Text A definieren      
+message2 # PT:A the same as B;      § Text B definieren  
+
+conditionalObject # CO:('a' > 'b'); § condition definieren: a ist größer als b
+loop # LOOP:conditionalObject;      § Loop definieren mit condition: wiederholen solange a größer als b
+
+loop ? START:1;                     § Loop starten, 2 Coommand im Loop
+    message1 ? push:;               § condition wahr -> message2 ausdrucken
+    b ? w:++;                       § Pro wiederholug b um 1 erhöhen
+loop ? END:;                        § loop endet
+
+message2 ? push:;                   § condition falsch -> message 2 ausdrucken

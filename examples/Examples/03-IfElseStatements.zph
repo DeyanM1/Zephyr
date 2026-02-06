@@ -1,0 +1,19 @@
+a # INT:4;                          § ganzahl a definieren
+b # INT:2;                          § ganzahl b definieren
+
+
+message1 # PT:A is greater than B;  § Text A definieren      
+message2 # PT:B is greater than A;  § Text B definieren  
+
+conditionalObject # CO:('a' > 'b'); § condition definieren: a ist größer als b
+statement # IF:conditionalObject;   § if statement definiren und auf condition conditionalObject setzen
+
+statement ? START:1;                § if starten
+
+    message1 ? push:;               § Condition wahr message2 wird ausgedruckt
+
+statement ? ELSE:1;
+
+    message2 ? push:;               § Condition falsch message2 wird ausgedruckt
+
+statement ? END:;                   § Condition endet
