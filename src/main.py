@@ -44,6 +44,7 @@ def lexer(zfile: ZFile) -> list[ZCommand]:
         for char in line:
             if char == "§":
                 skipLine = True
+                currentCommand = ""
                 break
             if char == ";":
                 compiledData.append((lineNum, currentCommand))
@@ -52,6 +53,10 @@ def lexer(zfile: ZFile) -> list[ZCommand]:
                 currentCommand += char
         if skipLine:
             continue
+
+        if currentCommand:
+            compiledData.append((lineNum, currentCommand))
+            currentCommand = ""
 
 
     ZCommandData: list[ZCommand] = []
@@ -130,7 +135,6 @@ def compile(inputData: ZFile):
         while index < len(ZCommandData):
 
                 cmd: ZCommand = ZCommandData[index]
-
 
                 match cmd.base:
                     case "#":
