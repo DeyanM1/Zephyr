@@ -1,9 +1,9 @@
 #!/bin/bash
 
 
-uv run nuitka src/zcli.py --onefile --output-dir=dist/windows --output-filename=zcli.exe --assume-yes-for-downloads
+#uv run nuitka src/zcli.py --onefile --output-dir=dist/windows --output-filename=zcli.exe --assume-yes-for-downloads
 
-uv run nuitka src/zlm.py --onefile --output-dir=dist/windows --output-filename=zlm.exe --assume-yes-for-downloads
+#uv run nuitka src/zlm.py --onefile --output-dir=dist/windows --output-filename=zlm.exe --assume-yes-for-downloads
 
 uv run nuitka src/zcli.py --onefile --output-dir=dist/linux --output-filename=zcli
 
