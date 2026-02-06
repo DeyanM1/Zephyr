@@ -35,9 +35,10 @@ def lexer(zfile: ZFile) -> list[ZCommand]:
 
    
     compiledData: list[tuple[int, str]] = []
-    forbiddenChars = {"\n", "\r"}  # use set for faster lookup
+    forbiddenChars = {"\n", "\r"}
 
-    # Read the file and process commands line by line
+
+    # Read file and remove comments, split per line into list
     currentCommand = ""
     for lineNum, line in enumerate(zfile.zphPath.read_text().splitlines(), start=1):
         skipLine: bool = False
@@ -59,6 +60,7 @@ def lexer(zfile: ZFile) -> list[ZCommand]:
             currentCommand = ""
 
 
+    # Read compiledData, turn into ZCommands
     ZCommandData: list[ZCommand] = []
     cmd = ZCommand(-1, "", "", "", [""])
     try:
