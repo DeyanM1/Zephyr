@@ -18,7 +18,7 @@ mainloop ? START:28;
 
 
         mo1 # MO:('i'*'i');
-        fMO1 # FUNC:RES|b0|mo1;
+        fMO1 # FUNC:RES|~0|mo1;
         fMO1 ? call:;
 
         loop2CO # CO:('fMO1' <= 'currentNum');
