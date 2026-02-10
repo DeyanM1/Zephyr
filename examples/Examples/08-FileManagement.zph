@@ -1,0 +1,17 @@
+file # FILE:example.txt;        § create and open example.txt
+file ? cSET:This is an example; § Write content on file
+
+
+
+message # PT:Hello World;       § Define Message
+
+file ? w:example2.txt;          § open file example2.txt
+file ? cSET:Error;              § Write content Error
+file ? cFLUSH:;                 § Clear Content
+file ? cSET:'message';          § Write content from var 'message'
+
+file ? gRENAME:example.md;      § Rename file to example.md
+
+
+file ? w:example.txt;           § open file example.txt
+file ? gDEL:;                   § delete current open file
