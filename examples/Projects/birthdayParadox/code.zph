@@ -18,12 +18,12 @@ iLoop ? START:8;
     
     § Uncomment to show number of people
     
-    §i # CT:PT;
+    §i ? CT:PT;
     §i ? push:;
-    §i # CT:INT;
+    §i ? CT:INT;
 
 
-    probMO # CT:PT;
+    probMO ? CT:PT;
     probMO ? push:;
    
 

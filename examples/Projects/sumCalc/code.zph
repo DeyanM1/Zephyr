@@ -5,6 +5,6 @@ n # INT:10;
                             
 MO # MO:(('n'*('n'+1))/2);
 
-MO # CT:PT;
+MO ? CT:PT;
 
 MO ? push:;

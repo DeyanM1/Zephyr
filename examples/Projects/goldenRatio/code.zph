@@ -4,7 +4,7 @@ n # INT:0;
 limit # INT:30;
 
 aPbMO # MO:('a'+'b');
-aPb # FUNC:RES|b0|aPbMO;
+aPb # FUNC:RES|~0|aPbMO;
 
 
 loopCO # CO:('n'<'limit');

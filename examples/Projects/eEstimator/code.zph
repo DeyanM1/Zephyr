@@ -1,6 +1,6 @@
-~ Monte Carlo estimator for e using random walks
+§ Monte Carlo estimator for e using random walks
 
-trials # FLOAT:100000;
+trials # FLOAT:10000;
 
 loopTrials # FLOAT:'trials';
 totalCount # FLOAT:0;
@@ -10,7 +10,7 @@ loop # LOOP:loopCO;
 
 printCurrentTrial # PT:;
 
-loop ? START:13;
+loop ? START:12;
     sum # FLOAT:0;
     count # FLOAT:0;
 
@@ -27,7 +27,7 @@ loop ? START:13;
     totalCount ? w:'mo2';
 
     printCurrentTrial ? w:'loopTrials';
-    printCurrentTrial ? push:;
+    §printCurrentTrial ? push:;
 
     loopTrials ? w:--;
 loop ? END:;
@@ -35,5 +35,5 @@ loop ? END:;
 
 resultMath # MO:('totalCount'/'trials');
 
-resultMath # CT:PT;
+resultMath ? CT:PT;
 resultMath ? push:;
