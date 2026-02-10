@@ -14,7 +14,7 @@ iLoop ? START:10;
 
     pi ? w:'piMO';
 
-    piMO # CT:PT;
+    piMO ? CT:PT;
     piMO ? push:;
     
     divisor ? w:++|4;

@@ -42,6 +42,7 @@ def lexer(zfile: ZFile) -> list[ZCommand]:
     currentCommand = ""
     for lineNum, line in enumerate(zfile.zphPath.read_text().splitlines(), start=1):
         skipLine: bool = False
+        line = line.strip()
         for char in line:
             if char == "§":
                 skipLine = True

@@ -1,5 +1,5 @@
 number # RNG:1|10|INT;
-number # CT:INT;
+number ? CT:INT;
 
 tries # INT:0;
 guess # INT:0;
@@ -8,7 +8,7 @@ guess ? INPUT:Enter Guess> ;
 winMessage # PT:Congratulations, you won! With tries> ;
 
 higherMessage # PT:The Number is higher! try again!;
-lowerMessage # PT:The Number is lower! try again!;                                                          
+lowerMessage # PT:The Number is lower! try again!;                                     
 
 winCO # CO:('number'=='guess');
 winIF # IF:winCO;
@@ -38,5 +38,5 @@ tries ? w:++;
 
 winMessage ? push:;
 
-tries # CT:PT;
+tries ? CT:PT;
 tries ? push:;
