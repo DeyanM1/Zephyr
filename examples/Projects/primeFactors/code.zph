@@ -1,0 +1,48 @@
+number # INT:120;
+
+message # PT:-> ;
+
+
+§ factor 2
+f2MO # MO:('number'%2);
+f2CO # CO:('f2MO'==0);
+f2LOOP # LOOP:f2CO;
+f2LOOP ? START:5;
+    message ? w:++|2;
+    message ? w:++|-;
+    numberMO # MO:('number'//2);
+    number ? w:'numberMO';
+
+    f2MO ? w:('number'%2); § Recalculate conditionequation
+f2LOOP ? END:;
+
+
+§ oddNumbers >3
+divisor # INT:3;
+odnMO # MO:('divisor'*'divisor');
+odnCO # CO:('odnMO'<='number');
+odnLOOP # LOOP:odnCO;
+odnLOOP ? START:11;
+    odn2MO # MO:('number'%'divisor');
+    odn2CO # CO:('odn2MO'==0);
+    odn2LOOP # LOOP:odn2CO;
+    odn2LOOP ? START:5;
+        message ? w:++|'divisor';
+        message ? w:++|-;
+        numberMO # MO:('number'//'divisor');
+        number ? w:'numberMO';
+
+        odn2MO ? w:('number'%'divisor'); § Recalculate conditionequation
+    odn2LOOP ? END:;
+    odnMO ? w:('divisor'*'divisor'); § Recalculate conditionequation
+odnLOOP ? END:;
+
+
+§ if remainder is prime number > 2
+rCO # CO:('number'>1);
+rIF # IF:rCO;
+rIF ? START:1;
+    message ? w:++|'number';  
+rIF ? END:;
+
+message ? push:;
