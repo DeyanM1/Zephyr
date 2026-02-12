@@ -15,7 +15,7 @@ __ ? LIB:./lib/python.py;
 
 ```
 
-python # python:; ~ No additional arguments needed
+python # python:; § No additional arguments needed
 
 ```
 
