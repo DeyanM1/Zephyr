@@ -1,2 +1,18 @@
-__ ? LIB:python.py;
+a # PT:HELLO;
+b # INT:1;
 
+list # LIST:INT;
+list ? w:9;
+list ? SET:3;
+list ? w:'b';
+list ? SET:4;
+list ? w:3;
+
+list ? debug:;
+
+
+
+c # INT:;
+c ? w:'list<'list<'list<4>'>'>';
+
+c ? debug:;

@@ -10,7 +10,7 @@ import sys
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable, Dict, TypeAlias
+from typing import Any, Callable, Dict, TypeAlias, List
 
 from colorama import Back
 
@@ -51,6 +51,9 @@ class ZError(Exception):
             115: lambda: ("[115] Error at jump function! Index out of range!", len("f"), SyntaxError),
             116: lambda: ("[116] file cannot be found!", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
             117: lambda: ("[117] Target file isnt a correct type!", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
+            118: lambda: ("[118] Listindex cant be 0", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
+            119: lambda: ("[119] Error at Listindex. Index out of bounds", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
+            120: lambda: ("[120] Some Value in List doesnt match new Type", 0, SyntaxError),
         }
 
         if self.code not in errors:
@@ -134,6 +137,20 @@ class ZCommand:
     func: str
     args: list[str]
 
+
+    def checkArgs(self, count: int, raiseError: bool = True) -> bool:
+        if len(self.args) < count:
+            if raiseError:
+                raise ZError(114)
+            return False
+        
+        for arg in self.args:
+            if arg == "":
+                if raiseError:
+                    raise ZError(114)
+                return False
+        return True
+
 @dataclass
 class ZBool:
     value: str = field(default_factory=lambda:"~0")
@@ -184,23 +201,25 @@ class ZValue:
 
         }
 
-    @staticmethod
-    def isFloat(s: str) -> bool:
+
+    def isFloat(self, value: str) -> bool:
         try:
-            float(s)
+            float(value)
             return True
         except ValueError:
             return False
     
-    @staticmethod
-    def isInt(s: str) -> bool:
-        if s.endswith(".0"):
+
+    def isInt(self, s: str) -> bool:
+        if s.endswith(".0") or s == "":
             core = s[:-2]
-            return core.isdigit() or (core.startswith("-") and core[1:].isdigit())
+            return core.isdigit() or (core.startswith("-") and core[1:].isdigit()) or s == ""
         return s.isdigit() or (s.startswith("-") and s[1:].isdigit())
 
     def setValue(self, newValue: str, targetType: str, activeVars: ActiveVars) -> None:
         compiledValue = self.compileValue(newValue, activeVars)
+        
+
         try:
             if not self.supportedTypes(compiledValue)[targetType]:
                 raise ZError(105)
@@ -213,17 +232,47 @@ class ZValue:
         # This function ignores the type of the variable!
         # This function returns the raw Value
         returnValue: str = rawValue
+        isList = False
 
         if rawValue.startswith("'"):
-            varName = rawValue.replace("'", "")
+            #### REPLACE FIRST AND LAST " ' "
+            varName = rawValue
 
-            var = activeVars.get(varName)
-            if not var:
-                raise ZError(113)
-            
-            returnValue = var.onChange()
+            first = varName.find("'")
+            last = varName.rfind("'")
+
+            if first != -1 and last != -1 and first != last:
+                varName = varName[:first] + varName[first+1:last] + varName[last+1:]
+            elif first != -1:  # only one occurrence
+                varName = varName[:first] + varName[first+1:]
+
+
+            if varName.endswith(">"):
+                varName, indexRaw = varName.split("<", 1)
+
+                indexRaw = "".join(indexRaw.rsplit(">", 1))
+
+                index = ZValue()
+                index.setValue(indexRaw, "INT", activeVars)
+
+                isList = True
+
+
+            if isList:
+                listVar: LIST = activeVars.get(varName)
+                returnValue = listVar.getValue(int(index.value)).value # type: ignore
+
+            else:
+                var = activeVars.get(varName)
+                if not var:
+                    raise ZError(113)
+
+                
+                returnValue = var.onChange()
         
-        return returnValue
+            
+        
+        return returnValue # type: ignore
 
 
     def getValueIfVarType(self, targetType: str) -> str|bool:
@@ -385,7 +434,6 @@ class Variable:
         newVar = typeRegistry[targetVarType](newVarCmd, activeVars)
 
         activeVars.update({newVar.name: newVar})
-
         return activeVars
 
     def debug(self, cmd: ZCommand, activeVars: ActiveVars):
@@ -1025,6 +1073,128 @@ class FILE(Variable):
         return str(*ret)
     
 
+@register()
+class LIST(Variable):
+    def __init__(self, cmd: ZCommand, activeVars: Dict[str, Variable]) -> None:
+        super().__init__(cmd, activeVars)
+        self.supportedVars = ["PT", "INT", "FLOAT"]
+
+        self.pointer: ZValue = ZValue("1")
+
+        self.allowedValueTypes: list[str] = ["INT", "PT", "FLOAT"]
+        self.valueType: str = ""
+
+        self.posValues: List[ZValue] = []
+        self.negValues: List[ZValue] = []
+
+
+        # Set Value Type
+        cmd.checkArgs(1)
+        self.changeValueType(cmd, activeVars)
+
+        if cmd.checkArgs(2, False): # Set value if 2 args
+            if cmd.checkArgs(3, False): # Set pointer if 3 args
+                self.setPointer(cmd.args[3], activeVars) # Potentially set pointer
+
+            self.setValue(cmd.args[0], activeVars)
+
+        self.registerFunc({self.w: "", self.SET: "SET", self.changeValueType: "CVT"})
+
+
+    def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        cmd.checkArgs(1)
+
+        self.setValue(cmd.args[0], activeVars)
+
+    def SET(self, cmd: ZCommand, activeVars: ActiveVars):
+        cmd.checkArgs(1)
+
+        self.setPointer(cmd.args[0], activeVars)
+
+    def changeValueType(self, cmd: ZCommand, activeVars: ActiveVars):
+        cmd.checkArgs(1)
+
+        newType = cmd.args[0]
+
+        match newType:
+            case "PT":
+                pass
+            case "INT":
+                for value in self.posValues:
+                    if not value.isInt(value.value):
+                        raise ZError(120)
+                    
+                for value in self.negValues:
+                    if not value.isInt(value.value):
+                        raise ZError(120)
+            case "FLOAT":
+                for value in self.posValues:
+                    if not value.isFloat(value.value):
+                        raise ZError(120)
+                    
+                for value in self.negValues:
+                    if not value.isFloat(value.value):
+                        raise ZError(120)
+            case _:
+                raise ZError(114)
+
+        self.valueType = newType
+
+
+    def onChange(self) -> str:
+        return self.getValue(int(self.pointer.value)).value
+
+    def setPointer(self, position: str, activeVars: ActiveVars):
+        pointer = ZValue()
+        pointer.setValue(position, "INT", activeVars)
+
+        if int(pointer.value) == 0:
+            raise ZError(118)
+
+        self.pointer = pointer
+
+    def setValue(self, valueRaw: str, activeVars: ActiveVars):
+        if int(self.pointer.value) > 0:
+            pointer = int(self.pointer.value) -1
+
+            value = ZValue()
+            #print(valueRaw)
+            value.setValue(valueRaw, self.valueType, activeVars)
+
+            while len(self.posValues) <= pointer:
+                self.posValues.append(ZValue(""))
+
+            self.posValues[pointer] = value
+
+        elif int(self.pointer.value) < 0:
+            pointer = abs(int(self.pointer.value)) -1
+            value = ZValue()
+            value.setValue(valueRaw, self.valueType, activeVars)
+
+            while len(self.negValues) <= pointer:
+                self.negValues.append(ZValue(""))
+
+            self.negValues[pointer] = value
+
+    def getValue(self, index: int):
+        if index > 0:
+            try:
+                return self.posValues[index-1]
+            except IndexError:
+                raise ZError(119)
+        elif index < 0:
+            try:
+                return self.negValues[abs(index)-1] 
+            except IndexError:
+                raise ZError(119)
+        else:
+            raise ZError(118)
+
+
+ 
+
+    def debug(self, cmd: ZCommand, activeVars: ActiveVars):
+        print(self.posValues, "\n", self.negValues)
 
 @register(name="__")
 class BUILD_IN(Variable):
