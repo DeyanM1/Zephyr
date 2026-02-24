@@ -4,7 +4,7 @@ import json
 from dataclasses import asdict
 from pathlib import Path
 
-from colorama import Fore
+from colorama import Fore # type: ignore  # noqa: F401
 
 import functions
 from functions import (
@@ -136,80 +136,81 @@ def compile(inputData: ZFile):
     index: ZIndex = 0
     try:
         while index < len(ZCommandData):
+            cmd: ZCommand = ZCommandData[index]
 
-                cmd: ZCommand = ZCommandData[index]
-
-                match cmd.base:
-                    case "#":
-                        match cmd.func:
-                            case _:
-                                try:
-                                    hasActiveVars = "activeVars" in getRequiredArgs(functions.typeRegistry[cmd.func])
-                                    hasIndex = "index" in getRequiredArgs(functions.typeRegistry[cmd.func])
-                                    
-                                    if hasActiveVars and not hasIndex:
-                                        var = functions.typeRegistry[cmd.func](cmd, activeVars)
-                                    elif hasActiveVars and hasIndex:
-                                        var = functions.typeRegistry[cmd.func](cmd, activeVars, index)
-                                    else:
-                                        var = functions.typeRegistry[cmd.func](cmd)
-
-                                    activeVars.update({cmd.name: var})
-                                except KeyError:
-                                    raise ZError(103)
-                                
-                    
-                    
-                
-                    case "?":
-                        if activeVars and cmd.name in activeVars or cmd.name == "__":
-                            var = activeVars.get(cmd.name)
-                            if var and hasattr(var, "functionRegistry"):
-                                if cmd.func not in var.functionRegistry:
-                                    raise ZError(103)
-
-                                hasActiveVars = "activeVars" in getRequiredArgs(var.functionRegistry[cmd.func])
-                                hasIndex = "index" in getRequiredArgs(var.functionRegistry[cmd.func])
-
-                                newActiveVars = None
-                                newIndex = None
-
-
-                
-                                if hasActiveVars and not hasIndex:
-                                    newActiveVars = var.functionRegistry[cmd.func](cmd, activeVars)
-                                elif hasIndex and not hasActiveVars:
-                                    newIndex = var.functionRegistry[cmd.func](cmd, index)
-                                elif hasActiveVars and hasIndex:
-                                    newActiveVars, newIndex = var.functionRegistry[cmd.func](cmd, activeVars, index)
-                                else:
-                                    var.functionRegistry[cmd.func](cmd)
-                                
-                                if newActiveVars is not None:
-                                    activeVars = newActiveVars
-                                if newIndex is not None:
-                                    index = newIndex
-                                
-
-                        else:
-                            # Variable not found or declared
-                            raise ZError(102)
-
-
-                    case _:
-                        # Unknown Base
-                        raise ZError(101)
-                
-                index += 1
+            activeVars, index = execute(cmd, activeVars, index)
+            
+            index += 1
     except ZError as e:
         e.process(cmd, inputData)
+    
+
+    #print(f"\n{Fore.GREEN}Code finished successfully. \n{Fore.MAGENTA}{activeVars}{Fore.RESET}")
+
+
+def execute(cmd: ZCommand, activeVars: ActiveVars, index: ZIndex):
+    match cmd.base:
+        case "#":
+            match cmd.func:
+                case _:
+                    try:
+                        hasActiveVars = "activeVars" in getRequiredArgs(functions.typeRegistry[cmd.func])
+                        hasIndex = "index" in getRequiredArgs(functions.typeRegistry[cmd.func])
+                        
+                        if hasActiveVars and not hasIndex:
+                            var = functions.typeRegistry[cmd.func](cmd, activeVars)
+                        elif hasActiveVars and hasIndex:
+                            var = functions.typeRegistry[cmd.func](cmd, activeVars, index)
+                        else:
+                            var = functions.typeRegistry[cmd.func](cmd)
+
+                        activeVars.update({cmd.name: var})
+                    except KeyError:
+                        raise ZError(103)
+                    
+        
+        
+    
+        case "?":
+            if activeVars and cmd.name in activeVars or cmd.name == "__":
+                var = activeVars.get(cmd.name)
+                if var and hasattr(var, "functionRegistry"):
+                    if cmd.func not in var.functionRegistry:
+                        raise ZError(103)
+
+                    hasActiveVars = "activeVars" in getRequiredArgs(var.functionRegistry[cmd.func])
+                    hasIndex = "index" in getRequiredArgs(var.functionRegistry[cmd.func])
+
+                    newActiveVars = None
+                    newIndex = None
 
 
     
-    
-    print(f"\n{Fore.GREEN}Code finished successfully. \n{Fore.MAGENTA}{activeVars}{Fore.RESET}")
+                    if hasActiveVars and not hasIndex:
+                        newActiveVars = var.functionRegistry[cmd.func](cmd, activeVars)
+                    elif hasIndex and not hasActiveVars:
+                        newIndex = var.functionRegistry[cmd.func](cmd, index)
+                    elif hasActiveVars and hasIndex:
+                        newActiveVars, newIndex = var.functionRegistry[cmd.func](cmd, activeVars, index)
+                    else:
+                        var.functionRegistry[cmd.func](cmd)
+                    
+                    if newActiveVars is not None:
+                        activeVars = newActiveVars
+                    if newIndex is not None:
+                        index = newIndex
+                    
+
+            else:
+                # Variable not found or declared
+                raise ZError(102)
 
 
+        case _:
+            # Unknown Base
+            raise ZError(101)
+        
+    return (activeVars, index)
 
 if __name__ == "__main__":
     ZFILE: ZFile = ZFile(Path("src/code.zph"))
