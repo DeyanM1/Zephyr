@@ -9,7 +9,7 @@
 - **`VariableName`**: The name of the variable, user-defined.
 - **`base`**: The base of the variable, used to define its operation:
   - **`?`**: For variable operations (e.g., modifying or retrieving values).
-  - **`#`**: For declaring variables or changing their types.
+  - **`#`**: For declaring variables.
 - **`function`**: The operation to execute on the variable (e.g., printing, defining a function).
 - **`arguments`**: Additional information passed to the function.
 - **`command`:** The entire statement.
@@ -33,7 +33,7 @@
 ## Running a Script
 
 1. Locate your `.zph` script.
-2. Run `cli.py` located in the `src` directory.
+2. Run `zcli.py` located in the `src` directory.
 3. Pass the path to your `.zph` file as a parameter.
 
 **Command:**
@@ -42,7 +42,23 @@
 python src/cli.py <path_to_file.zph>
 ```
 
---
+### Using the Interactive Shell
+
+1. Run `zcli.py` without any command line arguments:
+
+   ```
+   python src/zcli.py
+   ```
+2. After the shell starts, enter your commands directly in the prompt.
+
+#### Exiting the Shell
+
+* If you type `exit`, the program terminates gracefully and deletes the `.temp.zph` file.
+* If you press `Ctrl+C`, the program stops immediately and does not delete temporary files, including `.temp.zph`.
+
+For consistent cleanup of temporary files, exit the shell using the `exit` command instead of interrupting it with `Ctrl+C`.
+
+---
 
 ## Comments
 
