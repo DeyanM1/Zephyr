@@ -33,28 +33,28 @@ class ZError(Exception):
         context: str = path.read_text().splitlines()[cmd.lineNum - 1]
 
         # errorCode: (message, offset_function)
-        errors: dict[int, Callable[..., tuple[str, int, type[BaseException]]]] = {
-            101: lambda: (f"[101]  Unknown Base, use  '{ZBase.use}' or '{ZBase.define}'", len(cmd.name) + 2, SyntaxError),
-            102: lambda: ("[102]  Undefined Variable ", 1, SyntaxError),
-            103: lambda: ("[103]  Unknown Function. Maybe your type is wrong?", len(f"{cmd.name} {cmd.base} "), SyntaxError),
-            104: lambda: ("[104]  Wrong command structure. Missing ':' or ';'? ", 1, SyntaxError),
-            105: lambda: ("[105]  Variable Type doesn't match given Value ", 1, SyntaxError),
-            106: lambda: ("[106]  Invalid Boolean type. Allowed: ~0 | ~1 ", len(f"{cmd.name} {cmd.base} {cmd.func} "), SyntaxError),
-            107: lambda: ("[107]  Value cannot be changed. Variable is constant! ", len(f"{cmd.name} {cmd.base} "), SyntaxError),
-            108: lambda: ("[108]  Current Variable type doesnt support new variable type! ", len(f"{cmd.name} {cmd.base} {cmd.func} "), SyntaxError),
-            109: lambda: (f"[109]  List ({cmd.name}) doesn't support position 0! ", len(f"{cmd.name}")+7, SyntaxError),
-            110: lambda: ("[110]  Only INT, PT, FLOAT are in- and decrementable! ", 1, SyntaxError),
-            111: lambda: ("[111]  Error in Condition/Equation. ", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
-            112: lambda: ("[112] Given variable isnt correct type!", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
-            113: lambda: ("[113] Given variable isnt defined!", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
-            114: lambda: ("[114] Error in arguments!", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
-            115: lambda: ("[115] Error at jump function! Index out of range!", len("f"), SyntaxError),
-            116: lambda: ("[116] file cannot be found!", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
-            117: lambda: ("[117] Target file isnt a correct type!", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
-            118: lambda: ("[118] Listindex cant be 0", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
-            119: lambda: ("[119] Error at Listindex. Index out of bounds", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
-            120: lambda: ("[120] Some Value in List doesnt match new Type", 0, SyntaxError),
-            121: lambda: ("[121] Class error! Variable doesnt have Function Registry!", 0, SyntaxError),
+        errors: dict[int, Callable[..., tuple[str, str, int, type[BaseException]]]] = {
+            101: lambda: (f"[101] Unknown Base, use  '{ZBase.use}' or '{ZBase.define}'", "UnknownBase", len(cmd.name) + 2, SyntaxError),
+            102: lambda: ("[102] Undefined Variable ", "UndefinedVariable", 1, SyntaxError),
+            103: lambda: ("[103] Unknown Function. Maybe your type is wrong?", "UnknownFunction", len(f"{cmd.name} {cmd.base} "), SyntaxError),
+            104: lambda: ("[104] Wrong command structure. Missing ':' or ';'? ", "InvalidStructure", 1, SyntaxError),
+            105: lambda: ("[105] Variable Type doesn't match given Value ", "ValueError", 1, SyntaxError),
+            106: lambda: ("[106] Invalid Boolean type. Allowed: ~0 | ~1 ", "ValueError", len(f"{cmd.name} {cmd.base} {cmd.func} "), SyntaxError),
+            107: lambda: ("[107] Value cannot be changed. Variable is constant! ", "WriteProtection", len(f"{cmd.name} {cmd.base} "), SyntaxError),
+            108: lambda: ("[108] Current Variable type doesnt support new variable type! ", "TypeError", len(f"{cmd.name} {cmd.base} {cmd.func} "), SyntaxError),
+            109: lambda: ("[109] List doesn't support position 0! ", "ListIndexError", len(f"{cmd.name}")+7, SyntaxError),
+            110: lambda: ("[110] Only INT, PT, FLOAT are in- and decrementable! ", "WriteError", 1, SyntaxError),
+            111: lambda: ("[111] Error in Condition/Equation. ", "ConditionError",  len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
+            112: lambda: ("[112] Given variable isnt correct type!", "ParamUnsupportedTypeError", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
+            113: lambda: ("[113] Given variable isnt defined!", "ParamUndefinedVariable", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
+            114: lambda: ("[114] Error in arguments!", "ParamError", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
+            115: lambda: ("[115] Error at jump function! Index out of range!", "JumpOutOfBounds", len("f"), SyntaxError),
+            116: lambda: ("[116] file cannot be found!", "MissingFile", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
+            117: lambda: ("[117] Target file isnt a correct type!", "UnsupportedFile", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
+            118: lambda: ("", "", 0, SyntaxError),
+            119: lambda: ("[119] Error at Listindex. Index out of bounds", "ListOutOfBounds", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
+            120: lambda: ("[120] Some Value in List doesnt match new Type", "ListTypeError", 0, SyntaxError),
+            121: lambda: ("[121] Class error! Variable doesnt have Function Registry!", "ClassMissingFunctionReg", 0, SyntaxError),
         }
 
         if self.code not in errors:
@@ -1150,7 +1150,7 @@ class LIST(Variable):
         pointer.setValue(position, "INT", activeVars)
 
         if int(pointer.value) == 0:
-            raise ZError(118)
+            raise ZError(109)
 
         self.pointer = pointer
 
@@ -1189,7 +1189,7 @@ class LIST(Variable):
             except IndexError:
                 raise ZError(119)
         else:
-            raise ZError(118)
+            raise ZError(109)
 
 
  
