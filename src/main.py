@@ -101,7 +101,7 @@ def lexer(zfile: ZFile) -> list[ZCommand]:
 
     return ZCommandData
 
-def compile(inputData: ZFile) -> None:
+def compiler(inputData: ZFile) -> None:
     ## Reform data. Force ZCommandData = list[ZCommand]
     ZCommandData: list[ZCommand] = []
     match inputData:
@@ -178,7 +178,7 @@ def execute(cmd: ZCommand, activeVars: ActiveVars, index: ZIndex) -> tuple[Activ
             var = activeVars.get(cmd.name)
 
             if not var or not hasattr(var, "functionRegistry"):
-                raise ZError(121)
+                raise ZError(108)
             
             if cmd.func not in var.functionRegistry:
                 raise ZError(103)
@@ -219,7 +219,7 @@ if __name__ == "__main__":
     ZFILE: ZFile = ZFile(Path("src/code.zph"))
 
     lexer(ZFILE)
-    compile(ZFILE)
+    compiler(ZFILE)
 
 
 

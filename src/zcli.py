@@ -1,6 +1,6 @@
 import argparse
 from pathlib import Path
-from main import execute, lexer, compile
+from main import execute, lexer, compiler
 from functions import ZFile, ZError, ZCommand, ZIndex, ZBase, typeRegistry, ActiveVars
 
 
@@ -69,7 +69,7 @@ def start():
         ### RUN ###
 
         lexer(zfile)
-        compile(zfile)
+        compiler(zfile)
 
     else:
         zcli()
