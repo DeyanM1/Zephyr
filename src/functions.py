@@ -54,6 +54,7 @@ class ZError(Exception):
             118: lambda: ("[118] Listindex cant be 0", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
             119: lambda: ("[119] Error at Listindex. Index out of bounds", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
             120: lambda: ("[120] Some Value in List doesnt match new Type", 0, SyntaxError),
+            121: lambda: ("[121] Class error! Variable doesnt have Function Registry!", 0, SyntaxError),
         }
 
         if self.code not in errors:
@@ -433,7 +434,7 @@ class Variable:
         newVarCmd: ZCommand = ZCommand(cmd.lineNum, cmd.name, ZBase.define, targetVarType, [oldVar.onChange()])
         newVar = typeRegistry[targetVarType](newVarCmd, activeVars)
 
-        activeVars.update({newVar.name: newVar})
+        activeVars[newVar.name] = newVar
         return activeVars
 
     def debug(self, cmd: ZCommand, activeVars: ActiveVars):
