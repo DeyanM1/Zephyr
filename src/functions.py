@@ -34,36 +34,36 @@ class ZError(Exception):
 
         # errorCode: (message, offset_function)
         errors: dict[int, Callable[..., tuple[str, str, int, type[BaseException]]]] = {
-            101: lambda: (f"[101] Unknown Base, use  '{ZBase.use}' or '{ZBase.define}'", "UnknownBase", len(cmd.name) + 2, SyntaxError),
-            102: lambda: ("[102] Undefined Variable ", "UndefinedVariable", 1, SyntaxError),
-            103: lambda: ("[103] Unknown Function. Maybe your type is wrong?", "UnknownFunction", len(f"{cmd.name} {cmd.base} "), SyntaxError),
-            104: lambda: ("[104] Wrong command structure. Missing ':' or ';'? ", "InvalidStructure", 1, SyntaxError),
-            105: lambda: ("[105] Variable Type doesn't match given Value ", "ValueError", 1, SyntaxError),
-            106: lambda: ("[106] Invalid Boolean type. Allowed: ~0 | ~1 ", "ValueError", len(f"{cmd.name} {cmd.base} {cmd.func} "), SyntaxError),
-            107: lambda: ("[107] Value cannot be changed. Variable is constant! ", "WriteProtection", len(f"{cmd.name} {cmd.base} "), SyntaxError),
-            108: lambda: ("[108] Current Variable type doesnt support new variable type! ", "TypeError", len(f"{cmd.name} {cmd.base} {cmd.func} "), SyntaxError),
-            109: lambda: ("[109] List doesn't support position 0! ", "ListIndexError", len(f"{cmd.name}")+7, SyntaxError),
-            110: lambda: ("[110] Only INT, PT, FLOAT are in- and decrementable! ", "WriteError", 1, SyntaxError),
-            111: lambda: ("[111] Error in Condition/Equation. ", "ConditionError",  len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
-            112: lambda: ("[112] Given variable isnt correct type!", "ParamUnsupportedTypeError", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
-            113: lambda: ("[113] Given variable isnt defined!", "ParamUndefinedVariable", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
-            114: lambda: ("[114] Error in arguments!", "ParamError", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
-            115: lambda: ("[115] Error at jump function! Index out of range!", "JumpOutOfBounds", len("f"), SyntaxError),
-            116: lambda: ("[116] file cannot be found!", "MissingFile", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
-            117: lambda: ("[117] Target file isnt a correct type!", "UnsupportedFile", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
+            101: lambda: (f"Unknown Base, use  '{ZBase.use}' or '{ZBase.define}'", "UnknownBase", len(cmd.name) + 2, SyntaxError),
+            102: lambda: ("Undefined Variable ", "UndefinedVariable", 1, SyntaxError),
+            103: lambda: ("Unknown Function.", "UnknownFunction", len(f"{cmd.name} {cmd.base} "), SyntaxError),
+            104: lambda: ("Wrong command structure. Missing ':' or ';'? ", "InvalidStructure", 1, SyntaxError),
+            105: lambda: ("Variable Type doesn't match given Value ", "ValueError", 1, SyntaxError),
+            106: lambda: ("Invalid Boolean type. Allowed: ~0 | ~1 ", "ValueError", len(f"{cmd.name} {cmd.base} {cmd.func} "), SyntaxError),
+            107: lambda: ("Value cannot be changed. Variable is constant! ", "WriteProtection", len(f"{cmd.name} {cmd.base} "), SyntaxError),
+            108: lambda: ("Current Variable type doesnt support new variable type! ", "TypeError", len(f"{cmd.name} {cmd.base} {cmd.func} "), SyntaxError),
+            109: lambda: ("List doesn't support position 0! ", "ListIndexError", len(f"{cmd.name}")+7, SyntaxError),
+            110: lambda: ("Only INT, PT, FLOAT are in- and decrementable! ", "WriteError", 1, SyntaxError),
+            111: lambda: ("Error in Condition/Equation. ", "ConditionError",  len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
+            112: lambda: ("Given variable isnt correct type!", "ParamUnsupportedTypeError", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
+            113: lambda: ("Given variable isnt defined!", "ParamUndefinedVariable", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
+            114: lambda: ("Error in arguments!", "ParamError", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
+            115: lambda: ("Error at jump function! Index out of range!", "JumpOutOfBounds", len("f"), SyntaxError),
+            116: lambda: ("file cannot be found!", "MissingFile", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
+            117: lambda: ("Target file isnt a correct type!", "UnsupportedFile", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
             118: lambda: ("", "", 0, SyntaxError),
-            119: lambda: ("[119] Error at Listindex. Index out of bounds", "ListOutOfBounds", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
-            120: lambda: ("[120] Some Value in List doesnt match new Type", "ListTypeError", 0, SyntaxError),
-            121: lambda: ("[121] Class error! Variable doesnt have Function Registry!", "ClassMissingFunctionReg", 0, SyntaxError),
+            119: lambda: ("Error at Listindex. Index out of bounds", "ListOutOfBounds", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
+            120: lambda: ("Some Value in List doesnt match new Type", "ListTypeError", 0, SyntaxError),
+            121: lambda: ("Class error! Variable doesnt have Function Registry!", "ClassMissingFunctionReg", 0, SyntaxError),
         }
 
         if self.code not in errors:
             raise ValueError(f"Unknown error code: {self.code}")
 
-        message, offset, errorType = errors[self.code]()
+        message, name, offset, errorType = errors[self.code]()
 
         raise errorType(
-            f"{Back.RED}{message}{Back.RESET}",
+            f"{Back.RED}[{self.code}] <{name}> | {message}{Back.RESET}",
             (str(path), cmd.lineNum, offset, context)
         )
 
