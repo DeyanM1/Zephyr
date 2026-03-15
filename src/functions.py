@@ -10,7 +10,7 @@ import sys
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable, Dict, TypeAlias, List
+from typing import Any, Callable, Dict, List, TypeAlias
 
 from colorama import Back
 
@@ -28,10 +28,7 @@ class ZError(Exception):
     def __init__(self, code: int) -> None:
         self.code = code
     
-    def process(self, cmd: ZCommand, zfile: ZFile) -> None:
-        path: Path = zfile.zphPath
-        context: str = path.read_text().splitlines()[cmd.lineNum - 1]
-
+    def process(self, cmd: ZCommand, zfile: ZFile, exit: bool = True) -> None:
         # errorCode: (message, offset_function)
         errors: dict[int, Callable[..., tuple[str, str, int, type[BaseException]]]] = {
             101: lambda: (f"Unknown Base, use  '{ZBase.use}' or '{ZBase.define}'", "UnknownBase", len(cmd.name) + 2, SyntaxError),
@@ -51,7 +48,7 @@ class ZError(Exception):
             115: lambda: ("Error at jump function! Index out of range!", "JumpOutOfBounds", len("f"), SyntaxError),
             116: lambda: ("file cannot be found!", "MissingFile", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
             117: lambda: ("Target file isnt a correct type!", "UnsupportedFile", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
-            118: lambda: ("", "", 0, SyntaxError),
+            118: lambda: ("Error at first line of .zph file", "SyntaxError", 0, SyntaxError),
             119: lambda: ("Error at Listindex. Index out of bounds", "ListOutOfBounds", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
             120: lambda: ("Some Value in List doesnt match new Type", "ListTypeError", 0, SyntaxError),
             121: lambda: ("Class error! Variable doesnt have Function Registry!", "ClassMissingFunctionReg", 0, SyntaxError),
@@ -62,10 +59,20 @@ class ZError(Exception):
 
         message, name, offset, errorType = errors[self.code]()
 
-        raise errorType(
-            f"{Back.RED}[{self.code}] <{name}> | {message}{Back.RESET}",
-            (str(path), cmd.lineNum, offset, context)
-        )
+        if exit:
+            try:
+                path: Path = zfile.zphPath
+                context: str = path.read_text().splitlines()[cmd.lineNum - 1]
+
+                raise errorType(
+                    f"{Back.RED}[{self.code}] <{name}> | {message}{Back.RESET}",
+                    (str(path), cmd.lineNum, offset, context)
+                )
+            except IndexError:
+                raise ZError(118)
+            
+        else:
+            print(f"{Back.RED}[{self.code}] <{name}> | {message}{Back.RESET}",)
 
 
 
