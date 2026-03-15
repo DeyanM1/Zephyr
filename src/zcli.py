@@ -2,10 +2,12 @@ import argparse
 from pathlib import Path
 from main import execute, lexer, compiler
 from functions import ZFile, ZError, ZCommand, ZIndex, ZBase, typeRegistry, ActiveVars
+import readline
 
+readline.parse_and_bind("tab: complete")
+readline.parse_and_bind("set editing-mode emacs")
 
-
-
+history: list[str] = []
 
 def zcli():
     zfile = ZFile(Path(".temp.zph"))
@@ -21,7 +23,7 @@ def zcli():
             rawCMD = input(">-->> ")
 
 
-            if rawCMD.lower() == "exit":
+            if rawCMD.strip().lower() == "exit":
                 try:
                     zfile.zphPath.unlink()
                     zfile.zsrcPath.unlink()
@@ -29,6 +31,8 @@ def zcli():
                     pass
                 print("Exiting...")
                 quit()
+            
+            history.append(rawCMD)
             
             with zfile.zphPath.open(mode="a", encoding="utf-8") as f:
                 rawCMD += "\n"
