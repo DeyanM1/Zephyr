@@ -36,12 +36,15 @@ def zcli():
 
 
             ZCommandData = lexer(zfile)
+
             cmd: ZCommand = ZCommandData[-1]
             activeVars, index = execute(cmd, activeVars, index)
                     
             
         except ZError as e:
-            e.process(cmd, zfile)
+            lines = zfile.zphPath.read_text().splitlines()
+            zfile.zphPath.write_text("\n".join(lines[:-1] if len(lines) > 1 else []) + "\n")
+            e.process(cmd, zfile, False)
         
         except (KeyboardInterrupt, EOFError):
             print("\nExiting...")
