@@ -14,3 +14,5 @@ uv.lock
 site/
 uv.lock
 tests
+.temp.zph
+.temp.zsrc
