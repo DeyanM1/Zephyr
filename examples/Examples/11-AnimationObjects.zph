@@ -1,0 +1,14 @@
+a # PT:Hello;
+b # PT:World;
+c # PT:!;
+
+ao # AO:|1;
+ao ? w:'a';
+ao ? w:'b';
+ao ? w:'c';
+
+ao ? step:;
+ao ? setIndex:2;
+ao ? display:;
+ao ? reset:;
+ao ? start:;
