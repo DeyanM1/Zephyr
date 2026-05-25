@@ -8,3 +8,9 @@
 - [x] add comments
 - [x] PTs in CO
 - [x] Float doesnt have a default value on set
+- [ ] add 3d list
+- [x] create animation object
+- [ ] add list support for animation objects
+- [ ] add display clear for ao
+- [ ] add iteration function -> for loop
+- [ ] update FLOATS to have good features ex. max float points, rounding, real support for float numbers, autoconvert, (vllt eigenes ZFLOAT)

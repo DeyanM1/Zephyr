@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from argparse import _ActionsContainer
 import importlib.util
 import inspect
 import os
@@ -192,10 +193,61 @@ class ZBool:
         return self.lookUpTable[self.value]
 
 
-    def setValue(self, value: str) -> None:
-        if value not in self.lookUpTable:
-            raise ZError(106)
-        self.value = value
+    def compileValue(self, rawValue: str, activeVars: ActiveVars) -> str:
+        # This function ignores the type of the variable!
+        # This function returns the raw Value
+        returnValue: str = rawValue
+        isList = False
+    
+        if rawValue.startswith("'"):
+            #### REPLACE FIRST AND LAST " ' "
+            varName = rawValue
+    
+            first = varName.find("'")
+            last = varName.rfind("'")
+    
+            if first != -1 and last != -1 and first != last:
+                varName = varName[:first] + varName[first+1:last] + varName[last+1:]
+            elif first != -1:  # only one occurrence
+                varName = varName[:first] + varName[first+1:]
+    
+    
+            if varName.endswith(">"):
+                varName, indexRaw = varName.split("<", 1)
+    
+                indexRaw = "".join(indexRaw.rsplit(">", 1))
+    
+                index = ZValue()
+                index.setValue(indexRaw, "INT", activeVars)
+    
+                isList = True
+    
+    
+            if isList:
+                listVar: LIST = activeVars.get(varName)
+                returnValue = listVar.getValue(int(index.value)).value # type: ignore
+    
+            else:
+                var = activeVars.get(varName)
+                if not var:
+                    raise ZError(113)
+    
+                
+                returnValue = var.onChange()
+        
+        return returnValue # type: ignore
+    
+    def setValue(self, rawValue: str, activeVars: ActiveVars) -> None:
+        compiledValue = self.compileValue(rawValue, activeVars)
+        
+
+        try:
+            if compiledValue not in list(self.lookUpTable.keys()):
+                raise ZError(106)
+        except KeyError:
+            pass
+            
+        self.value = compiledValue
 
 @dataclass
 class ZValue:
@@ -223,6 +275,8 @@ class ZValue:
             core = s[:-2]
             return core.isdigit() or (core.startswith("-") and core[1:].isdigit()) or s == ""
         return s.isdigit() or (s.startswith("-") and s[1:].isdigit())
+
+    
 
     def setValue(self, newValue: str, targetType: str, activeVars: ActiveVars) -> None:
         compiledValue = self.compileValue(newValue, activeVars)
@@ -1345,8 +1399,64 @@ class BUILD_IN(Variable):
 
         return activeVars|newActiveVars
 
+@register()
+class AO(Variable):
+    def __init__(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        super().__init__(cmd, activeVars)
+        self.supportedVars = ["INT", "FLOAT"]
 
+        self.value: ZValue = ZValue("0") # Current position of the Animation
+        self.delay: ZValue = ZValue("0")
+        self.frames: list[ZValue] = []
+        self.doClearScreen: ZBool = ZBool()
 
+        if cmd.args[0] != "":
+            self.w(cmd, activeVars)
+        if len(cmd.args) > 1 and cmd.args[1] != "":
+            self.delay.setValue(cmd.args[1], "INT", activeVars)
+        if len(cmd.args) > 2 and cmd.args[2] != "":
+            self.doClearScreen.setValue(cmd.args[2], activeVars)
+                
+        
+
+        self.registerFunc({self.w: "", self.setDelay: "", self.clearScreen: "", self.start: "", self.step: "", self.reset: "", self.setIndex: "", self.display: ""})
+
+    def displayFrame(self, pos: int):
+       print(self.frames[pos].value)
+
+    def display(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        self.displayFrame(int(self.value.value))
+
+    def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        if cmd.args[0] and cmd.args[0] != "":
+            self.frames.append(ZValue())
+            self.frames[-1].setValue(cmd.args[0], "PT", activeVars)
+
+    def setDelay(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+       self.delay.setValue(cmd.args[0], "INT", activeVars) 
+
+    def setIndex(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        self.value.setValue(cmd.args[0], "INT", activeVars)
+
+    def clearScreen(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        self.doClearScreen.setValue(cmd.args[0], activeVars)
+
+    def start(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        for index in range(int(self.value.value), len(self.frames)):
+            self.displayFrame(index)
+            time.sleep(int(self.delay.value))
+            if self.doClearScreen.getBool():
+                pass # TODO: clear screen!
+            
+        self.value = ZValue("0")
+        
+    def step(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        self.displayFrame(int(self.value.value))
+        self.value.increment("1", "INT", activeVars)
+        
+    def reset(self, cmd: ZCommand, activeVars= ActiveVars) -> None:
+        self.value = ZValue("0")
+            
 if __name__ == "__main__":
     import subprocess
     subprocess.call(["python3", "src/main.py"])
