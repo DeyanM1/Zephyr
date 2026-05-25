@@ -433,8 +433,7 @@ class Variable:
         if targetVarType not in self.supportedVars:
             raise ZError(108)
 
-        targetVarType: str = cmd.args[0]
-
+            
         oldVar: Variable = activeVars[cmd.name]
 
 
@@ -484,7 +483,6 @@ class INT(Variable):
             case _:
                 self.value.setValue(cmd.args[0] if cmd.args[0] != "" else "0", self.varType, activeVars)
 
-    
 @register()
 class FLOAT(Variable):
     def __init__(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
@@ -939,7 +937,6 @@ class LOOP(Variable):
         self.countLooped: int = 1
 
         self.conditionalObjectName: ZValue = ZValue()
-        self.conditionalObject: CO
         
 
 
