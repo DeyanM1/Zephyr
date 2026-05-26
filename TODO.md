@@ -14,3 +14,6 @@
 - [ ] add display clear for ao
 - [ ] add iteration function -> for loop
 - [ ] update FLOATS to have good features ex. max float points, rounding, real support for float numbers, autoconvert, (vllt eigenes ZFLOAT)
+- [ ] update INTS to only accepts INTs or values ending to .0
+- [x] update ZVALUE to have real Types and type autochange
+- [ ] FIX RNG -> Work with new ZTYPE types!!!!!!!

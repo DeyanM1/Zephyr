@@ -62,7 +62,6 @@ def lexer(zfile: ZFile) -> list[ZCommand]:
 
 
     # Read compiledData, turn into ZCommands
-    ZCommandData: list[ZCommand] = []
     cmd = ZCommand(-1, "", "", "", [""])
     try:
         # Parse each command into ZCommand objects
@@ -216,10 +215,7 @@ def execute(cmd: ZCommand, activeVars: ActiveVars, index: ZIndex) -> tuple[Activ
     return (activeVars, index)
 
 if __name__ == "__main__":
-    ZFILE: ZFile = ZFile(Path("src/code.zph"))
+    ZFILE: ZFile = ZFile(Path("examples/Examples/11-AnimationObjects"))
 
     lexer(ZFILE)
     compiler(ZFILE)
-
-
-

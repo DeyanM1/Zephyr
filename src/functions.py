@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from argparse import _ActionsContainer
 import importlib.util
 import inspect
 import os
@@ -11,7 +10,7 @@ import sys
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable, Dict, List, TypeAlias
+from typing import Any, Callable, Dict, List, TypeAlias, Literal
 
 from colorama import Back
 
@@ -75,7 +74,7 @@ class ZError(Exception):
         else:
             print(f"{Back.RED}[{self.code}] <{name}> | {message}{Back.RESET}",)
 
-
+ZValueType = Literal["INT", "FLOAT", "PT"]
 
 @dataclass
 class ZFile:
@@ -183,7 +182,7 @@ class ZBool:
     def setCompileValue(self, newRawValue: bool) -> None:
         "This function takes a Python bool converts it into ZBool and sets it to current value"
         newValue = self.lookUpTable2[newRawValue]
-        self.setValue(newValue)
+        self.value = newValue
 
     def getZBool(self) -> str:
         """Returns the current value in ZBool format"""
@@ -217,8 +216,8 @@ class ZBool:
     
                 indexRaw = "".join(indexRaw.rsplit(">", 1))
     
-                index = ZValue()
-                index.setValue(indexRaw, "INT", activeVars)
+                index = ZValue("0", "INT")
+                index.setValue(indexRaw, activeVars)
     
                 isList = True
     
@@ -249,17 +248,17 @@ class ZBool:
             
         self.value = compiledValue
 
+
+
+
+
+
+
 @dataclass
 class ZValue:
-    value: str = ""
+    value: str
+    valueType: ZValueType
 
-    def supportedTypes(self, value: str) -> dict[str, bool]:
-        return {
-            "PT": True,
-            "INT": self.isInt(value),
-            "FLOAT": self.isFloat(value),
-
-        }
 
 
     def isFloat(self, value: str) -> bool:
@@ -270,25 +269,52 @@ class ZValue:
             return False
     
 
-    def isInt(self, s: str) -> bool:
-        if s.endswith(".0") or s == "":
-            core = s[:-2]
-            return core.isdigit() or (core.startswith("-") and core[1:].isdigit()) or s == ""
-        return s.isdigit() or (s.startswith("-") and s[1:].isdigit())
+    def isInt(self, value: str) -> bool:
+        if value.endswith(".0") or value == "":
+            core = value[:-2]
+            return core.isdigit() or (core.startswith("-") and core[1:].isdigit()) or value == ""
+        return value.isdigit() or (value.startswith("-") and value[1:].isdigit())
 
-    
+    def isValueCompatibleWithType(self, value) -> bool:
+        match self.valueType:
+            case "FLOAT":
+                if self.isFloat(value):
+                    return True
+            case "INT":
+                if self.isInt(value):
+                    return True
+            case "PT":
+                return True
+                
+        return False
 
-    def setValue(self, newValue: str, targetType: str, activeVars: ActiveVars) -> None:
+    def formatValueToMatchType(self, newValue: str):
+        match self.valueType:
+            case "FLOAT":
+                try:
+                    self.value = str(float(newValue))
+                except ValueError:
+                    raise ZError(105)
+
+            case "INT":
+                try:
+                    self.value = str(newValue).split(".")[0]
+                except ValueError:
+                    raise ZError(105)
+
+            case "PT":
+                self.value = newValue
+                
+
+
+    def setValue(self, newValue: str, activeVars: ActiveVars) -> None:
         compiledValue = self.compileValue(newValue, activeVars)
-        
 
-        try:
-            if not self.supportedTypes(compiledValue)[targetType]:
-                raise ZError(105)
-        except KeyError:
-            pass
-            
-        self.value = compiledValue
+        if not self.isValueCompatibleWithType(compiledValue):
+            raise ZError(105)
+
+        self.formatValueToMatchType(compiledValue)
+       
 
     def compileValue(self, rawValue: str, activeVars: ActiveVars) -> str:
         # This function ignores the type of the variable!
@@ -314,8 +340,8 @@ class ZValue:
 
                 indexRaw = "".join(indexRaw.rsplit(">", 1))
 
-                index = ZValue()
-                index.setValue(indexRaw, "INT", activeVars)
+                index = ZValue("0", "INT")
+                index.setValue(indexRaw, activeVars)
 
                 isList = True
 
@@ -337,57 +363,32 @@ class ZValue:
         return returnValue # type: ignore
 
 
-    def getValueIfVarType(self, targetType: str) -> str|bool:
-        # Return value if current Value is supported by target Type
-        if self.supportedTypes(self.value)[targetType]:
-            return self.value
-        else:
-            return False
+    def increment(self, incrementValueRaw: str, activeVars: ActiveVars) -> None:
+        match self.valueType:
+            case "PT":
+                if incrementValueRaw == "":
+                    incrementValueRaw = "1"
+    
+                incrementValue = ZValue("", "PT")
+                incrementValue.setValue(incrementValueRaw, activeVars)
+    
+                
+                
+                self.value = f"{self.value}{incrementValue.value}"
 
-    def increment(self, incrementValueRaw: str, currentType: str, activeVars: ActiveVars) -> None:
-        if not self.supportedTypes(incrementValueRaw)[currentType]:
-            raise ZError(105)
-        
-        # Long and complicated statement. Dont know what it does#
-        if currentType == "PT":
-            if incrementValueRaw == "":
-                incrementValueRaw = "1"
-
-            incrementValue = ZValue()
-            incrementValue.setValue(incrementValueRaw, "PT", activeVars)
-
-            
-            
-            self.value = f"{self.value}{incrementValue.value}"
-
-            #self.setValue(self.value + (self.value)*int(incrementValue), currentType, activeVars)
+            case "INT":
+                self.setValue(str(float(self.value)+float(incrementValueRaw)), activeVars)
 
 
+    def decrement(self, decrementValue: str, activeVars: ActiveVars) -> None:
+        newValue = float(self.value) - float(decrementValue)
 
-        else:
-            newValue = float(self.value) + float(incrementValueRaw)
-            if currentType == "INT":
-                self.setValue(str(newValue).split(".")[0], currentType, activeVars)
-            elif currentType == "FLOAT":
-                self.setValue(str(newValue), currentType, activeVars)
-            else:
-                raise ZError(110)
-
-    def decrement(self, decrementValue: str, currentType: str, activeVars: ActiveVars) -> None:
-        if not self.supportedTypes(decrementValue)[currentType]:
-            raise ZError(105)
-
-        if currentType == "PT":
-            self.setValue("", currentType, activeVars)
-
-        else:
-            newValue = float(self.value) - float(decrementValue)
-            if currentType == "INT":
-                self.setValue(str(newValue).split(".")[0], currentType, activeVars)
-            elif currentType == "FLOAT":
-                self.setValue(str(newValue), currentType, activeVars)
-            else:
-                raise ZError(110)
+        match self.valueType:   
+            case "PT":
+                self.setValue("", activeVars)
+                
+            case _:
+                self.setValue(str(newValue), activeVars)
 
 
 
@@ -511,17 +512,17 @@ class INT(Variable):
         super().__init__(cmd, activeVars)
         self.supportedVars = ["FLOAT", "PT"]
 
-        self.value: ZValue = ZValue()
+        self.value: ZValue = ZValue("0", "INT")
         
         self.w(cmd, activeVars)
         
         self.registerFunc({self.w: "", self.INPUT: ""})
 
     def INPUT(self, cmd: ZCommand, activeVars: ActiveVars):
-        message = ZValue()
-        message.setValue(cmd.args[0], "PT", activeVars)
+        message = ZValue("", "PT")
+        message.setValue(cmd.args[0], activeVars)
         newValue = input(message.value)
-        self.value.setValue(newValue, "INT", activeVars)
+        self.value.setValue(newValue, activeVars)
     
     def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         """        if self.const.compiledValue:
@@ -530,12 +531,12 @@ class INT(Variable):
 
         match cmd.args[0]:
             case "++":
-                self.value.increment(cmd.args[1] if 1 < len(cmd.args) else "1", self.varType, activeVars)
+                self.value.increment(cmd.args[1] if 1 < len(cmd.args) else "1", activeVars)
             case "--":
-                self.value.decrement(cmd.args[1] if 1 < len(cmd.args) else "1", self.varType, activeVars)
+                self.value.decrement(cmd.args[1] if 1 < len(cmd.args) else "1", activeVars)
 
             case _:
-                self.value.setValue(cmd.args[0] if cmd.args[0] != "" else "0", self.varType, activeVars)
+                self.value.setValue(cmd.args[0] if cmd.args[0] != "" else "0", activeVars)
 
 @register()
 class FLOAT(Variable):
@@ -543,17 +544,18 @@ class FLOAT(Variable):
         super().__init__(cmd, activeVars)
         self.supportedVars = ["INT", "PT"]
 
-        self.value: ZValue = ZValue()
+        self.value: ZValue = ZValue("0.0", "FLOAT")
+        self.maxFloatingPointNumbers: ZValue = ZValue("1", "INT")
 
         self.w(cmd, activeVars)
 
         self.registerFunc({self.w: "", self.INPUT: ""})
 
     def INPUT(self, cmd: ZCommand, activeVars: ActiveVars):
-        message = ZValue()
-        message.setValue(cmd.args[0], "PT", activeVars)
+        message = ZValue("", "PT")
+        message.setValue(cmd.args[0], activeVars)
         newValue = input(message.value)
-        self.value.setValue(newValue, "FLOAT", activeVars)
+        self.value.setValue(newValue, activeVars)
     
     def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         """if self.const.compiledValue:
@@ -562,12 +564,12 @@ class FLOAT(Variable):
 
         match cmd.args[0]:
             case "++":
-                self.value.increment(cmd.args[1] if 1 < len(cmd.args) else "1", self.varType, activeVars)
+                self.value.increment(cmd.args[1] if 1 < len(cmd.args) else "1", activeVars)
             case "--":
-                self.value.decrement(cmd.args[1] if 1 < len(cmd.args) else "1", self.varType, activeVars)
+                self.value.decrement(cmd.args[1] if 1 < len(cmd.args) else "1", activeVars)
 
             case _:
-                self.value.setValue(cmd.args[0] if cmd.args[0] != "" else "0", self.varType, activeVars)
+                self.value.setValue(cmd.args[0] if cmd.args[0] != "" else "0", activeVars)
 
 @register()
 class PT(Variable):
@@ -575,7 +577,7 @@ class PT(Variable):
         super().__init__(cmd, activeVars)
         self.supportedVars = ["INT", "FLOAT"]
 
-        self.value: ZValue = ZValue()
+        self.value: ZValue = ZValue("", "PT")
         self.w(cmd, activeVars)
 
         self.registerFunc({self.push: "", self.w: "", self.INPUT: "", self.insertAt: ""})
@@ -587,29 +589,29 @@ class PT(Variable):
 
         match cmd.args[0]:
             case "++":
-                self.value.increment(cmd.args[1] if 1 < len(cmd.args) else "1", self.varType, activeVars)
+                self.value.increment(cmd.args[1] if 1 < len(cmd.args) else "1", activeVars)
             case "--":
-                self.value.decrement(cmd.args[1] if 1 < len(cmd.args) else "1", self.varType, activeVars)
+                self.value.decrement(cmd.args[1] if 1 < len(cmd.args) else "1", activeVars)
 
             case _:
-                self.value.setValue(cmd.args[0], self.varType, activeVars)
+                self.value.setValue(cmd.args[0], activeVars)
     
     def INPUT(self, cmd: ZCommand, activeVars: ActiveVars):
-        message = ZValue()
-        message.setValue(cmd.args[0], "PT", activeVars)
+        message = ZValue("", "PT")
+        message.setValue(cmd.args[0], activeVars)
         newValue = input(message.value)
-        self.value.setValue(newValue, "PT", activeVars)
+        self.value.setValue(newValue, activeVars)
 
     def insertAt(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         if len(cmd.args) > 1 and cmd.args[0] != "" and cmd.args[1] != "":
-            valueToInsert = ZValue()
-            position = ZValue()
+            valueToInsert = ZValue("", "PT")
+            position = ZValue("0", "INT")
 
-            valueToInsert.setValue(cmd.args[0], "PT", activeVars)
-            position.setValue(cmd.args[1], "INT", activeVars)
+            valueToInsert.setValue(cmd.args[0], activeVars)
+            position.setValue(cmd.args[1], activeVars)
 
             newValue = self.value.value[:int(position.value)-1] + valueToInsert.value + self.value.value[int(position.value)-1:]
-            self.value.setValue(newValue, "PT", activeVars)
+            self.value.setValue(newValue, activeVars)
 
 
     def push(self, cmd: ZCommand) -> None:
@@ -623,7 +625,7 @@ class CO(Variable):
         self.supportedVars = ["INT", "FLOAT", "PT"]
 
         self.value: ZBool = ZBool()
-        self.rawCondition: ZValue = ZValue()
+        self.rawCondition: ZValue = ZValue("", "PT")
         self.compiledCondition: str = ""
 
 
@@ -636,7 +638,7 @@ class CO(Variable):
 
         
     def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
-        self.rawCondition.setValue(cmd.args[0], "PT", activeVars)
+        self.rawCondition.setValue(cmd.args[0], activeVars)
         self.compile(activeVars)
 
     
@@ -652,7 +654,7 @@ class CO(Variable):
                     inVar = True
                     
                 else:
-                    newValue = ZValue()
+                    newValue = ZValue("0.0", "FLOAT")
 
                     var = activeVars.get(varName)
 
@@ -660,7 +662,7 @@ class CO(Variable):
                         if var.varType == "PT":
                             newValue.value = '"' + var.value.value + '"'
                         else:
-                            newValue.setValue(var.value.value, "FLOAT", activeVars)
+                            newValue.setValue(var.value.value, activeVars)
                     else:
                         raise ZError(111)
 
@@ -699,14 +701,14 @@ class IF(Variable):
 
         self.supportedVars = []
 
-        self.value: ZValue = ZValue()
+        self.value: ZValue = ZValue("", "PT") # UNUSED HERE
 
 
-        self.conditionalObjectName: ZValue = ZValue()
+        self.conditionalObjectName: ZValue = ZValue("", "PT")
         self.conditionalObjectValue: ZBool = ZBool()
 
-        self.countCommandsInIf: ZValue = ZValue()
-        self.countCommandsInElif: ZValue = ZValue()
+        self.countCommandsInIf: ZValue = ZValue("0", "INT")
+        self.countCommandsInElif: ZValue = ZValue("0", "INT")
         
 
         if len(cmd.args) > 0 and cmd.args[0] != "":
@@ -717,7 +719,7 @@ class IF(Variable):
 
     def w(self, cmd: ZCommand, activeVars: ActiveVars):
         if len(cmd.args) > 0:
-            self.conditionalObjectName.setValue(cmd.args[0], "PT", activeVars)
+            self.conditionalObjectName.setValue(cmd.args[0], activeVars)
             conditionalObject = activeVars.get(self.conditionalObjectName.value)
 
             if isinstance(conditionalObject, CO):
@@ -730,7 +732,7 @@ class IF(Variable):
     
     def START(self, cmd: ZCommand, activeVars: ActiveVars, index: ZIndex) -> tuple[ActiveVars, ZIndex]:
         if len(cmd.args) > 0 and cmd.args[0] != "":
-            self.countCommandsInIf.setValue(cmd.args[0], "INT", activeVars)
+            self.countCommandsInIf.setValue(cmd.args[0], activeVars)
         else:
             raise ZError(114)
         
@@ -743,7 +745,7 @@ class IF(Variable):
         return activeVars, newIndex
 
     def ELSE(self, cmd: ZCommand, activeVars: ActiveVars, index: ZIndex) -> tuple[ActiveVars, ZIndex]:
-        self.countCommandsInElif.setValue(cmd.args[0], "INT", activeVars)
+        self.countCommandsInElif.setValue(cmd.args[0], activeVars)
         newIndex: ZIndex = 0
         if not self.conditionalObjectValue.getBool():
             newIndex = index
@@ -762,8 +764,8 @@ class MO(Variable):
 
         self.supportedVars = ["PT", "INT", "FLOAT"]
 
-        self.value: ZValue = ZValue()
-        self.rawEquation: ZValue = ZValue()
+        self.value: ZValue = ZValue("0.0", "FLOAT")
+        self.rawEquation: ZValue = ZValue("", "PT")
         self.compiledEquation: str = ""
 
         if len(cmd.args) > 0:
@@ -773,7 +775,7 @@ class MO(Variable):
         self.registerFunc({self.w: ""})
 
     def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
-        self.rawEquation.setValue(cmd.args[0], "PT", activeVars)
+        self.rawEquation.setValue(cmd.args[0], activeVars)
         self.compile(activeVars)
     
     def compile(self, activeVars: ActiveVars) -> None:
@@ -787,7 +789,7 @@ class MO(Variable):
                     inVar = True
                     
                 else:
-                    newValue = ZValue()
+                    newValue = ZValue("0.0", "FLOAT")
                     var = activeVars.get(varName)
                     if var:
                         if var.varType == "PT":
@@ -797,7 +799,7 @@ class MO(Variable):
                                     newNewValue += char
                             newValue.value = newNewValue
                         else:
-                            newValue.setValue(var.value.value, "FLOAT", activeVars)
+                            newValue.setValue(var.value.value, activeVars)
 
                         self.compiledEquation += newValue.value
 
@@ -822,7 +824,7 @@ class MO(Variable):
         except Exception: 
             raise ZError(111)
         
-        self.value.setValue(str(result), "FLOAT", activeVars)
+        self.value.setValue(str(result), activeVars)
 
 @register()
 class FUNC(Variable):
@@ -835,14 +837,14 @@ class FUNC(Variable):
         self.returnType: str = ""
         self.disableVariableChange: ZBool = ZBool()
 
-        self.value: ZValue = ZValue("0")
+        self.value: ZValue = ZValue("0.0", "FLOAT")
         self.rawEquation: str = ""
         self.compiledEquation: str = ""
 
         if len(cmd.args) > 0 and cmd.args[0] != "":
             self.returnType = cmd.args[0]
         if len(cmd.args) > 1 and cmd.args[1] != "":
-            self.disableVariableChange.setValue(cmd.args[1])
+            self.disableVariableChange.setValue(cmd.args[1], activeVars)
         if len(cmd.args) > 2 and cmd.args[2]:
             mathObject: MO = activeVars.get(cmd.args[2])
             if not mathObject:
@@ -859,8 +861,8 @@ class FUNC(Variable):
         self.registerFunc({self.w: "", self.call: ""})
                 
     def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
-        moName = ZValue()
-        moName.setValue(cmd.args[0], "PT", activeVars)
+        moName = ZValue("", "PT")
+        moName.setValue(cmd.args[0], activeVars)
         mathObject: MO = activeVars.get(moName.value)
         if not mathObject:
             raise ZError(113)
@@ -893,7 +895,7 @@ class FUNC(Variable):
                     inVar = True
                     
                 else:
-                    newValue = ZValue()
+                    newValue = ZValue("0.0", "FLOAT")
                     var = activeVars.get(varName)
                     if var:
                         if var.varType == "PT":
@@ -903,7 +905,7 @@ class FUNC(Variable):
                                     newNewValue += char
                             newValue.value = newNewValue
                         else:
-                            newValue.setValue(var.value.value, "FLOAT", activeVars)
+                            newValue.setValue(var.value.value, activeVars)
 
                         self.compiledEquation += newValue.value
 
@@ -928,7 +930,7 @@ class FUNC(Variable):
         except Exception: 
             raise ZError(111)
         
-        self.value.setValue(str(result), "FLOAT", activeVars)
+        self.value.setValue(str(result), activeVars)
 
 @register()
 class RNG(Variable):
@@ -938,16 +940,20 @@ class RNG(Variable):
         self.supportedVars = ["INT", "FLOAT", "PT"]
 
 
-        self.value: ZValue = ZValue()
+        
 
-        self.randomNumberType: ZValue = ZValue()
+        self.randomNumberType: ZValueType = "FLOAT"
         self.allowedTypes: list[str] = ["INT", "FLOAT"]
-        self.rangeMin: ZValue = ZValue()
-        self.rangeMax: ZValue = ZValue()
+
+        self.value: ZValue = ZValue("0", self.randomNumberType) # type:ignore
+        self.rangeMin: ZValue = ZValue("0", self.randomNumberType)  # type:ignore
+        self.rangeMax: ZValue = ZValue("0", self.randomNumberType)  # type:ignore
+
 
         if len(cmd.args) > 2 and cmd.args[0] != "" and cmd.args[1] != "" and cmd.args[2] != "":
             self.w(cmd, activeVars)
-        
+
+
         self.registerFunc({self.w: ""})
 
     def w(self, cmd: ZCommand, activeVars: ActiveVars):
@@ -955,20 +961,26 @@ class RNG(Variable):
         if not len(cmd.args) > 2 or cmd.args[0] == "" or cmd.args[1] == "" or cmd.args[2] == "":
             raise ZError(114)
         
-
-        self.randomNumberType.setValue(cmd.args[2], "PT", activeVars)
-        if self.randomNumberType.value not in self.allowedTypes:
+        newRandomNumberType = ZValue("", "PT")
+        newRandomNumberType.setValue(cmd.args[2], activeVars)
+        if newRandomNumberType.value not in self.allowedTypes:
             raise ZError(114)
+        self.randomNumberType = newRandomNumberType.value # type:ignore
+
+        
+        self.value: ZValue = ZValue("0", self.randomNumberType) 
+        self.rangeMin: ZValue = ZValue("0", self.randomNumberType) 
+        self.rangeMax: ZValue = ZValue("0", self.randomNumberType)  
 
 
-        self.rangeMin.setValue(cmd.args[0], self.randomNumberType.value, activeVars)
-        self.rangeMax.setValue(cmd.args[1], self.randomNumberType.value, activeVars)
+        self.rangeMin.setValue(cmd.args[0], activeVars)
+        self.rangeMax.setValue(cmd.args[1], activeVars)
 
         self.generate(activeVars)
 
     def generate(self, activeVars: ActiveVars):
         newValue = 0
-        match self.randomNumberType.value:
+        match self.randomNumberType:
             case "INT":
                 newValue = random.randint(int(self.rangeMin.value), int(self.rangeMax.value))
             case "FLOAT":
@@ -976,7 +988,7 @@ class RNG(Variable):
             case _:
                 pass
 
-        self.value.setValue(str(newValue), self.randomNumberType.value, activeVars)
+        self.value.setValue(str(newValue), activeVars)
 
 @register()
 class LOOP(Variable):
@@ -986,11 +998,11 @@ class LOOP(Variable):
         self.supportedVars = ["INT", "FLOAT", "PT"]
 
         self.startIndex: ZIndex = index
-        self.countCommandsInLoop: ZValue = ZValue()
+        self.countCommandsInLoop: ZValue = ZValue("0", "INT")
         self.active: bool = False
         self.countLooped: int = 1
 
-        self.conditionalObjectName: ZValue = ZValue()
+        self.conditionalObjectName: ZValue = ZValue("", "PT")
         
 
 
@@ -1001,7 +1013,7 @@ class LOOP(Variable):
 
     def w(self, cmd: ZCommand, activeVars: ActiveVars):
         if len(cmd.args) > 0 and cmd.args[0] != "":
-            self.conditionalObjectName.setValue(cmd.args[0], "PT", activeVars)
+            self.conditionalObjectName.setValue(cmd.args[0], activeVars)
 
             self.conditionalObject: CO = activeVars.get(self.conditionalObjectName.value)
 
@@ -1027,7 +1039,7 @@ class LOOP(Variable):
         self.startIndex = index
 
         if len(cmd.args) > 0 and cmd.args[0] != "":
-            self.countCommandsInLoop.setValue(cmd.args[0], "INT", activeVars)
+            self.countCommandsInLoop.setValue(cmd.args[0], activeVars)
         else:
             raise ZError(114)
 
@@ -1058,7 +1070,7 @@ class FILE(Variable):
         super().__init__(cmd, activeVars)
         self.supportedVars = []
 
-        self.value: ZValue = ZValue()
+        self.value: ZValue = ZValue("", "PT") # unused
 
         self.path: Path = Path()
 
@@ -1080,8 +1092,8 @@ class FILE(Variable):
             self.path = Path.cwd() / "unnamed_file.txt"
 
         elif len(cmd.args) > 0 and cmd.args[0] != "":
-            rawPath = ZValue()
-            rawPath.setValue(cmd.args[0], "PT", activeVars)
+            rawPath = ZValue("", "PT")
+            rawPath.setValue(cmd.args[0], activeVars)
             path = Path(rawPath.value)
 
             if not path.is_absolute():
@@ -1103,8 +1115,8 @@ class FILE(Variable):
         if len(cmd.args) < 0 and cmd.args[0] == "":
             raise ZError(14)
         
-        text = ZValue()
-        text.setValue(cmd.args[0], "PT", activeVars)
+        text = ZValue("", "PT")
+        text.setValue(cmd.args[0], activeVars)
 
         with self.path.open("w") as openFile:
             openFile.write(text.value)
@@ -1115,8 +1127,8 @@ class FILE(Variable):
 
     def gRENAME(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         if len(cmd.args) > 0 and cmd.args[0] != "":
-            newName = ZValue()
-            newName.setValue(cmd.args[0], "PT", activeVars)
+            newName = ZValue("", "PT")
+            newName.setValue(cmd.args[0], activeVars)
             self.path.rename(newName.value)
         else:
             raise ZError(114)
@@ -1138,10 +1150,10 @@ class LIST(Variable):
         super().__init__(cmd, activeVars)
         self.supportedVars = ["PT", "INT", "FLOAT"]
 
-        self.pointer: ZValue = ZValue("1")
+        self.pointer: ZValue = ZValue("1", "INT")
 
         self.allowedValueTypes: list[str] = ["INT", "PT", "FLOAT"]
-        self.valueType: str = ""
+        self.valueType: ZValueType = "FLOAT"
 
         self.posValues: List[ZValue] = []
         self.negValues: List[ZValue] = []
@@ -1204,8 +1216,8 @@ class LIST(Variable):
         return self.getValue(int(self.pointer.value)).value
 
     def setPointer(self, position: str, activeVars: ActiveVars):
-        pointer = ZValue()
-        pointer.setValue(position, "INT", activeVars)
+        pointer = ZValue("", "INT")
+        pointer.setValue(position, activeVars)
 
         if int(pointer.value) == 0:
             raise ZError(109)
@@ -1216,22 +1228,21 @@ class LIST(Variable):
         if int(self.pointer.value) > 0:
             pointer = int(self.pointer.value) -1
 
-            value = ZValue()
-            #print(valueRaw)
-            value.setValue(valueRaw, self.valueType, activeVars)
+            value = ZValue("", self.valueType)
+            value.setValue(valueRaw, activeVars)
 
             while len(self.posValues) <= pointer:
-                self.posValues.append(ZValue(""))
+                self.posValues.append(ZValue("", "INT"))
 
             self.posValues[pointer] = value
 
         elif int(self.pointer.value) < 0:
             pointer = abs(int(self.pointer.value)) -1
-            value = ZValue()
-            value.setValue(valueRaw, self.valueType, activeVars)
+            value = ZValue("", self.valueType)
+            value.setValue(valueRaw, activeVars)
 
             while len(self.negValues) <= pointer:
-                self.negValues.append(ZValue(""))
+                self.negValues.append(ZValue("", "INT"))
 
             self.negValues[pointer] = value
 
@@ -1249,9 +1260,6 @@ class LIST(Variable):
         else:
             raise ZError(109)
 
-
- 
-
     def debug(self, cmd: ZCommand, activeVars: ActiveVars):
         print(self.posValues, "\n", self.negValues)
 
@@ -1266,18 +1274,18 @@ class BUILD_IN(Variable):
 
     
     def wait(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
-        waitTime: ZValue = ZValue()
-        waitTime.setValue(cmd.args[0], "FLOAT", activeVars)
+        waitTime: ZValue = ZValue("0.0", "FLOAT")
+        waitTime.setValue(cmd.args[0], activeVars)
 
         time.sleep(float(waitTime.value))
 
     def jump(self, cmd: ZCommand, activeVars: ActiveVars, index: ZIndex) -> tuple[ActiveVars, ZIndex] :
-        indexToAdd: ZValue = ZValue()
+        indexToAdd: ZValue = ZValue("0", "INT")
         if len(cmd.args[0]):
             if cmd.args[0] == "":
                 raise ZError(114)
             
-            indexToAdd.setValue(cmd.args[0], "INT", activeVars)
+            indexToAdd.setValue(cmd.args[0], activeVars)
 
             if indexToAdd.value.startswith("-"):
                 return activeVars, ZIndex(index-int(indexToAdd.value.replace("-", ""))-1)
@@ -1287,12 +1295,12 @@ class BUILD_IN(Variable):
         raise ZError(114)
     
     def jumpTo(self, cmd: ZCommand, activeVars: ActiveVars, index: ZIndex) -> tuple[ActiveVars, ZIndex]:
-        indexToJump: ZValue = ZValue()
+        indexToJump: ZValue = ZValue("0", "INT")
         if len(cmd.args[0]):
             if cmd.args[0] == "":
                 raise ZError(114)
             
-            indexToJump.setValue(cmd.args[0], "INT", activeVars)
+            indexToJump.setValue(cmd.args[0], activeVars)
 
             return activeVars, int(indexToJump.value)-2
 
@@ -1301,8 +1309,8 @@ class BUILD_IN(Variable):
 
     def LIB(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         if len(cmd.args[0]) > 0 and cmd.args[0] != "":
-            userPath = ZValue()
-            userPath.setValue(cmd.args[0], "PT", activeVars)
+            userPath = ZValue("", "PT")
+            userPath.setValue(cmd.args[0], activeVars)
             userPath = Path(userPath.value)
 
 
@@ -1366,8 +1374,8 @@ class BUILD_IN(Variable):
 
     def export(self, cmd: ZCommand, activeVars: ActiveVars):
         if len(cmd.args) > 0 and cmd.args[0] != "":
-            fileName = ZValue()
-            fileName.setValue(cmd.args[0], "PT", activeVars)
+            fileName = ZValue("", "PT")
+            fileName.setValue(cmd.args[0], activeVars)
 
             zfile = ZFile(Path(fileName.value))
 
@@ -1381,8 +1389,8 @@ class BUILD_IN(Variable):
 
     def load(self, cmd: ZCommand, activeVars: ActiveVars) -> ActiveVars:
         if len(cmd.args) > 0 and cmd.args[0] != "":
-            fileName = ZValue()
-            fileName.setValue(cmd.args[0], "PT", activeVars)
+            fileName = ZValue("", "PT")
+            fileName.setValue(cmd.args[0], activeVars)
 
             zfile = ZFile(Path(fileName.value))
 
@@ -1405,15 +1413,15 @@ class AO(Variable):
         super().__init__(cmd, activeVars)
         self.supportedVars = ["INT", "FLOAT"]
 
-        self.value: ZValue = ZValue("0") # Current position of the Animation
-        self.delay: ZValue = ZValue("0")
+        self.value: ZValue = ZValue("0", "INT") # Current position of the Animation
+        self.delay: ZValue = ZValue("0", "INT")
         self.frames: list[ZValue] = []
         self.doClearScreen: ZBool = ZBool()
 
         if cmd.args[0] != "":
             self.w(cmd, activeVars)
         if len(cmd.args) > 1 and cmd.args[1] != "":
-            self.delay.setValue(cmd.args[1], "INT", activeVars)
+            self.delay.setValue(cmd.args[1], activeVars)
         if len(cmd.args) > 2 and cmd.args[2] != "":
             self.doClearScreen.setValue(cmd.args[2], activeVars)
                 
@@ -1429,14 +1437,14 @@ class AO(Variable):
 
     def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         if cmd.args[0] and cmd.args[0] != "":
-            self.frames.append(ZValue())
-            self.frames[-1].setValue(cmd.args[0], "PT", activeVars)
+            self.frames.append(ZValue("", "PT"))
+            self.frames[-1].setValue(cmd.args[0], activeVars)
 
     def setDelay(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
-       self.delay.setValue(cmd.args[0], "INT", activeVars) 
+       self.delay.setValue(cmd.args[0], activeVars) 
 
     def setIndex(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
-        self.value.setValue(cmd.args[0], "INT", activeVars)
+        self.value.setValue(cmd.args[0], activeVars)
 
     def clearScreen(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         self.doClearScreen.setValue(cmd.args[0], activeVars)
@@ -1448,14 +1456,14 @@ class AO(Variable):
             if self.doClearScreen.getBool():
                 pass # TODO: clear screen!
             
-        self.value = ZValue("0")
+        self.value = ZValue("0", "INT")
         
     def step(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         self.displayFrame(int(self.value.value))
-        self.value.increment("1", "INT", activeVars)
+        self.value.increment("1", activeVars)
         
     def reset(self, cmd: ZCommand, activeVars= ActiveVars) -> None:
-        self.value = ZValue("0")
+        self.value = ZValue("0", "INT")
             
 if __name__ == "__main__":
     import subprocess
