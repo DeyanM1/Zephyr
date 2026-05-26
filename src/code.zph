@@ -1,14 +1,6 @@
-a # PT:Hello;
-b # PT:World;
-c # PT:!;
+a # PT:123456789;
 
-ao # AO:|1;
-ao ? w:'a';
-ao ? w:'b';
-ao ? w:'c';
 
-ao ? step:;
-ao ? setIndex:2;
-ao ? display:;
-ao ? reset:;
-ao ? start:;
+a ? insertAt:-|11;
+
+a ? push:;

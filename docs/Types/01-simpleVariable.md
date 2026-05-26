@@ -57,11 +57,12 @@ var ? w:-|<*- decrementBy>;    § Defaults to 1 if not set
 
 ```
 
-* Increment value of PT:
+* Increment / decrement value of PT:
 
 ```
 
 var ? w:++|<*- incrementBy>;   § Defaults to 1 if not set -> The new incrementBy value is appended to var
+var ? w:--;                    § decrementing a PT deletes its content. parameters are not supported.
 
 ```
 * Increment / decrement value of BOOL:

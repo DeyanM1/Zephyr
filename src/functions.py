@@ -10,7 +10,7 @@ import sys
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable, Dict, List, TypeAlias, Literal
+from typing import Any, Callable, List, TypeAlias, Literal
 
 from colorama import Back
 
@@ -52,6 +52,8 @@ class ZError(Exception):
             119: lambda: ("Error at Listindex. Index out of bounds", "ListOutOfBounds", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
             120: lambda: ("Some Value in List doesnt match new Type", "ListTypeError", 0, SyntaxError),
             121: lambda: ("Class error! Variable doesnt have Function Registry!", "ClassMissingFunctionReg", 0, SyntaxError),
+            122: lambda: ("PT insertion Error! Index can't be smaller than 1", "InvalidIndexError", 0, SyntaxError),
+            123: lambda: ("PT insertion Error! Index out of bounds!", "IndexOutoFBounds", 0, SyntaxError)
         }
 
         if self.code not in errors:
@@ -190,7 +192,7 @@ class ZValue:
 
 
     @property
-    def asPythonBool(self):
+    def asPythonBOOL(self):
         if self.valueType == "BOOL":
             match self.value:
                 case "~1":
@@ -345,6 +347,8 @@ class ZValue:
         newValue = float(self.value) - float(decrementValue)
 
         match self.valueType:   
+            case "PT":
+                self.value = ""
             case "BOOL":
                 match self.value:
                     case "~0":
@@ -569,14 +573,24 @@ class PT(Variable):
 
     def insertAt(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         if len(cmd.args) > 1 and cmd.args[0] != "" and cmd.args[1] != "":
+            # try:
             valueToInsert = ZValue("", "PT")
             position = ZValue("0", "INT")
+        
 
             valueToInsert.setValue(cmd.args[0], activeVars)
             position.setValue(cmd.args[1], activeVars)
 
+            if int(position.value) < 1:
+                raise ZError(122)
+
+            if len(self.value.value)+1 < int(position.value):
+                raise ZError(123)
+
             newValue = self.value.value[:int(position.value)-1] + valueToInsert.value + self.value.value[int(position.value)-1:]
             self.value.setValue(newValue, activeVars)
+            # except Exception:
+            #     raise ZError(122)
 
 
     def push(self, cmd: ZCommand) -> None:
@@ -739,9 +753,9 @@ class IF(Variable):
             raise ZError(114)
         
         newIndex: ZIndex = 0
-        if self.conditionalObjectValue.asPythonBool:
+        if self.conditionalObjectValue.asPythonBOOL:
             newIndex = index
-        elif not self.conditionalObjectValue.asPythonBool:
+        elif not self.conditionalObjectValue.asPythonBOOL:
             newIndex = index + int(self.countCommandsInIf.value)
         
         return activeVars, newIndex
@@ -749,9 +763,9 @@ class IF(Variable):
     def ELSE(self, cmd: ZCommand, activeVars: ActiveVars, index: ZIndex) -> tuple[ActiveVars, ZIndex]:
         self.countCommandsInElif.setValue(cmd.args[0], activeVars)
         newIndex: ZIndex = 0
-        if not self.conditionalObjectValue.asPythonBool:
+        if not self.conditionalObjectValue.asPythonBOOL:
             newIndex = index
-        elif self.conditionalObjectValue.asPythonBool:
+        elif self.conditionalObjectValue.asPythonBOOL:
             newIndex = index + int(self.countCommandsInElif.value)
         
         return activeVars, newIndex
@@ -796,9 +810,9 @@ class MO(Variable):
                     if var:
                         if var.varType == "PT":
                             newNewValue = ""
-                            for char in var.value.value:
-                                if char in MATH_ALLOWEDCHARS:
-                                    newNewValue += char
+                            for char2 in var.value.value:
+                                if char2 in MATH_ALLOWEDCHARS:
+                                    newNewValue += char2
                             newValue.value = newNewValue
                         else:
                             newValue.setValue(var.value.value, activeVars)
@@ -880,11 +894,11 @@ class FUNC(Variable):
         """This function is called after the equation is set and calculates the equation if diasbleVariableChange is True
            The normal call function is the one called using    fun ? call:;
         """
-        if self.disableVariableChange.asPythonBool:
+        if self.disableVariableChange.asPythonBOOL:
             self.compile(activeVars)
     
     def call(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
-        if not self.disableVariableChange.asPythonBool:
+        if not self.disableVariableChange.asPythonBOOL:
             self.compile(activeVars)
         
     def compile(self, activeVars: ActiveVars) -> None:
@@ -936,7 +950,7 @@ class FUNC(Variable):
 
 @register()
 class RNG(Variable):
-    def __init__(self, cmd: ZCommand, activeVars: Dict[str, Variable]) -> None:
+    def __init__(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         super().__init__(cmd, activeVars)
 
         self.supportedVars = ["INT", "FLOAT", "PT"]
@@ -994,7 +1008,7 @@ class RNG(Variable):
 
 @register()
 class LOOP(Variable):
-    def __init__(self, cmd: ZCommand, activeVars: Dict[str, Variable], index: ZIndex) -> None:
+    def __init__(self, cmd: ZCommand, activeVars: ActiveVars, index: ZIndex) -> None:
         super().__init__(cmd, activeVars)
 
         self.supportedVars = ["INT", "FLOAT", "PT"]
@@ -1030,7 +1044,7 @@ class LOOP(Variable):
         
     def checkCondition(self, activeVars: ActiveVars):
         self.conditionalObject.compile(activeVars) # type: ignore
-        if self.conditionalObject.value.getBool(): # type: ignore
+        if self.conditionalObject.value.asPythonBOOL:
             self.active = True
         else:
             self.active = False
@@ -1113,7 +1127,7 @@ class FILE(Variable):
 
 
     def cSET(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
-        if len(cmd.args) < 0 and cmd.args[0] == "":
+        if len(cmd.args) <= 0 and cmd.args[0] == "":
             raise ZError(14)
         
         text = ZValue("", "PT")
@@ -1146,7 +1160,7 @@ class FILE(Variable):
     
 @register()
 class LIST(Variable):
-    def __init__(self, cmd: ZCommand, activeVars: Dict[str, Variable]) -> None:
+    def __init__(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         super().__init__(cmd, activeVars)
         self.supportedVars = ["PT", "INT", "FLOAT"]
 
@@ -1454,7 +1468,7 @@ class AO(Variable):
         for index in range(int(self.value.value), len(self.frames)):
             self.displayFrame(index)
             time.sleep(int(self.delay.value))
-            if self.doClearScreen.asPythonBool:
+            if self.doClearScreen.asPythonBOOL:
                 pass # TODO: clear screen!
             
         self.value = ZValue("0", "INT")
@@ -1463,7 +1477,7 @@ class AO(Variable):
         self.displayFrame(int(self.value.value))
         self.value.increment("1", activeVars)
         
-    def reset(self, cmd: ZCommand, activeVars= ActiveVars) -> None:
+    def reset(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         self.value = ZValue("0", "INT")
             
 if __name__ == "__main__":
