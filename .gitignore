@@ -11,6 +11,7 @@ uv.lock
 .vscode
 
 *.zsrc
+*.zpkg
 site/
 uv.lock
 tests
