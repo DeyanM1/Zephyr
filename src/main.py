@@ -61,11 +61,11 @@ def lexer(zfile: ZFile) -> list[ZCommand]:
             currentCommand = ""
 
 
+    ZCommandData: list[ZCommand] = []
     # Read compiledData, turn into ZCommands
     cmd = ZCommand(-1, "", "", "", [""])
     try:
         # Parse each command into ZCommand objects
-        ZCommandData: list[ZCommand] = []
         first, arguments, name, base, func = "", "", "", "", ""
         for line, command in compiledData:
             try:

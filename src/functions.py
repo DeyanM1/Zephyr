@@ -183,14 +183,14 @@ class ZValue:
         return value.isdigit() or (value.startswith("-") and value[1:].isdigit())
 
     def isBool(self, value: str) -> bool:
-        if value in ("1", "0", "1.0", "0.0", "", "~0", "~1"):
+        if value in ("1", "0", "1.0", "0.0", "", "~0", "~1", True, False):
             return True
 
         return False
 
 
     @property
-    def getPythonBOOL(self):
+    def asPythonBool(self):
         if self.valueType == "BOOL":
             match self.value:
                 case "~1":
@@ -201,14 +201,14 @@ class ZValue:
         return False
 
     @property
-    def getZBOOL(self) -> bool | ZBOOLValues:
+    def asZBOOl(self) -> bool | ZBOOLValues:
         if self.valueType == "BOOL":
             return self.value # type:ignore
 
         return False
 
     @property
-    def getNumBOOL(self):
+    def asNumBOOL(self):
         match self.value:
             case "~0": 
                 return 0
@@ -235,7 +235,7 @@ class ZValue:
                 
         return False
 
-    def formatValueToMatchType(self, newValue: str):
+    def formatValueToMatchType(self, newValue: str|bool):
         match self.valueType:
             case "FLOAT":
                 try:
@@ -251,13 +251,13 @@ class ZValue:
 
             case "BOOL":
                 match newValue:
-                    case "0"|"0.0"|"~0":
+                    case "0"|"0.0"|"~0"|True:
                         self.value = "~0"
-                    case "1"|"1.0"|"~1":
+                    case "1"|"1.0"|"~1"|False:
                         self.value = "~1"
 
             case "PT":
-                self.value = newValue
+                self.value = str(newValue)
                 
 
 
@@ -615,7 +615,7 @@ class BOOL(Variable):
             case "PT":
                 return self.value.value
             case _:
-                return str(self.value.getNumBOOL)
+                return str(self.value.asNumBOOL)
 
 
 
@@ -691,7 +691,7 @@ class CO(Variable):
         except Exception: 
             raise ZError(111)
         
-        self.value.setCompileValue(result)
+        self.value.formatValueToMatchType(result)
 
     def onChange(self, targetType: str) -> str:
         return self.value.value
@@ -739,9 +739,9 @@ class IF(Variable):
             raise ZError(114)
         
         newIndex: ZIndex = 0
-        if self.conditionalObjectValue.getBool():
+        if self.conditionalObjectValue.asPythonBool:
             newIndex = index
-        elif not self.conditionalObjectValue.getBool():
+        elif not self.conditionalObjectValue.asPythonBool:
             newIndex = index + int(self.countCommandsInIf.value)
         
         return activeVars, newIndex
@@ -749,9 +749,9 @@ class IF(Variable):
     def ELSE(self, cmd: ZCommand, activeVars: ActiveVars, index: ZIndex) -> tuple[ActiveVars, ZIndex]:
         self.countCommandsInElif.setValue(cmd.args[0], activeVars)
         newIndex: ZIndex = 0
-        if not self.conditionalObjectValue.getBool():
+        if not self.conditionalObjectValue.asPythonBool:
             newIndex = index
-        elif self.conditionalObjectValue.getBool():
+        elif self.conditionalObjectValue.asPythonBool:
             newIndex = index + int(self.countCommandsInElif.value)
         
         return activeVars, newIndex
@@ -880,11 +880,11 @@ class FUNC(Variable):
         """This function is called after the equation is set and calculates the equation if diasbleVariableChange is True
            The normal call function is the one called using    fun ? call:;
         """
-        if self.disableVariableChange.getBool():
+        if self.disableVariableChange.asPythonBool:
             self.compile(activeVars)
     
     def call(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
-        if not self.disableVariableChange.getBool():
+        if not self.disableVariableChange.asPythonBool:
             self.compile(activeVars)
         
     def compile(self, activeVars: ActiveVars) -> None:
@@ -1454,7 +1454,7 @@ class AO(Variable):
         for index in range(int(self.value.value), len(self.frames)):
             self.displayFrame(index)
             time.sleep(int(self.delay.value))
-            if self.doClearScreen.getBool():
+            if self.doClearScreen.asPythonBool:
                 pass # TODO: clear screen!
             
         self.value = ZValue("0", "INT")
