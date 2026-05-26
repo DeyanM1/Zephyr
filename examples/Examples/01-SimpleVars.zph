@@ -22,3 +22,14 @@ d ? w:--;                       § d um 1 erniedrigen
 d ? CT:PT;
 d ? push:;
 
+
+
+boolMessage # PT:;
+
+e # BOOL:~0;
+boolMessage ? w:++|'e';
+e ? w:++;
+boolMessage ? w:++|'e';
+boolMessage ? push:;
+e ? CT:PT;
+e ? push:;

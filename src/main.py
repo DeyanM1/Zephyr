@@ -215,7 +215,7 @@ def execute(cmd: ZCommand, activeVars: ActiveVars, index: ZIndex) -> tuple[Activ
     return (activeVars, index)
 
 if __name__ == "__main__":
-    ZFILE: ZFile = ZFile(Path("examples/Examples/11-AnimationObjects"))
+    ZFILE: ZFile = ZFile(Path("examples/Examples/01-SimpleVars.zph"))
 
     lexer(ZFILE)
     compiler(ZFILE)

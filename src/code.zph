@@ -1,6 +1,6 @@
 a # PT:Hello;
-b # PT:WORLD;
-c # PT:!!;
+b # PT:World;
+c # PT:!;
 
 ao # AO:|1;
 ao ? w:'a';
@@ -9,5 +9,6 @@ ao ? w:'c';
 
 ao ? step:;
 ao ? setIndex:2;
+ao ? display:;
 ao ? reset:;
 ao ? start:;

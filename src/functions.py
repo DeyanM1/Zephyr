@@ -74,7 +74,8 @@ class ZError(Exception):
         else:
             print(f"{Back.RED}[{self.code}] <{name}> | {message}{Back.RESET}",)
 
-ZValueType = Literal["INT", "FLOAT", "PT"]
+ZValueType = Literal["INT", "FLOAT", "PT", "BOOL"]
+ZBOOLValues: TypeAlias = Literal["~1", "~0"]
 
 @dataclass
 class ZFile:
@@ -159,99 +160,6 @@ class ZCommand:
                 return False
         return True
 
-@dataclass
-class ZBool:
-    value: str = field(default_factory=lambda:"~0")
-
-    lookUpTable: dict[str, bool] = field(default_factory=lambda:{
-        "~0": False,
-        "~1": True,
-    })
-
-    lookUpTable2: dict[bool, str] = field(default_factory=lambda:{
-        False: "~0",
-        True: "~1"
-    })
-
-
-
-    @property
-    def compiledValue(self) -> bool:
-        return self.lookUpTable[self.value]
-
-    def setCompileValue(self, newRawValue: bool) -> None:
-        "This function takes a Python bool converts it into ZBool and sets it to current value"
-        newValue = self.lookUpTable2[newRawValue]
-        self.value = newValue
-
-    def getZBool(self) -> str:
-        """Returns the current value in ZBool format"""
-        return self.value
-    def getBool(self) -> bool:
-        """Returns the current value in Python Bool format"""
-        return self.lookUpTable[self.value]
-
-
-    def compileValue(self, rawValue: str, activeVars: ActiveVars) -> str:
-        # This function ignores the type of the variable!
-        # This function returns the raw Value
-        returnValue: str = rawValue
-        isList = False
-    
-        if rawValue.startswith("'"):
-            #### REPLACE FIRST AND LAST " ' "
-            varName = rawValue
-    
-            first = varName.find("'")
-            last = varName.rfind("'")
-    
-            if first != -1 and last != -1 and first != last:
-                varName = varName[:first] + varName[first+1:last] + varName[last+1:]
-            elif first != -1:  # only one occurrence
-                varName = varName[:first] + varName[first+1:]
-    
-    
-            if varName.endswith(">"):
-                varName, indexRaw = varName.split("<", 1)
-    
-                indexRaw = "".join(indexRaw.rsplit(">", 1))
-    
-                index = ZValue("0", "INT")
-                index.setValue(indexRaw, activeVars)
-    
-                isList = True
-    
-    
-            if isList:
-                listVar: LIST = activeVars.get(varName)
-                returnValue = listVar.getValue(int(index.value)).value # type: ignore
-    
-            else:
-                var = activeVars.get(varName)
-                if not var:
-                    raise ZError(113)
-    
-                
-                returnValue = var.onChange()
-        
-        return returnValue # type: ignore
-    
-    def setValue(self, rawValue: str, activeVars: ActiveVars) -> None:
-        compiledValue = self.compileValue(rawValue, activeVars)
-        
-
-        try:
-            if compiledValue not in list(self.lookUpTable.keys()):
-                raise ZError(106)
-        except KeyError:
-            pass
-            
-        self.value = compiledValue
-
-
-
-
-
 
 
 @dataclass
@@ -268,12 +176,47 @@ class ZValue:
         except ValueError:
             return False
     
-
     def isInt(self, value: str) -> bool:
         if value.endswith(".0") or value == "":
             core = value[:-2]
             return core.isdigit() or (core.startswith("-") and core[1:].isdigit()) or value == ""
         return value.isdigit() or (value.startswith("-") and value[1:].isdigit())
+
+    def isBool(self, value: str) -> bool:
+        if value in ("1", "0", "1.0", "0.0", "", "~0", "~1"):
+            return True
+
+        return False
+
+
+    @property
+    def getPythonBOOL(self):
+        if self.valueType == "BOOL":
+            match self.value:
+                case "~1":
+                    return True
+                case "~0":
+                    return False
+
+        return False
+
+    @property
+    def getZBOOL(self) -> bool | ZBOOLValues:
+        if self.valueType == "BOOL":
+            return self.value # type:ignore
+
+        return False
+
+    @property
+    def getNumBOOL(self):
+        match self.value:
+            case "~0": 
+                return 0
+            case "~1": 
+                return 1
+
+        return 0
+
 
     def isValueCompatibleWithType(self, value) -> bool:
         match self.valueType:
@@ -285,6 +228,10 @@ class ZValue:
                     return True
             case "PT":
                 return True
+
+            case "BOOL":
+                if self.isBool(value):
+                    return True
                 
         return False
 
@@ -301,6 +248,13 @@ class ZValue:
                     self.value = str(newValue).split(".")[0]
                 except ValueError:
                     raise ZError(105)
+
+            case "BOOL":
+                match newValue:
+                    case "0"|"0.0"|"~0":
+                        self.value = "~0"
+                    case "1"|"1.0"|"~1":
+                        self.value = "~1"
 
             case "PT":
                 self.value = newValue
@@ -356,7 +310,7 @@ class ZValue:
                     raise ZError(113)
 
                 
-                returnValue = var.onChange()
+                returnValue = var.onChange("")
         
             
         
@@ -376,7 +330,14 @@ class ZValue:
                 
                 self.value = f"{self.value}{incrementValue.value}"
 
-            case "INT":
+            case "BOOL":
+                match self.value:
+                    case "~0":
+                        self.value = "~1"
+                    case "~1":
+                        self.value = "~0"
+
+            case "INT"|"FLOAT":
                 self.setValue(str(float(self.value)+float(incrementValueRaw)), activeVars)
 
 
@@ -384,10 +345,14 @@ class ZValue:
         newValue = float(self.value) - float(decrementValue)
 
         match self.valueType:   
-            case "PT":
-                self.setValue("", activeVars)
+            case "BOOL":
+                match self.value:
+                    case "~0":
+                        self.value = "~1"
+                    case "~1":
+                        self.value = "~0"
                 
-            case _:
+            case "INT"|"FLOAT":
                 self.setValue(str(newValue), activeVars)
 
 
@@ -476,7 +441,7 @@ class Variable:
             else:
                 self.functionRegistry[func.__name__] = func
     
-    def onChange(self) -> str:
+    def onChange(self, targetType: str) -> str:
         """
         Returns the value that is being used for typechanging
         """
@@ -492,7 +457,7 @@ class Variable:
         oldVar: Variable = activeVars[cmd.name]
 
 
-        newVarCmd: ZCommand = ZCommand(cmd.lineNum, cmd.name, ZBase.define, targetVarType, [oldVar.onChange()])
+        newVarCmd: ZCommand = ZCommand(cmd.lineNum, cmd.name, ZBase.define, targetVarType, [oldVar.onChange(targetVarType)])
         newVar = typeRegistry[targetVarType](newVarCmd, activeVars)
 
         activeVars[newVar.name] = newVar
@@ -618,13 +583,50 @@ class PT(Variable):
         print(self.value.value)
 
 @register()
+class BOOL(Variable):
+    def __init__(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        super().__init__(cmd, activeVars)
+        self.supportedVars = ["FLOAT", "PT", "INT"]
+
+        self.value: ZValue = ZValue("0", "BOOL")
+        
+        self.w(cmd, activeVars)
+        
+        self.registerFunc({self.w: "", self.INPUT: ""})
+
+    def INPUT(self, cmd: ZCommand, activeVars: ActiveVars):
+        message = ZValue("", "PT")
+        message.setValue(cmd.args[0], activeVars)
+        newValue = input(message.value)
+        self.value.setValue(newValue, activeVars)
+    
+    def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        match cmd.args[0]:
+            case "++":
+                self.value.increment(cmd.args[1] if 1 < len(cmd.args) else "1", activeVars)
+            case "--":
+                self.value.decrement(cmd.args[1] if 1 < len(cmd.args) else "1", activeVars)
+
+            case _:
+                self.value.setValue(cmd.args[0] if cmd.args[0] != "" else "0", activeVars)
+
+    def onChange(self, targetType: str) -> str:
+        match targetType:
+            case "PT":
+                return self.value.value
+            case _:
+                return str(self.value.getNumBOOL)
+
+
+
+@register()
 class CO(Variable):
     def __init__(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         super().__init__(cmd, activeVars)
 
         self.supportedVars = ["INT", "FLOAT", "PT"]
 
-        self.value: ZBool = ZBool()
+        self.value: ZValue = ZValue("~0", "BOOL")
         self.rawCondition: ZValue = ZValue("", "PT")
         self.compiledCondition: str = ""
 
@@ -691,7 +693,7 @@ class CO(Variable):
         
         self.value.setCompileValue(result)
 
-    def onChange(self) -> str:
+    def onChange(self, targetType: str) -> str:
         return self.value.value
 
 @register()
@@ -705,7 +707,7 @@ class IF(Variable):
 
 
         self.conditionalObjectName: ZValue = ZValue("", "PT")
-        self.conditionalObjectValue: ZBool = ZBool()
+        self.conditionalObjectValue: ZValue = ZValue("~0", "BOOL")
 
         self.countCommandsInIf: ZValue = ZValue("0", "INT")
         self.countCommandsInElif: ZValue = ZValue("0", "INT")
@@ -835,7 +837,7 @@ class FUNC(Variable):
 
 
         self.returnType: str = ""
-        self.disableVariableChange: ZBool = ZBool()
+        self.disableVariableChange: ZValue = ZValue("~0", "BOOL")
 
         self.value: ZValue = ZValue("0.0", "FLOAT")
         self.rawEquation: str = ""
@@ -1060,9 +1062,8 @@ class LOOP(Variable):
         else:
             return activeVars, index
 
-    def onChange(self) -> str:
+    def onChange(self, targetType: str) -> str:
         return str(self.countLooped)
-
 
 @register()
 class FILE(Variable):
@@ -1136,14 +1137,13 @@ class FILE(Variable):
     def gDEL(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         self.path.unlink()
 
-    def onChange(self) -> str:
+    def onChange(self, targetType: str) -> str:
         ret = ""
         with self.path.open("r") as openFile:
             ret = openFile.readlines()
         
         return str(*ret)
     
-
 @register()
 class LIST(Variable):
     def __init__(self, cmd: ZCommand, activeVars: Dict[str, Variable]) -> None:
@@ -1212,7 +1212,7 @@ class LIST(Variable):
         self.valueType = newType
 
 
-    def onChange(self) -> str:
+    def onChange(self, targetType: str) -> str:
         return self.getValue(int(self.pointer.value)).value
 
     def setPointer(self, position: str, activeVars: ActiveVars):
@@ -1416,7 +1416,8 @@ class AO(Variable):
         self.value: ZValue = ZValue("0", "INT") # Current position of the Animation
         self.delay: ZValue = ZValue("0", "INT")
         self.frames: list[ZValue] = []
-        self.doClearScreen: ZBool = ZBool()
+        self.doClearScreen: ZValue = ZValue("~0", "BOOL")
+
 
         if cmd.args[0] != "":
             self.w(cmd, activeVars)
