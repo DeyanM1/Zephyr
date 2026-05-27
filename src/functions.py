@@ -1428,7 +1428,7 @@ class AO(Variable):
         self.supportedVars = ["INT", "FLOAT"]
 
         self.value: ZValue = ZValue("0", "INT") # Current position of the Animation
-        self.delay: ZValue = ZValue("0", "INT")
+        self.delay: ZValue = ZValue("0", "FLOAT")
         self.frames: list[ZValue] = []
         self.doClearScreen: ZValue = ZValue("~0", "BOOL")
 
@@ -1455,6 +1455,7 @@ class AO(Variable):
             self.frames.append(ZValue("", "PT"))
             self.frames[-1].setValue(cmd.args[0], activeVars)
 
+
     def setDelay(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
        self.delay.setValue(cmd.args[0], activeVars) 
 
@@ -1467,8 +1468,9 @@ class AO(Variable):
     def start(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         for index in range(int(self.value.value), len(self.frames)):
             self.displayFrame(index)
-            time.sleep(int(self.delay.value))
+            time.sleep(float(self.delay.value))
             if self.doClearScreen.asPythonBOOL:
+                print('\033[2J\033[H')
                 pass # TODO: clear screen!
             
         self.value = ZValue("0", "INT")
