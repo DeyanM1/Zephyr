@@ -1,6 +1,6 @@
 arrange:
   - index.md
-  - Overview.md
-  - Errors.md 
+  - overview.md
   - Types
   - Libraries
+  - Errors.md

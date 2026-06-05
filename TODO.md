@@ -11,9 +11,12 @@
 - [ ] add 3d list
 - [x] create animation object
 - [ ] add list support for animation objects
-- [ ] add display clear for ao
+- [x] add display clear for ao
 - [ ] add iteration function -> for loop
-- [ ] update FLOATS to have good features ex. max float points, rounding, real support for float numbers, autoconvert, (vllt eigenes ZFLOAT)
-- [ ] update INTS to only accepts INTs or values ending to .0
+- [x] update FLOATS to have good features ex. max float points, rounding, real support for float numbers, autoconvert, (vllt eigenes ZFLOAT)
+- [x] update INTS to only accepts INTs or values ending to .0
 - [x] update ZVALUE to have real Types and type autochange
-- [ ] FIX RNG -> Work with new ZTYPE types!!!!!!!
+- [x] FIX RNG -> Work with new ZTYPE types!!!!!!!
+- [ ] Check if ZLIbraries work, if local, global installation works,
+- [ ] check if Zlib import global, local paths work
+- [ ] constants at simple vars

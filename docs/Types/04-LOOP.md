@@ -1,30 +1,55 @@
-# LOOP
+# LOOP Statements
 
-Supported types: `INT`, `PT`, `FLOAT`  
-Value represents the number of iterations.
-
-LOOP objects repeatedly execute a block of code while a Conditional Object evaluates to true. Their value updates to reflect the number of completed iterations.
-
-**`commandsInLoop`** refers to the count of individual commands in the loop block.
-Blank lines or lines with just a comment are not counted.
+LOOP statements execute a block of code repeatedly while a condition is true.
 
 
-* Define:
+## Creating a LOOP Statement
 
+```zephyr
+<VariableName> # LOOP:<*ConditionalObjectName>;
 ```
 
-loop # LOOP:<*ConditionalObjectName>;
+The Conditional Object must already exist before creating the LOOP.
 
-loop ? START:<*commandsInLOOP>;
-    § this gets repeated
-loop ? END:;
+## Structure of a LOOP
 
+A LOOP has three parts:
+
+### Part 1: Create the LOOP
+
+```zephyr
+myloop # LOOP:my_condition;
 ```
 
-* Change condition:
+### Part 2: Define the LOOP block
 
+```zephyr
+myloop ? START:<*NumberOfCommands>;
+  § Your commands go here
 ```
 
-loop ? w:<*ConditionalObjectName>;
+### Part 3: End the LOOP
 
+```zephyr
+myloop ? END:;
 ```
+
+## How LOOPs Work
+
+1. Check the condition
+2. If true, execute all commands in the START block
+3. Go back to step 1 (check condition again)
+4. If false, skip to after END
+
+
+
+## Summary
+
+| Task | Example |
+|------|---------|
+| Create LOOP | `loop # LOOP:my_condition;` |
+| Start block | `loop ? START:2;` (2 commands follow) |
+| End block | `loop ? END:;` |
+| Change condition | `loop ? w:new_condition;` |
+| Display condition | `my_condition ? push:;` |
+

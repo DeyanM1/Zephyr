@@ -1,98 +1,348 @@
-# Simple Variable
+# Simple Variables
 
-Supported types: `INT`, `PT`, `FLOAT`, `BOOL`
+Simple variables are the most basic building blocks in Zephyr. They store single pieces of data that can be modified, displayed, or used in calculations.
 
-Simple Variables store single pieces of data that can be changed, incremented, decremented, printed, or replaced with user input. They are the basic building blocks for storing values in Zephyr.
+## Variable Types
 
-There are 3 types of simple Variables: 
+Zephyr supports four types of simple variables:
 
-- **`PT`**: Printable Text (strings of characters) 
-- **`INT`**: Integer (whole numbers) 
-- **`FLOAT`**: Floating-point number (decimal values) 
-- **`BOOL`**: Boolean value: ~1/~0 | True/False
+| Type | Purpose | Example | Can Be Changed |
+|------|---------|---------|-----------------|
+| `PT` | **Printable Text** - strings of characters | `"Hello World"` | Yes |
+| `INT` | **Integer** - whole numbers | `42`, `-10` | Yes |
+| `FLOAT` | **Floating-point** - decimal numbers | `3.14`, `-2.5` | Yes |
+| `BOOL` | **Boolean** - true or false values | `~1` (true) or `~0` (false) | Yes |
 
----
+## Creating a Simple Variable
 
-* Define:
+To create a simple variable, use the `#` base with the type and optional initial value:
 
+```zephyr
+<VariableName> # <Type>:<Value>|<Param1>|<Param2>|...;
 ```
 
-var # <Vartype>:<*- Value>;
+### Examples
 
+```zephyr
+age # INT:25;              § Create an integer
+name # PT:"Alice";         § Create text
+pi # FLOAT:3.14;           § Create a decimal number
+is_active # BOOL:~1;       § Create a boolean (true)
 ```
 
-* Changing Type:
-You can change a type of any variable using CT. Be awere of the supported types of the Variable Type. The return value is the type that is being passed to the new variable on change. if not presents its the value of the old variable
+## Working with TEXT (PT)
 
+### Creating Text Variables
+
+```zephyr
+greeting # PT:"Hello";
+message # PT:"Welcome to Zephyr";
 ```
 
-var ? CT:<Vartype>;     § <VarType> is the new type of the variable
+### Displaying Text
 
+Use `? push:` to display text:
+
+```zephyr
+greeting # PT:"Hello";
+greeting ? push:;          § Output: Hello
 ```
 
-Changing the type of a bool to INT, FLOAT converts it to 1/0 or 1.0/0.0
-changing a variable to bool only works if the other variabls return value is either 1/0 or 1.0/0.0  or ~1/~0
+only Variables of the Type PT can be pushed
 
-* Update value:
+### Changing Text Value
 
+Use `? w:` to write/change the value:
+
+```zephyr
+message # PT:"Hello";
+message ? w:"Goodbye";     § Now message contains "Goodbye"
+message ? push:;           § Output: Goodbye
 ```
 
-var ? w:<*NewValue>;
+### Adding Text (Incrementing)
 
+Use `? w:++` to append text to the end:
+
+```zephyr
+message # PT:"Hello";
+message ? w:++|"!";        § Appends "!" to the end
+message ? push:;           § Output: Hello!
 ```
 
-* Increment value of INT/FLOAT:
+### Clearing Text (Decrementing)
 
+Use `? w:--` to delete all the text:
+
+```zephyr
+message # PT:"Hello";
+message ? w:--;            § Clears the message
+message ? push:;           § Output: (empty)
 ```
 
-var ? w:++|<*- incrementBy>;   § Defaults to 1 if not set
+### Inserting Text at a Position
 
+Insert text at a specific position (position 1 is the first character):
+
+```zephyr
+message # PT:"Hello";
+message ? insertAt:"Mr. "|1;    § Insert "Mr. " at the beginning
+message ? push:;                 § Output: Mr. Hello
 ```
 
-* Decrement value of INT/FLOAT:
+### Getting User Input
 
+Use `? INPUT:` to let the user type text:
+
+```zephyr
+message # PT:"";
+message ? INPUT:"What's your name? ";
+message ? push:;           § Displays what the user typed
 ```
 
-var ? w:-|<*- decrementBy>;    § Defaults to 1 if not set
+## Working with INTEGERS (INT)
 
+### Creating Integer Variables
+
+```zephyr
+count # INT:10;            § Create an integer
+score # INT:0;             § Create with initial value 0
+negative # INT:-5;         § Create negative number
 ```
 
-* Increment / decrement value of PT:
+### Changing Integer Value
 
+```zephyr
+count # INT:10;
+count ? w:20;              § Change value to 20
 ```
 
-var ? w:++|<*- incrementBy>;   § Defaults to 1 if not set -> The new incrementBy value is appended to var
-var ? w:--;                    § decrementing a PT deletes its content. parameters are not supported.
+### Incrementing (Adding)
 
-```
-* Increment / decrement value of BOOL:
+Increment by 1 (default):
 
-```
-
-var ? w:++|<*- incrementBy>;   §  incrementing or decrementing a BOOL Swaps the boolean value | ~1->~0; ~0->~1
-
+```zephyr
+count # INT:5;
+count ? w:++;              § Add 1 to count
 ```
 
-* PTs can be pushed to the console:
+Increment by a specific amount:
 
+```zephyr
+count # INT:5;
+count ? w:++|3;            § Add 3 to count
 ```
 
-var ? push:;
+### Decrementing (Subtracting)
 
+Decrement by 1 (default):
+
+```zephyr
+count # INT:10;
+count ? w:--;               § Subtract 1 from count
 ```
 
-* Take input from the user:
+Decrement by a specific amount:
 
+```zephyr
+count # INT:10;
+count ? w:--|3;            § Subtract 3 from count
 ```
 
-var ? INPUT:<*- Message>;      § Overrides previous value
+### Getting User Input
 
+```zephyr
+age # INT:0;
+age ? INPUT:"Enter your age: ";
 ```
 
-* Insert Value at position (PT)
+## Working with FLOAT (Decimal Numbers)
 
+### Creating Float Variables
+
+```zephyr
+pi # FLOAT:3.14;
+temperature # FLOAT:-5.5;
 ```
 
-var ? insertAt:<*valueToInsert>|<*position>; § position 1 is the first position
+### Displaying Floats
 
+```zephyr
+pi # FLOAT:3.14159;
 ```
+
+### Changing Float Value
+
+```zephyr
+temperature # FLOAT:20.0;
+temperature ? w:25.5;      § Change temperature
+```
+
+### Incrementing Floats
+
+```zephyr
+temperature # FLOAT:20.0;
+temperature ? w:++|0.5;    § Add 0.5 to temperature
+```
+
+### Decrementing Floats
+
+```zephyr
+temperature # FLOAT:20.0;
+temperature ? w:--|0.5;    § Subtract 0.5 from temperature
+```
+
+### Getting User Input
+
+```zephyr
+weight # FLOAT:0.0;
+weight ? INPUT:"Enter your weight in kg: ";
+```
+
+## Working with BOOLEAN (True/False)
+
+### Understanding Booleans
+
+Booleans represent true/false or yes/no:
+- `~1` means **true** (yes, on, active)
+- `~0` means **false** (no, off, inactive)
+
+### Creating Boolean Variables
+
+```zephyr
+is_active # BOOL:~1;       § Create true
+is_finished # BOOL:~0;     § Create false
+```
+
+### Displaying Boolean Values
+
+```zephyr
+is_active # BOOL:~1;
+```
+
+### Toggling a Boolean (Flipping True/False)
+
+Use `? w:++` or `? w:--` to toggle between true and false:
+
+```zephyr
+is_active # BOOL:~1;
+is_active ? w:++;          § Toggle: ~1 becomes ~0
+
+is_active ? w:++;          § Toggle: ~0 becomes ~1
+```
+
+### Converting Boolean to Integer
+
+You can convert a boolean to INT:
+
+```zephyr
+is_active # BOOL:~1;
+is_active ? CT:INT;        § Convert to integer
+```
+
+## Changing Variable Types
+
+You can convert a simple variable to a different type using `? CT:` (Change Type):
+
+```zephyr
+value # INT:5;
+value ? CT:PT;             § Convert from INT to PT
+```
+
+### Conversion Rules
+
+When converting, here's what happens:
+
+| From | To | Result |
+|------|-----|--------|
+| `INT` or `FLOAT` | `PT` | Converted to text (e.g., 5 becomes "5") |
+| `PT` | `INT` or `FLOAT` | Only works if text is a valid number |
+| `BOOL:~1` | `INT` or `FLOAT` | Becomes 1 or 1.0 |
+| `BOOL:~0` | `INT` or `FLOAT` | Becomes 0 or 0.0 |
+| Any type | `BOOL` | Only works if the value is 1, 0, ~1, or ~0 |
+
+### Example Conversions
+
+```zephyr
+§ INT to PT
+num # INT:42;
+num ? CT:PT;
+num ? push:;               § Output: 42
+
+§ PT to INT
+text # PT:"100";
+text ? CT:INT;
+
+§ BOOL to INT
+flag # BOOL:~1;
+flag ? CT:INT;
+```
+
+## Making a Variable Constant (NOT YET IMPLEMENTED!)
+
+You can make a simple variable constant (unchangeable) by adding the `~1` parameter:
+
+```zephyr
+pi # PT:"3.14159"|~1;      § This variable cannot be changed
+```
+
+If you try to change a constant variable, you'll get an error:
+
+```zephyr
+pi # PT:"3.14159"|~1;
+pi ? w:"3.14";             § ERROR! Write Protection - can't change constant
+```
+
+## Practical Examples
+
+### Example 1: Simple Calculator
+
+```zephyr
+§ Create two numbers
+num1 # INT:10;
+num2 # INT:5;
+
+
+§ Do basic math (we'll learn about Math Objects later)
+§ For now, just manipulate the values
+num1 ? w:++|5;             § Add 5 to num1
+
+num1 ? CT:PT;              § Change type to PT
+num1 ? push:;              § Print num to console
+```
+
+### Example 2: User Input
+
+```zephyr
+name # PT:"";
+name ? INPUT:"What is your name? ";
+
+greeting # PT:"Hello, ";
+greeting ? w:++|'name';    § Append the name to greeting
+greeting ? push:;          § Output: Hello, [whatever they typed]
+```
+
+### Example 3: Toggle Status
+
+```zephyr
+is_ready # BOOL:~0;        § Start as not ready
+
+is_ready ? w:++;           § Toggle to ready
+
+is_ready ? w:++;           § Toggle back to not ready
+```
+
+## Summary
+
+| Operation | Example | Result |
+|-----------|---------|--------|
+| Create variable | `count # INT:5;` | Creates variable with value 5 |
+| Change value | `count ? w:10;` | Sets value to 10 |
+| Display value | `message ? push:;` | Prints PT to console |
+| Increment by 1 | `count ? w:++;` | Adds 1 |
+| Increment by N | `count ? w:++|3;` | Adds 3 |
+| Decrement by 1 | `count ? w:--;` | Subtracts 1 |
+| Decrement by N | `count ? w:--|3;` | Subtracts 3 |
+| Get user input | `count ? INPUT:"Enter: ";` | Waits for user to type |
+| Insert text (PT) | `text ? insertAt:"X"|1;` | Inserts "X" at position 1 |
+| Change type | `count ? CT:PT;` | Converts to different type |
