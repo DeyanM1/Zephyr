@@ -5,7 +5,7 @@ site_url: https://deyan.is-a.dev/Zephyr
 theme:
   name: material
   font:
-    text: Roboto
+    text: Source Sans 3
     code: JetBrains Mono
   logo: assets/logo.svg
   favicon: img/favicon.ico

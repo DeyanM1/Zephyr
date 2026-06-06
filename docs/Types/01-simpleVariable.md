@@ -6,12 +6,19 @@ Simple variables are the most basic building blocks in Zephyr. They store single
 
 Zephyr supports four types of simple variables:
 
-| Type | Purpose | Example | Can Be Changed |
-|------|---------|---------|-----------------|
-| `PT` | **Printable Text** - strings of characters | `"Hello World"` | Yes |
-| `INT` | **Integer** - whole numbers | `42`, `-10` | Yes |
-| `FLOAT` | **Floating-point** - decimal numbers | `3.14`, `-2.5` | Yes |
-| `BOOL` | **Boolean** - true or false values | `~1` (true) or `~0` (false) | Yes |
+| Type | Purpose | Example |
+|------|---------|---------|
+| `PT` | **Printable Text** - strings of characters | `"Hello World"` |
+| `INT` | **Integer** - whole numbers | `42`, `-10` |
+| `FLOAT` | **Floating-point** - decimal numbers | `3.14`, `-2.5` |
+| `BOOL` | **Boolean** - true or false values | `~1` (true) or `~0` (false) |
+
+
+## Properties
+
+- **`convertibleInto`** -> `PT`, `INT`, `FLOAT`, `BOOL`
+- **`convertValue`** -> Value of variable
+**Note**: Every simplevar can be converted between the 4 simplevar types
 
 ## Creating a Simple Variable
 

@@ -12,14 +12,15 @@ In Zephyr, every statement follows the same pattern:
 
 Here's what each part means:
 
-- **`VariableName`**: The name you give to your variable (must be lowercase)
-- **`base`**: Tells Zephyr what you're doing:
-  - **`#`** = Create/declare a new variable
-  - **`?`** = Perform an action on an existing variable
-- **`function`**: The operation or type (e.g., `INT`, `PT`, `push`, `write`)
-- **`arguments`**: Additional data the function needs, separated by `|`
-- **`;`**: Every command MUST end with a semicolon
-- **`command`**: Command is the entire statement
+- **`VariableName`**: The name of the variable, user-defined.
+- **`base`**: The base of the variable, used to define its operation:
+  - **`?`**: For variable operations (e.g., modifying or retrieving values).
+  - **`#`**: For declaring variables.
+- **`function`**: The operation to execute on the variable (e.g., printing, defining a function).
+- **`arguments`**: Additional information passed to the function Seperated by `|`.
+- **`command`:** The entire statement.
+
+
 
 ## Example:
 
@@ -114,6 +115,18 @@ In the documentation, you'll see symbols representing different things:
 | `*` | A value (can be a value compatible with the variable type or variable name in quotes) |
 | `-` | An optional value |
 | `' '` | Enclose variable names in single quotes when using them as values |
+
+### Convertible information
+
+Every type has a set of other types it can be converted into.
+In the documentation Allowed Conversions are declared using the convertibleInto property, followed by the list of target types:
+
+ConvertValue is the value that is going to be passed onto the new Variable type
+
+- **`convertibleInto`** -> `PT`, `INT`
+- **`convertValue`** -> Value of the Var
+
+**Note**: Even if the variable is compatible with the new type, the conversion can fail because the value of the type is not compatible with the new type.
 
 ## Declaring Variables
 

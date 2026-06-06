@@ -1,121 +1,71 @@
-# IF Statements
+# IF Statement
 
-IF statements allow your program to make decisions. They execute code only if a condition is true, and optionally run different code if the condition is false.
+An IF statement executes a block of code only if a Conditional Object evaluates to true. It optionally supports an ELSE block to execute code when the condition is false.
 
+---
 
-## Creating an IF Statement
+## Syntax Overview
 
 ```zephyr
-<VariableName> # IF:<*ConditionalObjectName>;
+if # IF:<*ConditionalObjectName>;
+if ? START:<*CommandCount>;
+  § Code to execute if true
+if ? ELSE:<*CommandCount>;
+  § Code to execute if false
+if ? END:;
 ```
 
-The Conditional Object must already exist before you create the IF statement.
+## Properties
 
-## Structure of an IF Statement
+- **`convertibleInto`** -> `None`
+- **`convertValue`** -> `None`
 
-A complete IF statement has three parts:
+## Methods
 
-### Part 1: Create the IF
+### Define
+Creates an IF statement with a Conditional Object reference.
 
 ```zephyr
-statement # IF:my_condition;
+if # IF:<*conditionalObjectName>;
+if # IF:conditionName;
 ```
 
-### Part 2: Define the IF block
+### START
+Marks the beginning of the IF block. The parameter is the number of individual commands to execute. Blank lines and comment-only lines are not counted.
 
 ```zephyr
-statement ? START:<*NumberOfCommands>;
-  § Your commands go here
+if ? START:<*commandsInIF>;
+if ? START:2;
 ```
 
-The number tells Zephyr how many individual commands are in the IF block.
-
-**Important**: Blank lines and comment-only lines don't count as commands!
-
-### Part 3: End the IF
+### ELSE
+Marks the beginning of the ELSE block (optional). Specifies the number of commands in the ELSE block. If the condition is false, these commands execute instead.
 
 ```zephyr
-statement ? END:;
+if ? ELSE:<*commandsInELSE>;
+if ? ELSE:1;
 ```
 
-### Adding an ELSE block (Optional)
-
-Between START and END, you can add an ELSE block:
+### END
+Marks the end of the IF statement block.
 
 ```zephyr
-statement ? ELSE:<*NumberOfCommands>;
-  § Commands here run if condition is false
+if ? END:;
 ```
 
-## Simple IF Statement (Without ELSE)
-
-This runs code only when the condition is true:
-
-```zephyr
-score # INT:90;
-is_high # CO:('score' >= 80);
-
-check # IF:is_high;
-check ? START:1;
-  score ? CT:PT
-  score ? push:;           § This only runs if score >= 80
-check ? END:;
-```
-
-**Output**: `90` (because 90 >= 80 is true)
-
-If the score was 50, nothing would print.
-
-## IF with ELSE
-
-ELSE runs code when the condition is false:
-
+### Write (w)
+Changes the Conditional Object that the IF statement checks.
 
 ```zephyr
-age # INT:15;
-is_adult # CO:('age' >= 18);
-message # PT:"";
-
-check # IF:is_adult;
-check ? START:1;
-  message ? w:"You are an adult";
-check ? ELSE:1;
-  message ? w:"You are not yet an adult";
-check ? END:;
-
-message ? push:;
-```
-
-
-**Output**: `You are not yet an adult` (because 15 < 18)
-
-## Changing the Condition
-
-You can change what condition an IF statement uses before the start:
-
-```zephyr
-condition1 # CO:(5 > 3);
-condition2 # CO:(5 < 3);
-
-my_if # IF:condition1;
-
-§ Now change to condition2
-my_if ? w:condition2;
-
-my_if ? START:1;
-my_if ? END:;
+if ? w:<*ConditionalObjectName>;
+if ? w:newConditionName;
 ```
 
 
 
+## Notes
 
-## Summary
-
-| Task | Example |
-|------|---------|
-| Create IF | `check # IF:my_condition;` |
-| IF block | `check ? START:2;` (2 commands follow) |
-| ELSE block | `check ? ELSE:1;` (1 command follows) |
-| End IF | `check ? END:;` |
-| Change condition | `check ? w:new_condition;` |
-| Display condition | `my_condition ? push:;` |
+- Command count refers to individual Zephyr statements, not lines of code.
+- Blank lines and lines containing only comments are not counted toward the command total.
+- Each command must end with a semicolon.
+- The IF statement must have exactly matching command counts, or execution may fail.

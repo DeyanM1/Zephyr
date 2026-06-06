@@ -38,7 +38,7 @@ If you've always wondered how compilation and execution really work, Zephyr demy
 
 ## Getting Started
 
-Ready to dive in? Head over to the [Getting Started Guide](getting-started.md) to write your first Zephyr program..
+Ready to dive in? Head over to the [Getting Started Guide](overview.md) to write your first Zephyr program..
 
 
 

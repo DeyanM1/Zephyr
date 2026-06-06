@@ -638,7 +638,7 @@ class CO(Variable):
     def __init__(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         super().__init__(cmd, activeVars)
 
-        self.supportedVars = ["INT", "FLOAT", "PT"]
+        self.supportedVars = ["INT", "FLOAT", "PT", "BOOL"]
 
         self.value: ZValue = ZValue("~0", "BOOL")
         self.rawCondition: ZValue = ZValue("", "PT")
@@ -953,7 +953,7 @@ class RNG(Variable):
     def __init__(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         super().__init__(cmd, activeVars)
 
-        self.supportedVars = ["INT", "FLOAT", "PT"]
+        self.supportedVars = ["INT", "FLOAT", "PT", "BOOL"]
 
 
         

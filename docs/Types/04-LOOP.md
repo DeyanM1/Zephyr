@@ -1,55 +1,63 @@
-# LOOP Statements
+# Loop
 
-LOOP statements execute a block of code repeatedly while a condition is true.
+A Loop object repeatedly executes a block of code while a Conditional Object evaluates to true. The loop's value automatically updates to reflect the number of completed iterations.
 
+---
 
-## Creating a LOOP Statement
-
-```zephyr
-<VariableName> # LOOP:<*ConditionalObjectName>;
-```
-
-The Conditional Object must already exist before creating the LOOP.
-
-## Structure of a LOOP
-
-A LOOP has three parts:
-
-### Part 1: Create the LOOP
+## Syntax Overview
 
 ```zephyr
-myloop # LOOP:my_condition;
+loop # LOOP:<*ConditionalObjectName>;
+loop ? START:<*CommandCount>;
+  § Code to execute repeatedly
+loop ? END:;
 ```
 
-### Part 2: Define the LOOP block
+## Properties
+
+- **`convertibleInto`** -> `PT`, `INT`, `FLOAT`
+- **`convertValue`** -> Count of times Looped
+
+## Methods
+
+### Define
+Creates a LOOP object with a Conditional Object that controls execution.
 
 ```zephyr
-myloop ? START:<*NumberOfCommands>;
-  § Your commands go here
+loop # LOOP:<*ConditionalObjectName>;
+loop # LOOP:conditionName;
 ```
 
-### Part 3: End the LOOP
+### START
+Marks the beginning of the loop block. The parameter specifies the number of individual commands to execute in each iteration. Blank lines and comment-only lines are not counted.
 
 ```zephyr
-myloop ? END:;
+loop ? START:<*CommandCount>;
+loop ? START:3;
 ```
 
-## How LOOPs Work
+### END
+Marks the end of the loop block.
 
-1. Check the condition
-2. If true, execute all commands in the START block
-3. Go back to step 1 (check condition again)
-4. If false, skip to after END
+```zephyr
+loop ? END:;
+```
 
+### Write (w)
+Changes the Conditional Object that controls whether the loop continues.
 
+```zephyr
+loop ? w:<*ConditionalObjectName>;
+loop ? w:newConditionName;
+```
 
-## Summary
+#
 
-| Task | Example |
-|------|---------|
-| Create LOOP | `loop # LOOP:my_condition;` |
-| Start block | `loop ? START:2;` (2 commands follow) |
-| End block | `loop ? END:;` |
-| Change condition | `loop ? w:new_condition;` |
-| Display condition | `my_condition ? push:;` |
+## Notes
 
+- Command count refers to individual Zephyr statements, not lines of code.
+- Blank lines and lines containing only comments are not counted toward the command total.
+- Each command must end with a semicolon.
+- The loop continues as long as the Conditional Object evaluates to true (~1).
+- The loop's value tracks the number of iterations completed.
+- The variable value field shows the iteration count after execution.
