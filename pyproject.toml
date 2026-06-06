@@ -1,20 +1,21 @@
 [project]
 name = "zephyr"
 version = "0.1.0"
-description = "Add your description here"
+description = ""
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.14"
 dependencies = [
     "colorama>=0.4.6",
     "requests>=2.32.5",
 ]
 
 [dependency-groups]
-developer = [
-    "nuitka>=2.8.10",
+docs = [
     "mkdocs>=1.6.1",
     "mkdocs-awesome-pages-plugin>=2.10.1",
     "mkdocs-material>=9.7.1",
-    "pytest>=9.0.2",
-    "pytest-mock>=3.15.1",
+]
+build = [
+    "nuitka==4.1.1",
+    "patchelf==0.17.0"
 ]
