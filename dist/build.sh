@@ -1,5 +1,7 @@
 #!/bin/bash
 
+uv pip install nuitka==4.1.1 patchelf==0.17.0
+
 
 #uv run nuitka src/zcli.py --onefile --output-dir=dist/windows --output-filename=zcli.exe --assume-yes-for-downloads
 
@@ -9,7 +11,6 @@ uv run nuitka src/zcli.py --onefile --output-dir=dist/linux --output-filename=zc
 
 uv run nuitka src/zlm.py --onefile --output-dir=dist/linux --output-filename=zlm 
 
-./dist/buildDocs.sh
 
 
 cd ./dist/windows
