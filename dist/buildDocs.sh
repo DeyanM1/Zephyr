@@ -1,4 +1,4 @@
-uv pip install mkdocs mkdocs-material mkdocs-awesome-pages-plugin
+uv sync --group docs
 
 
 uv run mkdocs serve &
@@ -29,3 +29,5 @@ kill $servePID
 wait $servePID
 
 rm -rf ./dist/docs/fails
+
+uv sync
