@@ -460,8 +460,12 @@ class Variable:
             
         oldVar: Variable = activeVars[cmd.name]
 
+        args: List|str = oldVar.onChange(targetVarType)
 
-        newVarCmd: ZCommand = ZCommand(cmd.lineNum, cmd.name, ZBase.define, targetVarType, [oldVar.onChange(targetVarType)])
+        if not isinstance(args, list):
+            args = [args]
+            
+        newVarCmd: ZCommand = ZCommand(cmd.lineNum, cmd.name, ZBase.define, targetVarType, args)
         newVar = typeRegistry[targetVarType](newVarCmd, activeVars)
 
         activeVars[newVar.name] = newVar
@@ -544,7 +548,7 @@ class FLOAT(Variable):
 class PT(Variable):
     def __init__(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         super().__init__(cmd, activeVars)
-        self.supportedVars = ["INT", "FLOAT"]
+        self.supportedVars = ["INT", "FLOAT", "LIST"]
 
         self.value: ZValue = ZValue("", "PT")
         self.w(cmd, activeVars)
@@ -564,6 +568,15 @@ class PT(Variable):
 
             case _:
                 self.value.setValue(cmd.args[0], activeVars)
+
+    def onChange(self, targetType: str) -> str:
+        if targetType == "LIST":
+            params = ["PT"]
+            for char in self.value.value:
+                params.append(f"{char}")
+
+            return params  # pyright: ignore[reportReturnType]
+        return self.value.value
     
     def INPUT(self, cmd: ZCommand, activeVars: ActiveVars):
         message = ZValue("", "PT")
@@ -1178,10 +1191,13 @@ class LIST(Variable):
         self.changeValueType(cmd, activeVars)
 
         if cmd.checkArgs(2, False): # Set value if 2 args
-            if cmd.checkArgs(3, False): # Set pointer if 3 args
-                self.setPointer(cmd.args[3], activeVars) # Potentially set pointer
+            args = cmd.args.copy()
+            args.pop(0)
 
-            self.setValue(cmd.args[0], activeVars)
+            for arg in args:
+                self.setValue(arg, activeVars)
+                self.pointer.value = str(int(self.pointer.value)+1)
+            self.pointer.value = "1"
 
         self.registerFunc({self.w: "", self.SET: "SET", self.changeValueType: "CVT"})
 

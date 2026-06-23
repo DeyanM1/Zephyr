@@ -1,4 +1,5 @@
-a # INT:1.0;
+code # PT:abcdefghijklmnopqrstuvwxyz;
 
-a ? CT:PT;
-a ? push:;
+code ? CT:LIST;
+
+code ? debug:;

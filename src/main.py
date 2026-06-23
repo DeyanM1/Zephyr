@@ -136,7 +136,7 @@ def compiler(inputData: ZFile) -> None:
     try:
         while index < len(ZCommandData):
             cmd: ZCommand = ZCommandData[index]
-
+    
             activeVars, index = execute(cmd, activeVars, index)
             
             index += 1

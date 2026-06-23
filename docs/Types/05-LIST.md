@@ -16,13 +16,12 @@ A List is an ordered collection of values of a single type. Its value represents
 Creates a new List with a specified value type.
 
 ```zephyr
-list # LIST:<*ValueType>|<*-InitialValue>|<*-PointerPosition>;
+list # LIST:<*ValueType>|<*-InitialValue1>|<*-InitialValue2>|...;
 myList # LIST:INT|5|1;
 ```
 
 - **`ValueType`** — Type of values stored: `INT`, `PT`, or `FLOAT`
-- **`InitialValue`** — (Optional) First value to store
-- **`PointerPosition`** — (Optional) Starting pointer position (default is 1)
+- **`InitialValue`** — (Optional) initial value to store
 
 ### Set Pointer (SET)
 Moves the pointer to a specified position. Valid positions are any integer positive and negative except 0.

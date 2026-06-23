@@ -16,9 +16,11 @@ Zephyr supports four types of simple variables:
 
 ## Properties
 
-- **`convertibleInto`** -> `PT`, `INT`, `FLOAT`, `BOOL`
+- **`convertibleInto`** -> `PT`, `INT`, `FLOAT`, `BOOL`, `LIST`
 - **`convertValue`** -> Value of variable
 **Note**: Every simplevar can be converted between the 4 simplevar types
+
+**Note**: Only PT can be turned into `LIST`, Chars of the PT are turned into values of LIST (Split by char)
 
 ## Creating a Simple Variable
 
