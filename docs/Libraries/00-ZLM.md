@@ -55,6 +55,8 @@ python zlm.py uninstall GPIO.py
 
 **Important**: To remove a library from the global installation location include the --global flag.
 
+
+
 ## Using Libraries 
 
 Once installed, import a library using the built-in `LIB` command:
@@ -63,24 +65,73 @@ Once installed, import a library using the built-in `LIB` command:
 __ ? LIB:./lib/GPIO.py;
 ```
 
+There are three options on how to import  a lib:
+### 1. Absolute Path:
+```zepyhr
+__ ? LIB:/home/<User>/libs/GPIO.py;
+```
+
+### 2. Relative Path:
+- Looks in the current working dir inside myLibs
+```zepyhr
+__ ? LIB:./myLibs/GPIO.py;
+```
+
+### 3. Bare Name:
+- Looks inside of the global install dir, if none found it looks inside of local ./lib dir in the cwd
+```zepyhr
+__ ? LIB:GPIO.py;
+```
+
 After importing, you can use the library's features (see library-specific documentation).
 
 
+## Using Libraries
 
-## Best Practices
+Import a library into your Zephyr script using the built-in `LIB` command:
 
-### Local vs Global Installation
+```zephyr
+__ ? LIB:GPIO.py;
+```
 
-**Use local installation for:**
-- Project-specific libraries
-- Custom libraries you created
-- Testing new versions
-- Team collaboration (libraries are in your repo)
+Zephyr resolves the library path in one of the three ways depending on waht you provide:
 
-**Use global installation for:**
-- Standard libraries used across many projects
-- System libraries (if enabled)
-- Common utilities
+---
+### 1. Absolute Path
+
+Provide a full path starting from the filesystem root. Zephyr uses it directly with no additional lookup.
+
+```zepyhr
+__ ? LIB:/home/user/libs/GPIO.py;
+```
+
+### 2. Relative Path
+
+Provide a apth containing a separator (e.g. `./`, `../`, or a subfolder). Zephyr resolves it relative to the **directory of the current `.zph`file**, not the working directory of the process.
+
+```zepyhr
+__ ? LIB:./myLibs/GPIO.py;
+__ ? LIB:../shared/GPIO.py;
+```
+
+---
+
+### 3. Bare Name
+
+Provide just a filename with no path separators. Zephyr searches in this order:
+
+1. **Global library directory** - the path set by you Zephyr installation (e.g `~/.config/Zephyr/libs/`)
+2. **Local `lib/` directory** - a `lib/`fodler next to the current `.zph` file
+
+The first match wins. If neither location contains the file, en error is raised.
+
+```zephyr
+__ ? LIB:GPIO.py;
+```
+
+> **Tip:** The bare name is the recommended way to use officially installed libraries. Use relative paths for project-local modules.
+
+
 
 ### Organizing Libraries
 
@@ -93,8 +144,7 @@ my_project/
   │   └── lib/
   │       ├── GPIO.py
   │       ├── python.py
-  │       └── system.py
-  └── data/
+  └─      └── system.py
 ```
 
 ### Multiple Libraries at Once

@@ -53,7 +53,8 @@ class ZError(Exception):
             120: lambda: ("Some Value in List doesnt match new Type", "ListTypeError", 0, SyntaxError),
             121: lambda: ("Class error! Variable doesnt have Function Registry!", "ClassMissingFunctionReg", 0, SyntaxError),
             122: lambda: ("PT insertion Error! Index can't be smaller than 1", "InvalidIndexError", 0, SyntaxError),
-            123: lambda: ("PT insertion Error! Index out of bounds!", "IndexOutoFBounds", 0, SyntaxError)
+            123: lambda: ("PT insertion Error! Index out of bounds!", "IndexOutoFBounds", 0, SyntaxError),
+            124: lambda: ("Module Not Found inside global / local dir", "ModuleNotFound", 0, SyntaxError)
         }
 
         if self.code not in errors:
@@ -1347,71 +1348,74 @@ class BUILD_IN(Variable):
             return activeVars, int(indexToJump.value)-2
 
         raise ZError(114)
+
+    def LIB(self, cmd: ZCommand, activeVars: ActiveVars):
+        cmd.checkArgs(1, True)
+        
+        userPath = ZValue("", "PT")
+        userPath.setValue(cmd.args[0], activeVars)
+        userPath = Path(userPath.value)
+        
+        path: Path | None = None
+        module_name = ""
  
-
-    def LIB(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
-        if len(cmd.args[0]) > 0 and cmd.args[0] != "":
-            userPath = ZValue("", "PT")
-            userPath.setValue(cmd.args[0], activeVars)
-            userPath = Path(userPath.value)
-
-
-            foundGlobalPath = False
-            path = Path()
-            module_name = ""
-
-            ### Check for global
-            globalPath = getZephyrPath()
-            if globalPath is not None:
-                foundGlobalPath = True
-                globalPath = globalPath / userPath
-
-                globalPath = globalPath.resolve()
-
-                if globalPath.suffix != ".py":
-                    raise ZError(117)
-
-                module_name = globalPath.stem
-                path = globalPath
-
-
-            ## Check for cwd path
-
-            localPath = userPath
-            
-            if not localPath.is_absolute():
-                localPath = localPath.cwd() / userPath
-
-            localPath = localPath.resolve()
-
-            if localPath.exists():
-                if localPath.suffix == ".py":
-                    module_name = localPath.stem
-
-                    path = localPath
-
-                elif not foundGlobalPath:
-                    raise ZError(117)
-                
-            elif not foundGlobalPath:
-                raise ZError(116)
-
-            if module_name and path:
-                spec = importlib.util.spec_from_file_location(module_name, path)
-                if spec is None or spec.loader is None:
-                    raise ImportError(f"Failed to create spec for {path}")
-
-                self.module = importlib.util.module_from_spec(spec)
-                sys.modules[module_name] = self.module
-                spec.loader.exec_module(self.module)
-
-            
-                newTypes: dict[str, type] = self.module.load()   
-                
-                for name, cls in newTypes.items():
-                    register(name)(cls)
-            else:
+        # Path is absolute
+        if userPath.is_absolute():
+            if userPath.suffix != ".py":
                 raise ZError(117)
+            path = userPath
+            module_name = userPath.stem
+        
+        # path is relative -> uses relative on cwd
+        elif userPath.parts and len(userPath.parts) > 1 or "/" in str(userPath) or "\\" in str(userPath):
+            currentFileDir = self.zfile.zphPath.parent
+            resolved = (currentFileDir / userPath).resolve()
+            if not resolved.exists():
+                raise ZError(116)
+            if resolved.suffix != ".py":
+                raise ZError(117)
+            path = resolved
+            module_name = resolved.stem
+        
+        # just name -> absolute then local ./lib 
+        else:
+            name = userPath
+        
+            # global
+            globalDir = getZephyrPath()
+            if globalDir is not None:
+                candidate = (globalDir / name).with_suffix(".py").resolve()
+                if candidate.exists():
+                    path = candidate
+                    module_name = candidate.stem
+        
+            # local ./lib
+            if path is None:
+                currentFileDir = self.zfile.zphPath.parent
+                candidate = (currentFileDir / "lib" / name).with_suffix(".py").resolve()
+                if candidate.exists():
+                    path = candidate
+                    module_name = candidate.stem
+        
+            if path is None:
+                raise ZError(116)
+        
+        # import the file
+        spec = importlib.util.spec_from_file_location(module_name, path)
+        if spec is None or spec.loader is None:
+            raise ImportError(f"Failed to create spec for {path}")
+        
+        self.module = importlib.util.module_from_spec(spec)
+        sys.modules[module_name] = self.module
+        
+        try:
+            spec.loader.exec_module(self.module)
+        except FileNotFoundError:
+            raise ZError(124)
+        
+        newTypes: dict[str, type] = self.module.load()
+        for name, cls in newTypes.items():
+            register(name)(cls)
 
 
     def export(self, cmd: ZCommand, activeVars: ActiveVars):
