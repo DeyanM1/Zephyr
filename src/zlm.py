@@ -2,21 +2,25 @@
 
 import argparse
 from pathlib import Path
-from typing import Any
 import requests
 from colorama import Fore
 import os
 import platform
 import subprocess
 
-def install(args: Any, path: Path):  
+def install(libs: list[str], path: Path):  
     url = "https://raw.githubusercontent.com/DeyanM1/ZephyrLibraries/refs/heads/main/lib/"
 
+    if not (path / "base.py").exists():
+        libs.insert(0, "base.py")
 
-    args.libraries.append("base.py")
-    for library in args.libraries:
-        if library != "base.py":
-            print(f"{Fore.MAGENTA}[INSTALL] Installing {library}{Fore.RESET}")
+    libsToInstallCount = len(libs)
+    successInstalledLibsCount = 0
+    for library in libs:
+        library = library.replace("\n", "")
+        library = library.lstrip().rstrip()
+        
+        print(f"{Fore.MAGENTA}[INSTALL] Installing {library}{Fore.RESET}")
         newPath = path / library
 
         response = requests.get(url + library)
@@ -27,26 +31,86 @@ def install(args: Any, path: Path):
             with newPath.open("w") as w:
                 w.writelines(file_content)
 
-            if library != "base.py":
-                print(f"{Fore.GREEN}[COMPLETE] Installed {library}{Fore.RESET}")
+            with (path / "libs.txt").open("r") as f:
+                contentLibs = f.readlines()
+
+            if f"{library}\n" not in contentLibs:
+                contentLibs.append(f"{library}\n")
+
+            with (path / "libs.txt").open("w") as f:
+                f.writelines(contentLibs)
+
+            print(f"{Fore.GREEN}[COMPLETE] Installed {library}{Fore.RESET}")
+            successInstalledLibsCount += 1
+                
         else:
             print(f"{Fore.RED}[ERROR] Failed to install {library}. Status code: {response.status_code}{Fore.RESET}")
 
-def remove(args: Any):
-    globalPath = getZephyrPath()
+    print(f"\n{Fore.GREEN}[COMPLETE] Successfully installed {successInstalledLibsCount}/{libsToInstallCount}{Fore.RESET}")
+
+def remove(libs: list[str], path: Path):
+
+    with (path / "libs.txt").open("r") as f:
+        libFileLibs = f.readlines()
 
 
-    for library in args.libraries:
-        fileToRemove = globalPath / library
+    libsToRemoveCount = len(libs)
+    libsRemoved = 0
+
+    for library in libs:
+        fileToRemove = path / library
 
 
         if fileToRemove.exists():
             fileToRemove.unlink()
+
+            libFileLibs.remove(f"{library}\n")
             print(f"{Fore.GREEN}[COMPLETE] Removed {library}{Fore.RESET}")
+            libsRemoved += 1
         else:
             print(f"{Fore.RED}[ERROR] Failed to remove {library}. library not found{Fore.RESET}")
 
+    with (path / "libs.txt").open("w") as f:
+        f.writelines(libFileLibs)
 
+    
+    print(f"\n{Fore.GREEN}[COMPLETE] Successfully removed {libsRemoved}/{libsToRemoveCount}{Fore.RESET}")
+
+
+def updateAll(libs, path: Path):
+    libFilePath = path / "libs.txt"
+
+    with libFilePath.open("r") as f:
+        libsFromFile = f.readlines()
+
+    libsFromFile.pop(0)
+
+
+    if libs == []:
+        install(libsFromFile, path)
+    else:
+        libsToInstall = []
+        for lib in libs:
+            if f"{lib}\n" in libsFromFile:
+                libsToInstall.append(lib)
+            else:   
+                print(f"{Fore.RED}[ERROR] Library not installed: {lib}.{Fore.RESET}")
+
+        install(libsToInstall, path)
+        
+
+    
+
+def createLibFile(libsPath: Path):
+    filename = "libs.txt"
+    path = libsPath / filename
+
+    if not path.exists():
+        path.touch()
+    
+        with path.open("w") as f:
+            lines = ["# Installed Zephyr Libraries\n"]
+            f.writelines(lines)
 
 def setPath():
     # Detect OS
@@ -148,9 +212,9 @@ def getZephyrPath() -> Path:
 
 
 def start():
-    parser = argparse.ArgumentParser(description="Install or remove libraries with optional parameters.")
+    parser = argparse.ArgumentParser(description="Install or remove or upgrade libraries.")
     
-    parser.add_argument('action', choices=['install', 'remove'], help="Specify whether to install or remove libraries.") 
+    parser.add_argument('action', choices=['install', 'remove', 'update'], help="Specify whether to install or remove libraries.") 
     parser.add_argument('--path', type=str, default=None, help="Specify a custom path. Default is None.")
     parser.add_argument('--global', dest='global_flag', action='store_true', help="Include this flag if you want the operation to be global.")
     parser.add_argument('libraries', nargs='*', help="List of libraries to install or remove.")
@@ -170,23 +234,29 @@ def start():
             if not path.exists():
                 print(Fore.RED, "[ERROR] Path doesnt exist", Fore.RESET)
                 return
-    
+                
     else:
         path = Path.cwd() / "lib"
+
             
     
     if args.global_flag:
         setPath()
         path = getZephyrPath()
 
+    createLibFile(path)
+
 
     match args.action:
         case "install":   
             setPath()
-            install(args, path)
+            install(args.libraries, path)
         case "remove":
             setPath()
-            remove(args)
+            remove(args.libraries, path)
+        case "update":
+            setPath()
+            updateAll(args.libraries, path)
         case _:
             pass
 

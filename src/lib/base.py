@@ -2,14 +2,15 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable, TypeAlias
+from typing import Any, Callable, TypeAlias, Literal
 
 from colorama import Back
 
 ActiveVars: TypeAlias = dict[str, Any]
 ZIndex: TypeAlias = int
 
-
+ZValueType = Literal["INT", "FLOAT", "PT", "BOOL"]
+ZBOOLValues: TypeAlias = Literal["~1", "~0"]
 
 class ZError(Exception):
     def __init__(self, code: int) -> None:
@@ -271,7 +272,7 @@ class ZValue:
 
 
             if isList:
-                listVar: LIST = activeVars.get(varName)
+                listVar = activeVars.get(varName)
                 returnValue = listVar.getValue(int(index.value)).value # type: ignore
 
             else:
@@ -329,7 +330,7 @@ class ZValue:
 
 
 class Base:
-    def __init__(self) -> None:
+    def __init__(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         self.functionRegistry: dict[str, Callable[..., Any]] = {}
 
         

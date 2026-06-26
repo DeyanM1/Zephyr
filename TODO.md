@@ -17,12 +17,12 @@
 - [x] update INTS to only accepts INTs or values ending to .0
 - [x] update ZVALUE to have real Types and type autochange
 - [x] FIX RNG -> Work with new ZTYPE types!!!!!!!
-- [ ] Check if ZLIbraries work, if local, global installation works,
-- [ ] check if Zlib import global, local paths work
+- [x] Check if ZLIbraries work, if local, global installation works,
+- [x] check if Zlib import global, local paths work
 - [ ] constants at simple vars
 - [ ] error check new mo/co var function
 - [ ] check if old libraries still work
 - [ ] check if old Projects, examples still work
 - [ ] add error handling to libraries
 - [ ] add docs for Libraries
-- [ ] update lib import syntax
+- [x] update lib import syntax

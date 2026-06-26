@@ -21,6 +21,7 @@ This command:
 - Installs GPIO.py and moreMath.py
 - Places them in the `src/lib/` directory
 - Makes them available for local projects
+- creates a libs.txt file at the insall location, adds newly installed libs to that file
 
 ### Default Installation
 
@@ -49,11 +50,24 @@ python zlm.py install --global GPIO.py
 Remove locally installed libraries:
 
 ```bash
-python zlm.py uninstall <LibraryName>
-python zlm.py uninstall GPIO.py
+python zlm.py remove <LibraryName>
+python zlm.py remove GPIO.py
 ```
 
+- removes the file from the libs.txt
 **Important**: To remove a library from the global installation location include the --global flag.
+
+## Update Libraries
+
+update installed library
+
+```bash
+python zlm.py update <LibraryName>
+```
+
+- if no names reinstalls all libs written inside libs.txt
+- can only update if lib is inside of libs.txt
+- --global flag can be used
 
 
 
