@@ -21,7 +21,7 @@ ActiveVars: TypeAlias = dict[str, "Variable"]
 ZIndex: TypeAlias = int
 
 MATH_ALLOWEDCHARS: str = "+-*/%=()1234567890."
-CO_ALLOWEDCHARS: str = "()=!><1234567890."
+CO_ALLOWEDCHARS: str = "()=!><1234567890.~"
 
 
 class ZError(Exception):
@@ -253,9 +253,9 @@ class ZValue:
 
             case "BOOL":
                 match newValue:
-                    case "0"|"0.0"|"~0"|True:
+                    case "0"|"0.0"|"~0"|False:
                         self.value = "~0"
-                    case "1"|"1.0"|"~1"|False:
+                    case "1"|"1.0"|"~1"|True:
                         self.value = "~1"
 
             case "PT":
@@ -683,17 +683,22 @@ class CO(Variable):
                     inVar = True
                     
                 else:
-                    newValue = ZValue("0.0", "FLOAT")
+                    newValue = ZValue("", "PT")
 
-                    var = activeVars.get(varName)
+                    # var = activeVars.get(varName)
 
-                    if var:
-                        if var.varType == "PT":
-                            newValue.value = '"' + var.value.value + '"'
-                        else:
-                            newValue.setValue(var.value.value, activeVars)
-                    else:
-                        raise ZError(111)
+                    newValue.setValue(f"'{varName}'", activeVars)
+                    
+                    if not newValue.isFloat(newValue.value):
+                        newValue.value = f'"{newValue.value}"'
+
+                    # if var:
+                    #     if var.varType == "PT":
+                    #         newValue.value = '"' + var.value.value + '"'
+                    #     else:
+                    #         newValue.setValue(var.value.value, activeVars)
+                    # else:
+                    #     raise ZError(111)
 
                     self.compiledCondition += newValue.value
                     inVar = False
@@ -712,7 +717,7 @@ class CO(Variable):
     
     def evaluate(self) -> None:
         result: bool = False
-
+        
         try:
             result = eval(self.compiledCondition)
         except Exception: 
@@ -819,18 +824,21 @@ class MO(Variable):
                     
                 else:
                     newValue = ZValue("0.0", "FLOAT")
-                    var = activeVars.get(varName)
-                    if var:
-                        if var.varType == "PT":
-                            newNewValue = ""
-                            for char2 in var.value.value:
-                                if char2 in MATH_ALLOWEDCHARS:
-                                    newNewValue += char2
-                            newValue.value = newNewValue
-                        else:
-                            newValue.setValue(var.value.value, activeVars)
+                    
+                    newValue.setValue(f"'{varName}'", activeVars)
+                    
+                    # var = activeVars.get(varName)
+                    # if var:
+                    #     if var.varType == "PT":
+                    #         newNewValue = ""
+                    #         for char2 in var.value.value:
+                    #             if char2 in MATH_ALLOWEDCHARS:
+                    #                 newNewValue += char2
+                    #         newValue.value = newNewValue
+                    #     else:
+                    #         newValue.setValue(var.value.value, activeVars)
 
-                        self.compiledEquation += newValue.value
+                    self.compiledEquation += newValue.value
 
                     inVar = False
                     varName = ""
@@ -1038,7 +1046,7 @@ class LOOP(Variable):
         if len(cmd.args) > 0 and cmd.args[0] != "":
             self.w(cmd, activeVars)
         
-        self.registerFunc({self.w: "", self.START: "", self.END: ""})
+        self.registerFunc({self.w: "", self.START: "", self.END: "", self.STOP: ""})
 
     def w(self, cmd: ZCommand, activeVars: ActiveVars):
         if len(cmd.args) > 0 and cmd.args[0] != "":
@@ -1062,7 +1070,11 @@ class LOOP(Variable):
         else:
             self.active = False
 
+    def STOP(self, cmd: ZCommand, activeVars: ActiveVars, index: ZIndex):
+        index = self.startIndex + int(self.countCommandsInLoop.value) +1 
 
+        return activeVars, index
+            
 
     def START(self, cmd: ZCommand, activeVars: ActiveVars, index: ZIndex):
         self.startIndex = index

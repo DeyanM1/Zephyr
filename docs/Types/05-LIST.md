@@ -8,7 +8,7 @@ A List is an ordered collection of values of a single type. Its value represents
 ## Properties
 
 - **`convertibleInto`** -> `PT`, `INT`, `FLOAT`
-- **`convertValue`** -> Current Pointer position
+- **`convertValue`** -> Value at current Pointer position
 
 ## Methods
 

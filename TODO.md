@@ -20,3 +20,9 @@
 - [ ] Check if ZLIbraries work, if local, global installation works,
 - [ ] check if Zlib import global, local paths work
 - [ ] constants at simple vars
+- [ ] error check new mo/co var function
+- [ ] check if old libraries still work
+- [ ] check if old Projects, examples still work
+- [ ] add error handling to libraries
+- [ ] add docs for Libraries
+- [ ] update lib import syntax
