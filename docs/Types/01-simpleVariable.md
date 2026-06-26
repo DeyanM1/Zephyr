@@ -27,17 +27,31 @@ Zephyr supports four types of simple variables:
 To create a simple variable, use the `#` base with the type and optional initial value:
 
 ```zephyr
-<VariableName> # <Type>:<Value>|<Param1>|<Param2>|...;
+<VariableName> # <Type>:<*- Value>|<*- const>;
 ```
 
 ### Examples
 
 ```zephyr
-age # INT:25;              § Create an integer
+age # INT:25|~0;           § Create an integer
 name # PT:"Alice";         § Create text
 pi # FLOAT:3.14;           § Create a decimal number
 is_active # BOOL:~1;       § Create a boolean (true)
 ```
+
+
+## Constant
+
+Every simple var can be set constant. The value of a constant var cant be changed anymore
+
+```zephyr
+
+age # INT:25|~1;
+age ? w:26;               § Throws a write protection error
+age ? C:~0;               § write protection is now turned off
+age ? w:26;               § Value is now changed.
+```
+
 
 ## Working with TEXT (PT)
 

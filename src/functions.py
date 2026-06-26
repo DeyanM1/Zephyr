@@ -487,11 +487,27 @@ class INT(Variable):
         self.supportedVars = ["FLOAT", "PT"]
 
         self.value: ZValue = ZValue("0", "INT")
+        self.constant: ZValue = ZValue("~0", "BOOL")
+
+        self.firstTimeInit(cmd, activeVars)
         
+        self.registerFunc({self.w: "", self.INPUT: "", self.C: ""})
+
+    def firstTimeInit(self, cmd: ZCommand, activeVars: ActiveVars):
         self.w(cmd, activeVars)
         
-        self.registerFunc({self.w: "", self.INPUT: ""})
+        if cmd.checkArgs(2, False):
+            self.setConstant(cmd.args[1], activeVars)
 
+    def setConstant(self, newStateRaw: str, activeVars: ActiveVars):
+        self.constant.setValue(newStateRaw, activeVars)
+
+    ### --- Callable Functions
+
+    def C(self, cmd: ZCommand, activeVars: ActiveVars):
+        cmd.checkArgs(1)
+        self.setConstant(cmd.args[0], activeVars)
+        
     def INPUT(self, cmd: ZCommand, activeVars: ActiveVars):
         message = ZValue("", "PT")
         message.setValue(cmd.args[0], activeVars)
@@ -499,9 +515,9 @@ class INT(Variable):
         self.value.setValue(newValue, activeVars)
     
     def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
-        """        if self.const.compiledValue:
-                    raise ZError(107)
-        """
+        if self.constant.asPythonBOOL:
+            raise ZError(107)
+        
 
         match cmd.args[0]:
             case "++":
@@ -519,12 +535,30 @@ class FLOAT(Variable):
         self.supportedVars = ["INT", "PT"]
 
         self.value: ZValue = ZValue("0.0", "FLOAT")
-        self.maxFloatingPointNumbers: ZValue = ZValue("1", "INT")
+        self.constant: ZValue = ZValue("~0", "BOOL")
+        self.maxFloatingPointNumbers: ZValue = ZValue("1", "INT") # Currently unused
 
+        self.firstTimeInit(cmd, activeVars)
+
+        self.registerFunc({self.w: "", self.INPUT: "", self.C: ""})
+
+    
+    def firstTimeInit(self, cmd: ZCommand, activeVars: ActiveVars):
         self.w(cmd, activeVars)
+        
+        if cmd.checkArgs(2, False):
+            self.setConstant(cmd.args[1], activeVars)
 
-        self.registerFunc({self.w: "", self.INPUT: ""})
+    def setConstant(self, newStateRaw: str, activeVars: ActiveVars):
+        self.constant.setValue(newStateRaw, activeVars)
 
+
+    # --- Callable Functions
+
+    def C(self, cmd: ZCommand, activeVars: ActiveVars):
+        cmd.checkArgs(1)
+        self.setConstant(cmd.args[0], activeVars)
+          
     def INPUT(self, cmd: ZCommand, activeVars: ActiveVars):
         message = ZValue("", "PT")
         message.setValue(cmd.args[0], activeVars)
@@ -532,9 +566,8 @@ class FLOAT(Variable):
         self.value.setValue(newValue, activeVars)
     
     def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
-        """if self.const.compiledValue:
-            raise ZError(107)"""
-
+        if self.constant.asPythonBOOL:
+            raise ZError(107)
 
         match cmd.args[0]:
             case "++":
@@ -552,23 +585,21 @@ class PT(Variable):
         self.supportedVars = ["INT", "FLOAT", "LIST"]
 
         self.value: ZValue = ZValue("", "PT")
+        self.constant: ZValue = ZValue("~0", "BOOL")
+        
+        self.firstTimeInit(cmd, activeVars)
+
+        self.registerFunc({self.push: "", self.w: "", self.INPUT: "", self.insertAt: "", self.C: ""})
+
+        
+    def firstTimeInit(self, cmd: ZCommand, activeVars: ActiveVars):
         self.w(cmd, activeVars)
+        
+        if cmd.checkArgs(2, False):
+            self.setConstant(cmd.args[1], activeVars)
 
-        self.registerFunc({self.push: "", self.w: "", self.INPUT: "", self.insertAt: ""})
-    
-    def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
-        """if self.const.compiledValue:
-            raise ZError(107)"""
-
-
-        match cmd.args[0]:
-            case "++":
-                self.value.increment(cmd.args[1] if 1 < len(cmd.args) else "1", activeVars)
-            case "--":
-                self.value.decrement(cmd.args[1] if 1 < len(cmd.args) else "1", activeVars)
-
-            case _:
-                self.value.setValue(cmd.args[0], activeVars)
+    def setConstant(self, newStateRaw: str, activeVars: ActiveVars):
+        self.constant.setValue(newStateRaw, activeVars)
 
     def onChange(self, targetType: str) -> str:
         if targetType == "LIST":
@@ -579,6 +610,26 @@ class PT(Variable):
             return params  # pyright: ignore[reportReturnType]
         return self.value.value
     
+
+    # --- Callable Functions
+
+    def C(self, cmd: ZCommand, activeVars: ActiveVars):
+        cmd.checkArgs(1)
+        self.setConstant(cmd.args[0], activeVars)
+       
+    def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        if self.constant.asPythonBOOL:
+            raise ZError(107)
+
+        match cmd.args[0]:
+            case "++":
+                self.value.increment(cmd.args[1] if 1 < len(cmd.args) else "1", activeVars)
+            case "--":
+                self.value.decrement(cmd.args[1] if 1 < len(cmd.args) else "1", activeVars)
+
+            case _:
+                self.value.setValue(cmd.args[0], activeVars)
+
     def INPUT(self, cmd: ZCommand, activeVars: ActiveVars):
         message = ZValue("", "PT")
         message.setValue(cmd.args[0], activeVars)
@@ -606,7 +657,6 @@ class PT(Variable):
             # except Exception:
             #     raise ZError(122)
 
-
     def push(self, cmd: ZCommand) -> None:
         print(self.value.value)
 
@@ -617,11 +667,36 @@ class BOOL(Variable):
         self.supportedVars = ["FLOAT", "PT", "INT"]
 
         self.value: ZValue = ZValue("0", "BOOL")
+        self.constant: ZValue = ZValue("~0", "BOOL")
         
+        self.firstTimeInit(cmd, activeVars)
+        
+        self.registerFunc({self.w: "", self.INPUT: "", self.C: ""})
+
+    
+    def firstTimeInit(self, cmd: ZCommand, activeVars: ActiveVars):
         self.w(cmd, activeVars)
         
-        self.registerFunc({self.w: "", self.INPUT: ""})
+        if cmd.checkArgs(2, False):
+            self.setConstant(cmd.args[1], activeVars)
 
+    def setConstant(self, newStateRaw: str, activeVars: ActiveVars):
+        self.constant.setValue(newStateRaw, activeVars)
+ 
+    def onChange(self, targetType: str) -> str:
+        match targetType:
+            case "PT":
+                return self.value.value
+            case _:
+                return str(self.value.asNumBOOL)
+
+
+    # --- Callable Functions
+
+    def C(self, cmd: ZCommand, activeVars: ActiveVars):
+        cmd.checkArgs(1)
+        self.setConstant(cmd.args[0], activeVars)
+          
     def INPUT(self, cmd: ZCommand, activeVars: ActiveVars):
         message = ZValue("", "PT")
         message.setValue(cmd.args[0], activeVars)
@@ -629,6 +704,10 @@ class BOOL(Variable):
         self.value.setValue(newValue, activeVars)
     
     def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        if self.constant.asPythonBOOL:
+            raise ZError(107)
+
+            
         match cmd.args[0]:
             case "++":
                 self.value.increment(cmd.args[1] if 1 < len(cmd.args) else "1", activeVars)
@@ -638,14 +717,7 @@ class BOOL(Variable):
             case _:
                 self.value.setValue(cmd.args[0] if cmd.args[0] != "" else "0", activeVars)
 
-    def onChange(self, targetType: str) -> str:
-        match targetType:
-            case "PT":
-                return self.value.value
-            case _:
-                return str(self.value.asNumBOOL)
-
-
+    
 
 @register()
 class CO(Variable):
