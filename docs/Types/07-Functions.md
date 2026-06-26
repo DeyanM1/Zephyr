@@ -16,7 +16,7 @@ A Function wraps a Math Object to enable reusable calculations. Unlike Math Obje
 Creates a new Function with a Math Object.
 
 ```zephyr
-function # FUNC:<ResultType>|<*-DisableVariableChange>|<*-MathObjectName>;
+function # FUNC:<*ResultType>|<*-DisableVariableChange>|<*-MathObjectName>;
 calculate # FUNC:RES|0|myMathObject;
 ```
 

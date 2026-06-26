@@ -19,7 +19,7 @@
 - [x] FIX RNG -> Work with new ZTYPE types!!!!!!!
 - [x] Check if ZLIbraries work, if local, global installation works,
 - [x] check if Zlib import global, local paths work
-- [ ] constants at simple vars
+- [x] constants at simple vars
 - [ ] error check new mo/co var function
 - [ ] check if old libraries still work
 - [ ] check if old Projects, examples still work

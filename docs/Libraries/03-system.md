@@ -11,7 +11,7 @@ The System library provides control over basic system behavior, including progra
 Before using System, import the library:
 
 ```zephyr
-__ ? LIB:"./lib/system.py";
+__ ? LIB:system.py;
 ```
 
 ## Methods
