@@ -20,7 +20,7 @@ __ ? LIB:system.py;
 Creates a System interface. No arguments are needed.
 
 ```zephyr
-system # system:;
+system # SYSTEM:;
 ```
 
 ### Exit
@@ -42,12 +42,3 @@ Retrieves the current working directory and stores it in a text variable.
 system ? getCWD:<* variableNameToSaveTo>;
 system ? getCWD:pathVariable;
 ```
-
-
-
-## Notes
-
-- Exit codes are standard Unix convention: 0 for success, non-zero for errors.
-- The program terminates immediately when `exit` is called.
-- The `getCWD` method returns the directory path as a text string suitable for further operations.
-- All System operations are blocking—the program waits for completion before proceeding.

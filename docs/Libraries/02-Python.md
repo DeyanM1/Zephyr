@@ -9,7 +9,7 @@ The Python library allows Zephyr programs to execute Python code directly from w
 Before using Python, import the library:
 
 ```zephyr
-__ ? LIB:"./lib/python.py";
+__ ? LIB:"python.py";
 ```
 
 ## Methods
@@ -18,7 +18,7 @@ __ ? LIB:"./lib/python.py";
 Creates a Python interface. No arguments are needed.
 
 ```zephyr
-python # python:;
+python # PYTHON:;
 ```
 
 ### Run (run)

@@ -4,12 +4,17 @@ The GPIO (General Purpose Input/Output) library allows Zephyr programs to interf
 
 ---
 
+## Properties
+
+- **`convertibleInto`** -> `PT`, `FLOAT`, `INT`, `BOOL`
+- **`convertValue`** -> State of last read Pin
+
 ## Setup
 
 Before using GPIO, import the library:
 
 ```zephyr
-__ ? LIB:"./lib/GPIO.py";
+__ ? LIB:"GPIO.py";
 ```
 
 ## Methods
@@ -20,6 +25,16 @@ Creates a GPIO interface with the specified pinout type.
 ```zephyr
 gpio # GPIO:<*PinoutType>; 
 gpio # GPIO:BCM;
+```
+
+- **`PinoutType`** — Pin numbering scheme: `BCM` or `Board`
+
+### Write (w)
+change the Pinout Type
+
+```zephyr
+gpio ? w:<*PinoutType>;
+gpio ? w:Board;
 ```
 
 - **`PinoutType`** — Pin numbering scheme: `BCM` or `Board`
