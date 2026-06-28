@@ -20,8 +20,8 @@ typeRegistry: dict[str, type] = {}
 ActiveVars: TypeAlias = dict[str, "Variable"]
 ZIndex: TypeAlias = int
 
-MATH_ALLOWEDCHARS: str = "+-*/%=()1234567890."
-CO_ALLOWEDCHARS: str = "()=!><1234567890.~"
+MO_ALLOWEDCHARS: str = "+-*/%=()1234567890."
+CO_ALLOWEDCHARS: str = "()=!><1234567890."
 
 
 class ZError(Exception):
@@ -305,6 +305,10 @@ class ZValue:
 
             if isList:
                 listVar: LIST = activeVars.get(varName)
+                
+                if not listVar:
+                    raise ZError(113)
+                    
                 returnValue = listVar.getValue(int(index.value)).value # type: ignore
 
             else:
@@ -749,45 +753,59 @@ class CO(Variable):
 
     def compile(self, activeVars: ActiveVars) -> None:
         self.compiledCondition = ""
-        inVar = False
-        varName = ""
 
         
+        if self.rawCondition.value.startswith("(") and self.rawCondition.value.endswith(")"):
+            self.rawCondition.value = self.rawCondition.value.removeprefix("(").removesuffix(")")
+
+
+        varBuffers = [""]
+        qCounter = 0 # Quote Counter
+        cCounter = 0 # < / > Counter
+        inVar = False
+
         for char in self.rawCondition.value:
             if char == "'":
                 if not inVar:
+                    self.compiledCondition += "~"
+                    
+                if cCounter == qCounter:
+                    qCounter += 1
+                    varBuffers[-1] += "'"
                     inVar = True
-                    
-                else:
-                    newValue = ZValue("", "PT")
 
-                    # var = activeVars.get(varName)
-
-                    newValue.setValue(f"'{varName}'", activeVars)
-                    
-                    if not newValue.isFloat(newValue.value):
-                        newValue.value = f'"{newValue.value}"'
-
-                    # if var:
-                    #     if var.varType == "PT":
-                    #         newValue.value = '"' + var.value.value + '"'
-                    #     else:
-                    #         newValue.setValue(var.value.value, activeVars)
-                    # else:
-                    #     raise ZError(111)
-
-                    self.compiledCondition += newValue.value
-                    inVar = False
-                    varName = ""
-                    
+                elif cCounter != qCounter:
+                    qCounter -= 1
+                    varBuffers[-1] += "'"
             
-            elif inVar:
-                varName += char
-                continue
-            
-            if char in CO_ALLOWEDCHARS:
-                self.compiledCondition += char
+            elif char == "<" and inVar:
+                cCounter += 1
+                varBuffers[-1] += "<"
+                varBuffers.append("")
+                    
+            elif char == ">" and inVar:
+                cCounter -= 1
+                varBuffers.append(">")
+                    
+            else:
+                if inVar:
+                    varBuffers[-1] += char
 
+                elif char in CO_ALLOWEDCHARS:
+                    self.compiledCondition += char
+
+            if qCounter == 0 and cCounter == 0 and inVar:
+                buf = ''.join(varBuffers)
+                                
+                value = ZValue("", "PT")
+                value.setValue(buf, activeVars)
+                
+                self.compiledCondition = self.compiledCondition.replace("~", value.value, 1)
+
+                varBuffers = [""]
+                inVar = False
+
+        
         self.evaluate()
 
     def evaluate(self) -> None:
@@ -896,49 +914,66 @@ class MO(Variable):
     def firstTimeInit(self, cmd: ZCommand, activeVars: ActiveVars):
         if cmd.checkArgs(1, False):
             self.w(cmd, activeVars)
-
-       
+            
+    
     def compile(self, activeVars: ActiveVars) -> None:
         self.compiledEquation = ""
+
+        
+        if self.rawEquation.value.startswith("(") and self.rawEquation.value.endswith(")"):
+            self.rawEquation.value = self.rawEquation.value.removeprefix("(").removesuffix(")")
+
+        
+        varBuffers = [""]
+        qCounter = 0 # Quote Counter
+        cCounter = 0 # < / > Counter
         inVar = False
-        varName = ""
 
         for char in self.rawEquation.value:
             if char == "'":
                 if not inVar:
+                    self.compiledEquation += "~"
+                    
+                if cCounter == qCounter:
+                    qCounter += 1
+                    varBuffers[-1] += "'"
                     inVar = True
-                    
-                else:
-                    newValue = ZValue("0.0", "FLOAT")
-                    
-                    newValue.setValue(f"'{varName}'", activeVars)
-                    
-                    # var = activeVars.get(varName)
-                    # if var:
-                    #     if var.varType == "PT":
-                    #         newNewValue = ""
-                    #         for char2 in var.value.value:
-                    #             if char2 in MATH_ALLOWEDCHARS:
-                    #                 newNewValue += char2
-                    #         newValue.value = newNewValue
-                    #     else:
-                    #         newValue.setValue(var.value.value, activeVars)
 
-                    self.compiledEquation += newValue.value
-
-                    inVar = False
-                    varName = ""
-                    
+                elif cCounter != qCounter:
+                    qCounter -= 1
+                    varBuffers[-1] += "'"
             
-            elif inVar:
-                varName += char
-                continue
-            
-            elif char in MATH_ALLOWEDCHARS:
-                self.compiledEquation += char
+            elif char == "<" and inVar:
+                cCounter += 1
+                varBuffers[-1] += "<"
+                varBuffers.append("")
+                    
+            elif char == ">" and inVar:
+                cCounter -= 1
+                varBuffers.append(">")
+                    
+            else:
+                if inVar:
+                    varBuffers[-1] += char
 
+                elif char in MO_ALLOWEDCHARS:
+                    self.compiledEquation += char
+
+            if qCounter == 0 and cCounter == 0 and inVar:
+                buf = ''.join(varBuffers)
+                
+                value = ZValue("", "PT")
+                value.setValue(buf, activeVars)
+                
+                self.compiledEquation = self.compiledEquation.replace("~", value.value, 1)
+
+                varBuffers = [""]
+                inVar = False
+
+        
         self.calculate(activeVars)
-    
+
+
     def calculate(self, activeVars: ActiveVars) -> None:
         result: float = 0
 

@@ -23,6 +23,6 @@
 - [ ] error check new mo/co var function
 - [ ] check if old libraries still work
 - [ ] check if old Projects, examples still work
-- [ ] add error handling to libraries
-- [ ] add docs for Libraries
+- [x] add error handling to libraries
+- [x] add docs for Libraries
 - [x] update lib import syntax

@@ -1,0 +1,7 @@
+a # LIST:INT|15|1;
+b # INT:2;
+
+
+mo # MO:('a<'a<'b'>'>'+'b');
+
+mo ? debug:;
