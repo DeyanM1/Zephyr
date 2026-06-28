@@ -1003,10 +1003,8 @@ class FUNC(Variable):
         self.disableVariableChange: ZValue = ZValue("~0", "BOOL")
 
         self.value: ZValue = ZValue("0.0", "FLOAT")
-        self.rawEquation: str = ""
-        self.compiledEquation: str = ""
+        self.mo: MO # Is initialized Later
 
-        
         self.firstTimeInit(cmd, activeVars)
                 
         self.registerFunc({self.w: "", self.call: ""})
@@ -1024,7 +1022,8 @@ class FUNC(Variable):
             if not mathObject:
                 raise ZError(113)
             if isinstance(mathObject, MO):
-                self.rawEquation = mathObject.rawEquation.value # type: ignore
+                self.mo = mathObject
+                #self.rawEquation = mathObject.rawEquation.value # type: ignore
             else:
                 raise ZError(112)
 
@@ -1035,55 +1034,8 @@ class FUNC(Variable):
             The normal call function is the one called using    fun ? call:;
         """
         if self.disableVariableChange.asPythonBOOL:
-            self.compile(activeVars)
-
-    def compile(self, activeVars: ActiveVars) -> None:
-        self.compiledEquation = ""
-        inVar = False
-        varName = ""
-        for char in self.rawEquation:
-            if char == "'":
-                if not inVar:
-                    inVar = True
-                    
-                else:
-                    newValue = ZValue("0.0", "FLOAT")
-                    var = activeVars.get(varName)
-                    if var:
-                        if var.varType == "PT":
-                            newNewValue = ""
-                            for char in var.value.value:
-                                if char in MATH_ALLOWEDCHARS:
-                                    newNewValue += char
-                            newValue.value = newNewValue
-                        else:
-                            newValue.setValue(var.value.value, activeVars)
-
-                        self.compiledEquation += newValue.value
-
-                    inVar = False
-                    varName = ""
-                    
-            
-            elif inVar:
-                varName += char
-                continue
-            
-            elif char in MATH_ALLOWEDCHARS:
-                self.compiledEquation += char
-
-        self.calculate(activeVars)
-    
-    def calculate(self, activeVars: ActiveVars) -> None:
-        result: float = 0
-
-        try:
-            result = eval(self.compiledEquation)
-        except Exception: 
-            raise ZError(111)
-        
-        self.value.setValue(str(result), activeVars)
-
+            self.mo.compile(activeVars)
+            self.value = self.mo.value
 
     # --- Callable Functions
                 
@@ -1091,10 +1043,12 @@ class FUNC(Variable):
         moName = ZValue("", "PT")
         moName.setValue(cmd.args[0], activeVars)
         mathObject: MO = activeVars.get(moName.value)
+        
         if not mathObject:
             raise ZError(113)
         if isinstance(mathObject, MO):
-            self.rawEquation = mathObject.rawEquation.value # type: ignore
+            self.mo = mathObject
+            #self.rawEquation = mathObject.rawEquation.value # type: ignore
         else:
             raise ZError(112)
 
@@ -1102,7 +1056,8 @@ class FUNC(Variable):
 
     def call(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         if not self.disableVariableChange.asPythonBOOL:
-            self.compile(activeVars)
+            self.mo.compile(activeVars)
+            self.value = self.mo.value
         
 @register()
 class RNG(Variable):

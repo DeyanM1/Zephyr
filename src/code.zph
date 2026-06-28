@@ -2,6 +2,13 @@ a # LIST:INT|15|1;
 b # INT:2;
 
 
-mo # MO:('a<'a<'b'>'>'+'b');
+mo # MO:('a<'a<2>'>'+'b'+'b');
 
-mo ? debug:;
+func # FUNC:RES|~0|mo;
+
+b ? w:3;
+
+func ? call:;
+func ? call:;
+
+func ? debug:;
