@@ -1,0 +1,55 @@
+site_name: Zephyr Programming Language - Beginner-Friendly Documentation
+site_description: A comprehensive beginner-friendly guide to learning the Zephyr variable-based programming language
+site_author: Zephyr Community
+site_url: https://github.com/DeyanM1/Zephyr
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: blue
+      accent: light blue
+  language: en
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.instant
+    - toc.integrate
+    - content.code.copy
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Overview: overview.md
+  - Types:
+    - Simple Variables: Types/01-simpleVariable.md
+    - Conditional Objects: Types/02-conditionalObject.md
+    - IF Statements: Types/03-IF-Statement.md
+    - Loops: Types/04-LOOP.md
+    - Lists: Types/05-LIST.md
+    - Math Objects: Types/06-MathObjects.md
+    - Functions: Types/07-Functions.md
+    - Random Numbers (RNG): Types/08-RNG.md
+    - File Management: Types/09-FileManagement.md
+    - Built-in Commands: Types/10-BuiltIn.md
+    - Animations: Types/11-AnimationObject.md
+  - Libraries:
+    - Library Manager (ZLM): Libraries/00-ZLM.md
+    - GPIO: Libraries/01-GPIO.md
+    - Python: Libraries/02-Python.md
+    - System: Libraries/03-system.md
+  - Error Codes: Errors.md
+
+plugins:
+  - search
+
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - toc:
+      permalink: true
