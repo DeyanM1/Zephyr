@@ -13,7 +13,7 @@ lowerMessage # PT:The Number is lower! try again!;
 winCO # CO:('number'=='guess');
 winIF # IF:winCO;
 winIF ? START:1;
-    __ ? JUMP:24;
+    __ ? jump:24;
 winIF ? END:;
 
 mainCondition # CO:('number'!='guess');

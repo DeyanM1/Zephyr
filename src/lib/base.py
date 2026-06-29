@@ -116,24 +116,6 @@ class ZBase:
     use: str = "?"
 
 @dataclass
-class ZCommand:
-    """
-    Represents a parsed command from a .zph file.
-
-    Attributes:
-        lineNum (int): The line number in the .zph file where the command is located.
-        name (str): The name of the command.
-        base (str): The base of the command.
-        func (str): The function specified by the command.
-        args (list[str]): The arguments provided to the command.
-    """
-    lineNum: int
-    name: str
-    base: str
-    func: str
-    args: list[str]
-
-@dataclass
 class ZValue:
     value: str
     valueType: ZValueType
@@ -327,6 +309,39 @@ class ZValue:
                 
             case "INT"|"FLOAT":
                 self.setValue(str(newValue), activeVars)
+
+@dataclass
+class ZCommand:
+    """
+    Represents a parsed command from a .zph file.
+
+    Attributes:
+        lineNum (int): The line number in the .zph file where the command is located.
+        name (str): The name of the command.
+        base (str): The base of the command.
+        func (str): The function specified by the command.
+        args (list[str]): The arguments provided to the command.
+    """
+    lineNum: int
+    name: str
+    base: str
+    func: str
+    args: list[str]
+
+
+    def checkArgs(self, count: int, raiseError: bool = True) -> bool:
+        if len(self.args) < count:
+            if raiseError:
+                raise ZError(114)
+            return False
+        
+        for arg in self.args:
+            if arg == "":
+                if raiseError:
+                    raise ZError(114)
+                return False
+        return True
+
 
 
 class Base:

@@ -26,3 +26,4 @@
 - [x] add error handling to libraries
 - [x] add docs for Libraries
 - [x] update lib import syntax
+- [ ] add LIST example script

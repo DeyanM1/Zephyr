@@ -50,6 +50,8 @@ result ? w:'myList<'index'>';     § Read value at position stored in variable i
 result ? w:'myList<'myList<2>'>;  § Nested list access (can nest infinitely)
 ```
 
+- The infinite nesting can be used everywhere a value can be replaced with a variable (*)
+
 
 
 ## Notes

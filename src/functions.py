@@ -500,8 +500,8 @@ class INT(Variable):
         self.registerFunc({self.w: "", self.INPUT: "", self.C: ""})
 
     def firstTimeInit(self, cmd: ZCommand, activeVars: ActiveVars):
-        cmd.checkArgs(1)
-        self.w(cmd, activeVars)
+        if cmd.checkArgs(1, False):
+            self.w(cmd, activeVars)
         
         if cmd.checkArgs(2, False):
             self.setConstant(cmd.args[1], activeVars)
@@ -551,8 +551,8 @@ class FLOAT(Variable):
 
     
     def firstTimeInit(self, cmd: ZCommand, activeVars: ActiveVars):      
-        cmd.checkArgs(1)
-        self.w(cmd, activeVars)
+        if cmd.checkArgs(1, False):
+            self.w(cmd, activeVars)
         
         if cmd.checkArgs(2, False):
             self.setConstant(cmd.args[1], activeVars)
@@ -601,8 +601,8 @@ class PT(Variable):
 
         
     def firstTimeInit(self, cmd: ZCommand, activeVars: ActiveVars):
-        cmd.checkArgs(1)
-        self.w(cmd, activeVars)
+        if cmd.checkArgs(1, False):
+            self.w(cmd, activeVars)
         
         if cmd.checkArgs(2, False):
             self.setConstant(cmd.args[1], activeVars)
@@ -684,8 +684,8 @@ class BOOL(Variable):
 
     
     def firstTimeInit(self, cmd: ZCommand, activeVars: ActiveVars):
-        cmd.checkArgs(1)
-        self.w(cmd, activeVars)
+        if cmd.checkArgs(1, False):
+            self.w(cmd, activeVars)
         
         if cmd.checkArgs(2, False):
             self.setConstant(cmd.args[1], activeVars)
@@ -759,7 +759,7 @@ class CO(Variable):
             self.rawCondition.value = self.rawCondition.value.removeprefix("(").removesuffix(")")
 
 
-        varBuffers = [""]
+        varBuffer = ""
         qCounter = 0 # Quote Counter
         cCounter = 0 # < / > Counter
         inVar = False
@@ -771,38 +771,38 @@ class CO(Variable):
                     
                 if cCounter == qCounter:
                     qCounter += 1
-                    varBuffers[-1] += "'"
+                    varBuffer += "'"
                     inVar = True
 
                 elif cCounter != qCounter:
                     qCounter -= 1
-                    varBuffers[-1] += "'"
+                    varBuffer += "'"
             
             elif char == "<" and inVar:
                 cCounter += 1
-                varBuffers[-1] += "<"
-                varBuffers.append("")
+                varBuffer += "<"
                     
             elif char == ">" and inVar:
                 cCounter -= 1
-                varBuffers.append(">")
+                varBuffer += ">"
                     
             else:
                 if inVar:
-                    varBuffers[-1] += char
+                    varBuffer += char
 
                 elif char in CO_ALLOWEDCHARS:
                     self.compiledCondition += char
 
             if qCounter == 0 and cCounter == 0 and inVar:
-                buf = ''.join(varBuffers)
-                                
                 value = ZValue("", "PT")
-                value.setValue(buf, activeVars)
+                value.setValue(varBuffer, activeVars)
+
+                if not value.value.isdigit():
+                    value.value = f'"{value.value}"'
                 
                 self.compiledCondition = self.compiledCondition.replace("~", value.value, 1)
 
-                varBuffers = [""]
+                varBuffer = ""
                 inVar = False
 
         
@@ -924,7 +924,7 @@ class MO(Variable):
             self.rawEquation.value = self.rawEquation.value.removeprefix("(").removesuffix(")")
 
         
-        varBuffers = [""]
+        varBuffer = ""
         qCounter = 0 # Quote Counter
         cCounter = 0 # < / > Counter
         inVar = False
@@ -936,38 +936,37 @@ class MO(Variable):
                     
                 if cCounter == qCounter:
                     qCounter += 1
-                    varBuffers[-1] += "'"
+                    varBuffer += "'"
                     inVar = True
 
                 elif cCounter != qCounter:
                     qCounter -= 1
-                    varBuffers[-1] += "'"
+                    varBuffer += "'"
             
             elif char == "<" and inVar:
                 cCounter += 1
-                varBuffers[-1] += "<"
-                varBuffers.append("")
+                varBuffer += "<"
                     
             elif char == ">" and inVar:
                 cCounter -= 1
-                varBuffers.append(">")
+                varBuffer+= ">"
                     
             else:
                 if inVar:
-                    varBuffers[-1] += char
+                    varBuffer += char
 
                 elif char in MO_ALLOWEDCHARS:
                     self.compiledEquation += char
 
             if qCounter == 0 and cCounter == 0 and inVar:
-                buf = ''.join(varBuffers)
+                buf = ''.join(varBuffer)
                 
                 value = ZValue("", "PT")
                 value.setValue(buf, activeVars)
                 
                 self.compiledEquation = self.compiledEquation.replace("~", value.value, 1)
 
-                varBuffers = [""]
+                varBuffer = [""]
                 inVar = False
 
         
@@ -1023,7 +1022,6 @@ class FUNC(Variable):
                 raise ZError(113)
             if isinstance(mathObject, MO):
                 self.mo = mathObject
-                #self.rawEquation = mathObject.rawEquation.value # type: ignore
             else:
                 raise ZError(112)
 
@@ -1048,7 +1046,6 @@ class FUNC(Variable):
             raise ZError(113)
         if isinstance(mathObject, MO):
             self.mo = mathObject
-            #self.rawEquation = mathObject.rawEquation.value # type: ignore
         else:
             raise ZError(112)
 
