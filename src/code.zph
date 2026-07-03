@@ -1,8 +1,5 @@
-a # FLOAT:1.34;
+a # BOOL:~1;
 
-b # INT:;
+co # CO:('a');
 
-a ? LGTH:b;
-
-b ? CT:PT;
-b ? push:;
+co ? debug:;

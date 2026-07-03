@@ -1,6 +1,10 @@
 pi # FLOAT:0.0;
 divisor # FLOAT:1.0;                                         
 
+showSteps # BOOL:~0;
+showSteps ? INPUT:Show Steps ~1/~0 -> ;
+showStepsCO # CO:('showSteps');
+showStepsIF # IF:showStepsCO;
 
 iterations # INT:6000;
 iteration # INT:1;
@@ -8,14 +12,17 @@ iteration # INT:1;
 iLoopCO # CO:('iteration'<'iterations');
 iLoop # LOOP:iLoopCO;
 
-iLoop ? START:10;
+iLoop ? START:9;
     piMO # MO:;
     piMO ? w:('pi'+4/'divisor'-4/('divisor'+2));
 
     pi ? w:'piMO';
 
     piMO ? CT:PT;
-    piMO ? push:;
+
+    showStepsIF ? START:1;
+        piMO ? push:;
+    showStepsIF ? END:;
     
     divisor ? w:++|4;
 

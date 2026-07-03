@@ -1,6 +1,8 @@
 iterations # INT:100;
 num # INT:25;
 
+num ? INPUT:Enter num to get SquareRoot from -> ;
+
 message # PT:Square root is: ;
 errorMessage # PT:Error! Number must not be negative;
 

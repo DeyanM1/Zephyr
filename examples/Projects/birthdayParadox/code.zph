@@ -1,5 +1,7 @@
 n # INT:1;
 countPersons # INT:2;
+countPersons ? INPUT:Enter count Persons -> ;
+
 i # INT:0;
 
 prob # FLOAT:1.0;

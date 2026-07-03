@@ -22,6 +22,11 @@ d ? w:--;                       § d um 1 erniedrigen
 d ? CT:PT;
 d ? push:;
 
+f # INT:;                       § Ganzzahl definieren
+d ? LGTH:f;                     § Länge von d auf f schreiben
+f ? CT:PT;                      § Typ wechseln
+f ? push:;                      § ausdrucken
+
 
 
 boolMessage # PT:;

@@ -1,6 +1,8 @@
 digits # INT:10;
 §digits # INT:2149; § Maximum
 
+digits ? INPUT:Enter max digits -> ;
+
 message # PT:-> ;
 
 n # MO:(2*10**(2*'digits'));
@@ -18,6 +20,6 @@ loop ? END:;
 
 
 message ? w:++|'x';
-message ? insertAt:.|5;
+§message ? insertAt:.|5;
 
 message ? push:;

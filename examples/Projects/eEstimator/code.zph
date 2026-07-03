@@ -8,9 +8,16 @@ totalCount # FLOAT:0;
 loopCO # CO:('loopTrials' != 1);
 loop # LOOP:loopCO;
 
+showTrials # BOOL:~0;
+showTrials ? INPUT:Display Trials ~1/~0 -> ;
+
 printCurrentTrial # PT:;
 
-loop ? START:13;
+
+showTrialsCO # CO:('showTrials');
+showTrialsIF # IF:showTrialsCO;
+
+loop ? START:17;
     sum # FLOAT:0;
     count # FLOAT:0;
 
@@ -27,7 +34,10 @@ loop ? START:13;
     totalCount ? w:'mo2';
 
     printCurrentTrial ? w:'loopTrials';
-    §printCurrentTrial ? push:;
+
+    showTrialsIF ? START:1;
+        printCurrentTrial ? push:;
+    showTrialsIF ? END:;
 
     loopTrials ? w:--;
 loop ? END:;

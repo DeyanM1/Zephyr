@@ -869,7 +869,7 @@ class CO(Variable):
         result: bool = False
         
         try:
-            result = eval(self.compiledCondition)
+            result = bool(eval(self.compiledCondition))
         except Exception: 
             raise ZError(111)
         

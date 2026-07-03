@@ -1,5 +1,7 @@
 number # INT:120;
 
+number ? INPUT:Enter number -> ;
+
 message # PT:-> ;
 
 
