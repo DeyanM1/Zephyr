@@ -28,20 +28,20 @@ class ZError(Exception):
     def __init__(self, code: int) -> None:
         self.code = code
     
-    def process(self, cmd: ZCommand, zfile: ZFile, exit: bool = True) -> None:
+    def process(self, cmd: ZCommand, zfile: ZFile, exit: bool = True, returnDict: bool = False) -> None|dict:
         # errorCode: (message, offset_function)
         errors: dict[int, Callable[..., tuple[str, str, int, type[BaseException]]]] = {
-            101: lambda: (f"Unknown Base, use  '{ZBase.use}' or '{ZBase.define}'", "UnknownBase", len(cmd.name) + 2, SyntaxError),
-            102: lambda: ("Undefined Variable ", "UndefinedVariable", 1, SyntaxError),
+            101: lambda: (f"Unknown Base, use '{ZBase.use}' or '{ZBase.define}'", "UnknownBase", len(cmd.name) + 2, SyntaxError),
+            102: lambda: ("Undefined Variable", "UndefinedVariable", 1, SyntaxError),
             103: lambda: ("Unknown Function.", "UnknownFunction", len(f"{cmd.name} {cmd.base} "), SyntaxError),
-            104: lambda: ("Wrong command structure. Missing ':' or ';'? ", "InvalidStructure", 1, SyntaxError),
-            105: lambda: ("Variable Type doesn't match given Value ", "ValueError", 1, SyntaxError),
-            106: lambda: ("Invalid Boolean type. Allowed: ~0 | ~1 ", "ValueError", len(f"{cmd.name} {cmd.base} {cmd.func} "), SyntaxError),
-            107: lambda: ("Value cannot be changed. Variable is constant! ", "WriteProtection", len(f"{cmd.name} {cmd.base} "), SyntaxError),
-            108: lambda: ("Current Variable type doesnt support new variable type! ", "TypeError", len(f"{cmd.name} {cmd.base} {cmd.func} "), SyntaxError),
-            109: lambda: ("List doesn't support position 0! ", "ListIndexError", len(f"{cmd.name}")+7, SyntaxError),
-            110: lambda: ("Only INT, PT, FLOAT are in- and decrementable! ", "WriteError", 1, SyntaxError),
-            111: lambda: ("Error in Condition/Equation. ", "ConditionError",  len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
+            104: lambda: ("Wrong command structure. Missing ':' or ';'?", "InvalidStructure", 1, SyntaxError),
+            105: lambda: ("Variable Type doesn't match given Value", "ValueError", 1, SyntaxError),
+            106: lambda: ("Invalid Boolean type. Allowed: ~0 / ~1", "ValueError", len(f"{cmd.name} {cmd.base} {cmd.func} "), SyntaxError),
+            107: lambda: ("Value cannot be changed. Variable is constant!", "WriteProtection", len(f"{cmd.name} {cmd.base} "), SyntaxError),
+            108: lambda: ("Current Variable type doesnt support new variable type!", "TypeError", len(f"{cmd.name} {cmd.base} {cmd.func} "), SyntaxError),
+            109: lambda: ("List doesn't support position 0!", "ListIndexError", len(f"{cmd.name}")+7, SyntaxError),
+            110: lambda: ("Only INT, PT, FLOAT are in- and decrementable!", "WriteError", 1, SyntaxError),
+            111: lambda: ("Error in Condition/Equation.", "ConditionError",  len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
             112: lambda: ("Given variable isnt correct type!", "ParamUnsupportedTypeError", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
             113: lambda: ("Given variable isnt defined!", "ParamUndefinedVariable", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
             114: lambda: ("Error in arguments!", "ParamError", len(f"{cmd.name} {cmd.base} {cmd.func}  "), SyntaxError),
@@ -56,6 +56,9 @@ class ZError(Exception):
             123: lambda: ("PT insertion Error! Index out of bounds!", "IndexOutoFBounds", 0, SyntaxError),
             124: lambda: ("Module Not Found inside global / local dir", "ModuleNotFound", 0, SyntaxError)
         }
+
+        if returnDict:
+            return errors
 
         if self.code not in errors:
             raise ValueError(f"Unknown error code: {self.code}")

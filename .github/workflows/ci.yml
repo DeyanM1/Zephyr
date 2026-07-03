@@ -11,6 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Update Errors.md
+        run:
+          python3 ./dist/extractErrors.py
       - name: Configure Git Credentials
         run: |
           git config user.name github-actions[bot]
