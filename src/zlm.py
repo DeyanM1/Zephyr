@@ -106,6 +106,7 @@ def createLibFile(libsPath: Path):
     path = libsPath / filename
 
     if not path.exists():
+        path.parent.mkdir(parents=True, exist_ok=True)
         path.touch()
     
         with path.open("w") as f:

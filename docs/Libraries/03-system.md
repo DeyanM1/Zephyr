@@ -23,12 +23,12 @@ Creates a System interface. No arguments are needed.
 system # SYSTEM:;
 ```
 
-### Exit
+### Quit
 Terminates the program with an optional error code. Default error code is 0 (success).
 
 ```zephyr
-system ? exit:<*- ErrorCode>;
-system ? exit:0;
+system ? quit:<*- ErrorCode>;
+system ? quit:0;
 ```
 
 **ErrorCode values:**

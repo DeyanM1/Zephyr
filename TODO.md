@@ -21,8 +21,9 @@
 - [x] check if Zlib import global, local paths work
 - [x] constants at simple vars
 - [x] error check new mo/co var function
-- [ ] check if old libraries still work
-- [ ] check if old Projects, examples still work
+- [x] check if old libraries still work
+- [x] check if old Projects, examples still work
+- [ ] fix BrainFuck compiler
 - [x] add error handling to libraries
 - [x] add docs for Libraries
 - [x] update lib import syntax

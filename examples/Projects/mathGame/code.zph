@@ -1,4 +1,8 @@
+__ ? LIB:system.py;
+system # SYSTEM:;
+
 blank # PT: ;
+exit # PT:exit;
 
 
 messageWin # PT:Correct answer with tries: ;
@@ -50,8 +54,16 @@ equationPrint ? push:;
 
 
 
-userResult # FLOAT:0;
+userResult # PT:0;
 userResult ? INPUT:-> ;
+
+userExitCO # CO:('userResult' == 'exit');
+userExitIF # IF:userExitCO;
+userExitIF ? START:1;
+    system ? quit:0;
+userExitIF ? ELSE:1;
+    userResult ? CT:FLOAT;
+userExitIF ? END:;
 
 mo # MO:('number_A' 'operator' 'number_B');
 
@@ -61,10 +73,10 @@ if ? START:3;
 
     messageLose ? push:;
     tries ? w:++;
-    __ ? jump:-8;
+    __ ? jump:-15;
 
 if ? ELSE:2;
     messageWin ? w:++|'tries';
     messageWin ? push:;
-    __ ? jumpTo:1;
+    __ ? jumpTo:3;
 if ? END:;

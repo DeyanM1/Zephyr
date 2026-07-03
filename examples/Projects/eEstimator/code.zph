@@ -10,7 +10,7 @@ loop # LOOP:loopCO;
 
 printCurrentTrial # PT:;
 
-loop ? START:12;
+loop ? START:13;
     sum # FLOAT:0;
     count # FLOAT:0;
 

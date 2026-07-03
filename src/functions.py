@@ -800,7 +800,7 @@ class CO(Variable):
                 value = ZValue("", "PT")
                 value.setValue(varBuffer, activeVars)
 
-                if not value.value.isdigit():
+                if not value.isFloat(value.value):
                     value.value = f'"{value.value}"'
                 
                 self.compiledCondition = self.compiledCondition.replace("~", value.value, 1)
