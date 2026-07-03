@@ -1,0 +1,21 @@
+list1 # LIST:PT;
+
+list1 ? SET:1;
+list1 ? w:Hello, ;
+list1 ? SET:2;
+list1 ? w:World!;
+
+message # PT:;
+message ? w:'list1<1>';
+message ? w:++|'list1<2>';
+message ? push:;
+
+
+§ ----- Nested Indexing ------
+
+list2 # LIST:INT|4|3|6|2|1|99;
+
+message # PT:;
+message ? w:'list2<'list2<'list2<'list2<'list2<'list2<5>'>'>'>'>'>';
+
+message ? push:;
