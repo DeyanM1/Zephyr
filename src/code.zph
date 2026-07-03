@@ -1,14 +1,8 @@
-a # LIST:INT|15|1;
-b # INT:2;
+a # FLOAT:1.34;
 
+b # INT:;
 
-mo # MO:('a<'a<2>'>'+'b'+'b');
+a ? LGTH:b;
 
-func # FUNC:RES|~0|mo;
-
-b ? w:3;
-
-func ? call:;
-func ? call:;
-
-func ? debug:;
+b ? CT:PT;
+b ? push:;

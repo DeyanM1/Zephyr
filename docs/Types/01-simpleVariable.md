@@ -301,7 +301,7 @@ flag # BOOL:~1;
 flag ? CT:INT;
 ```
 
-## Making a Variable Constant (NOT YET IMPLEMENTED!)
+## Making a Variable Constant 
 
 You can make a simple variable constant (unchangeable) by adding the `~1` parameter:
 
@@ -316,7 +316,30 @@ pi # PT:"3.14159"|~1;
 pi ? w:"3.14";             § ERROR! Write Protection - can't change constant
 ```
 
-## Practical Examples
+## Length of a variable
+
+use LNGH to get the amount of characters or digits in a variable
+
+this function is available on: INT, PT, FLOAT
+
+usage:
+
+```zephyr
+<var> ? LGTH:<* targetVarName>;
+
+
+a # PT:Length;
+lengthOfA # INT:;
+
+a ? LGTH:lengthOfA;
+
+lengthOfA ? push:;    § outputs 6
+```
+
+- **targetVarName** is the name of the variable the length is pasted into
+
+
+## Examples
 
 ### Example 1: Simple Calculator
 

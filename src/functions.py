@@ -429,7 +429,7 @@ class Variable:
         self.varType = cmd.func
         self.name = cmd.name
 
-        self.value: Any
+        self.value: ZValue
 
 
         self.supportedVars: list[str] = [] # Supported Variables to change to
@@ -500,7 +500,7 @@ class INT(Variable):
 
         self.firstTimeInit(cmd, activeVars)
         
-        self.registerFunc({self.w: "", self.INPUT: "", self.C: ""})
+        self.registerFunc({self.w: "", self.INPUT: "", self.C: "", self.LGTH: ""})
 
     def firstTimeInit(self, cmd: ZCommand, activeVars: ActiveVars):
         if cmd.checkArgs(1, False):
@@ -513,6 +513,24 @@ class INT(Variable):
         self.constant.setValue(newStateRaw, activeVars)
 
     ### --- Callable Functions
+
+    def LGTH(self, cmd: ZCommand, activeVars: ActiveVars):
+        cmd.checkArgs(1, True)
+        targetVarName = ZValue("", "PT")
+        targetVarName.setValue(cmd.args[0], activeVars)
+
+        length = str(len(self.value.value))
+        var = activeVars.get(targetVarName.value)
+        if not var:
+            raise ZError(113)
+
+        if var.varType not  in ["INT", "PT", "FLOAT", "BOOL"]:
+            raise ZError(112)
+            
+        var.value.setValue(length, activeVars)
+        activeVars.update({var.name: var})
+
+        return activeVars
 
     def C(self, cmd: ZCommand, activeVars: ActiveVars):
         cmd.checkArgs(1)
@@ -550,7 +568,7 @@ class FLOAT(Variable):
 
         self.firstTimeInit(cmd, activeVars)
 
-        self.registerFunc({self.w: "", self.INPUT: "", self.C: ""})
+        self.registerFunc({self.w: "", self.INPUT: "", self.C: "", self.LGTH: ""})
 
     
     def firstTimeInit(self, cmd: ZCommand, activeVars: ActiveVars):      
@@ -565,6 +583,24 @@ class FLOAT(Variable):
 
 
     # --- Callable Functions
+     
+    def LGTH(self, cmd: ZCommand, activeVars: ActiveVars):
+        cmd.checkArgs(1, True)
+        targetVarName = ZValue("", "PT")
+        targetVarName.setValue(cmd.args[0], activeVars)
+
+        length = str(len(self.value.value))
+        var = activeVars.get(targetVarName.value)
+        if not var:
+            raise ZError(113)
+
+        if var.varType not  in ["INT", "PT", "FLOAT", "BOOL"]:
+            raise ZError(112)
+            
+        var.value.setValue(length, activeVars)
+        activeVars.update({var.name: var})
+
+        return activeVars 
 
     def C(self, cmd: ZCommand, activeVars: ActiveVars):
         cmd.checkArgs(1)
@@ -600,7 +636,7 @@ class PT(Variable):
         
         self.firstTimeInit(cmd, activeVars)
 
-        self.registerFunc({self.push: "", self.w: "", self.INPUT: "", self.insertAt: "", self.C: ""})
+        self.registerFunc({self.push: "", self.w: "", self.INPUT: "", self.insertAt: "", self.C: "", self.LGTH: ""})
 
         
     def firstTimeInit(self, cmd: ZCommand, activeVars: ActiveVars):
@@ -624,6 +660,24 @@ class PT(Variable):
     
 
     # --- Callable Functions
+
+    def LGTH(self, cmd: ZCommand, activeVars: ActiveVars):
+        cmd.checkArgs(1, True)
+        targetVarName = ZValue("", "PT")
+        targetVarName.setValue(cmd.args[0], activeVars)
+
+        length = str(len(self.value.value))
+        var = activeVars.get(targetVarName.value)
+        if not var:
+            raise ZError(113)
+
+        if var.varType not  in ["INT", "PT", "FLOAT", "BOOL"]:
+            raise ZError(112)
+            
+        var.value.setValue(length, activeVars)
+        activeVars.update({var.name: var})
+
+        return activeVars 
 
     def C(self, cmd: ZCommand, activeVars: ActiveVars):
         cmd.checkArgs(1)
@@ -1277,12 +1331,11 @@ class FILE(Variable):
             pass
 
     def gRENAME(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
-        if len(cmd.args) > 0 and cmd.args[0] != "":
-            newName = ZValue("", "PT")
-            newName.setValue(cmd.args[0], activeVars)
-            self.path.rename(newName.value)
-        else:
-            raise ZError(114)
+        cmd.checkArgs(1, True)
+        
+        newName = ZValue("", "PT")
+        newName.setValue(cmd.args[0], activeVars)
+        self.path.rename(newName.value)
 
     def gDEL(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         self.path.unlink()

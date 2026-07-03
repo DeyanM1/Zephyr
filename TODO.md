@@ -8,11 +8,8 @@
 - [x] add comments
 - [x] PTs in CO
 - [x] Float doesnt have a default value on set
-- [ ] add 3d list
 - [x] create animation object
-- [ ] add list support for animation objects
 - [x] add display clear for ao
-- [ ] add iteration function -> for loop
 - [x] update FLOATS to have good features ex. max float points, rounding, real support for float numbers, autoconvert, (vllt eigenes ZFLOAT)
 - [x] update INTS to only accepts INTs or values ending to .0
 - [x] update ZVALUE to have real Types and type autochange
@@ -23,8 +20,11 @@
 - [x] error check new mo/co var function
 - [x] check if old libraries still work
 - [x] check if old Projects, examples still work
-- [ ] fix BrainFuck compiler
 - [x] add error handling to libraries
 - [x] add docs for Libraries
 - [x] update lib import syntax
 - [ ] add LIST example script
+- [ ] add iteration function -> for loop
+- [ ] fix BrainFuck compiler
+- [ ] add list support for animation objects
+- [ ] add 3d list
