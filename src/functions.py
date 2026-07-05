@@ -1381,10 +1381,15 @@ class LIST(Variable):
         pointer = ZValue("", "INT")
         pointer.setValue(position, activeVars)
 
+        if int(pointer.value) > 0:
+            while len(self.posValues) <= int(pointer.value):
+                self.posValues.append(ZValue("", self.valueType))
+
         if int(pointer.value) == 0:
             raise ZError(109)
 
         self.pointer = pointer
+
 
     def setValue(self, valueRaw: str, activeVars: ActiveVars):
         if int(self.pointer.value) > 0:
@@ -1394,7 +1399,7 @@ class LIST(Variable):
             value.setValue(valueRaw, activeVars)
 
             while len(self.posValues) <= pointer:
-                self.posValues.append(ZValue("", "INT"))
+                self.posValues.append(ZValue("", self.valueType))
 
             self.posValues[pointer] = value
 
@@ -1404,7 +1409,7 @@ class LIST(Variable):
             value.setValue(valueRaw, activeVars)
 
             while len(self.negValues) <= pointer:
-                self.negValues.append(ZValue("", "INT"))
+                self.negValues.append(ZValue("", self.valueType))
 
             self.negValues[pointer] = value
 
@@ -1498,6 +1503,7 @@ class LIST(Variable):
 
     def debug(self, cmd: ZCommand, activeVars: ActiveVars):
         print(self.posValues, "\n", self.negValues)
+        print("POS: ", self.pointer)
 
 @register(name="__")
 class BUILD_IN(Variable):

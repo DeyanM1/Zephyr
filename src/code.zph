@@ -1,5 +1,3 @@
-a # BOOL:~1;
+co7.1 # PT:5co7.1 # INT:5;;
 
-co # CO:('a');
-
-co ? debug:;
+co7.1 ? push:;
