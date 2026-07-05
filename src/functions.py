@@ -704,28 +704,37 @@ class PT(Variable):
         self.value.setValue(newValue, activeVars)
 
     def insertAt(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
-        if len(cmd.args) > 1 and cmd.args[0] != "" and cmd.args[1] != "":
-            # try:
+        cmd.checkArgs(2, True)
+        try:
             valueToInsert = ZValue("", "PT")
             position = ZValue("0", "INT")
         
-
+    
             valueToInsert.setValue(cmd.args[0], activeVars)
             position.setValue(cmd.args[1], activeVars)
-
+    
             if int(position.value) < 1:
                 raise ZError(122)
-
+    
             if len(self.value.value)+1 < int(position.value):
                 raise ZError(123)
-
+    
             newValue = self.value.value[:int(position.value)-1] + valueToInsert.value + self.value.value[int(position.value)-1:]
             self.value.setValue(newValue, activeVars)
-            # except Exception:
-            #     raise ZError(122)
+        except Exception:
+            raise ZError(122)
 
-    def push(self, cmd: ZCommand) -> None:
-        print(self.value.value)
+    def push(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        if cmd.checkArgs(1, False):
+            newLine = ZValue("~1", "BOOL")
+            newLine.setValue(cmd.args[0], activeVars)
+
+            if newLine.asPythonBOOL:
+                print(self.value.value)
+            else:
+                sys.stdout.write(self.value.value)
+        else:           
+            print(self.value.value)
 
 @register()
 class BOOL(Variable):
@@ -1463,7 +1472,7 @@ class LIST(Variable):
         return activeVars 
 
     def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
-        cmd.checkArgs(1)
+        #cmd.checkArgs(1)
 
         self.setValue(cmd.args[0], activeVars)
 

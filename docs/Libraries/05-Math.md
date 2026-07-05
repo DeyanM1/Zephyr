@@ -62,3 +62,11 @@ Calculate the square Root of the value at the given Var.
 math ? sqrt:<* variableName>;
 math ? sqrt:myVar;
 ```
+
+### Max
+Get the biggest number of the positive Collection of a List
+
+```zephyr
+math ? max:<*- listVarName>|<*- TargetVarName>;
+math ? max:myList|biggestNum;
+```

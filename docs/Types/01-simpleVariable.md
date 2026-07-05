@@ -67,9 +67,12 @@ message # PT:"Welcome to Zephyr";
 Use `? push:` to display text:
 
 ```zephyr
+<pt> ? push:<*- newLine>;
+
 greeting # PT:"Hello";
 greeting ? push:;          § Output: Hello
 ```
+- **newLine** if set to False it doesnt print a newline after the print (~1 / ~0). Default is True
 
 only Variables of the Type PT can be pushed
 
