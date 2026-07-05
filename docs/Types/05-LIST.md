@@ -39,6 +39,20 @@ list ? w:<*- value>;
 myList ? w:10;
 ```
 
+### Length
+
+To get the length of either the pos or neg values of a list use  ? LGTH.
+
+```zephyr
+list ? LGTH:<* CollectionType>|<* targetVar>
+
+length # INT:;
+list ? LGTH:POS|length;
+```
+
+- **CollectionType**: Either POS or NEG to select one of the two collections
+- **targetVar**: name of the Variable the length value is pasted into
+
 ## Reading from a List
 
 To read a value from a list and assign it to another variable, use single quotes with the list name:

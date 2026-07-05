@@ -54,7 +54,8 @@ class ZError(Exception):
             121: lambda: ("Class error! Variable doesnt have Function Registry!", "ClassMissingFunctionReg", 0, SyntaxError),
             122: lambda: ("PT insertion Error! Index can't be smaller than 1", "InvalidIndexError", 0, SyntaxError),
             123: lambda: ("PT insertion Error! Index out of bounds!", "IndexOutoFBounds", 0, SyntaxError),
-            124: lambda: ("Module Not Found inside global / local dir", "ModuleNotFound", 0, SyntaxError)
+            124: lambda: ("Module Not Found inside global / local dir", "ModuleNotFound", 0, SyntaxError),
+            125: lambda: ("Unknown List collection type! Use: POS / NEG", "UnknownListCollectionType", 0, SyntaxError)
         }
 
         if returnDict:
@@ -1357,7 +1358,7 @@ class LIST(Variable):
 
         self.firstTimeInit(cmd, activeVars)
 
-        self.registerFunc({self.w: "", self.SET: "SET", self.changeValueType: "CVT"})
+        self.registerFunc({self.w: "", self.SET: "SET", self.changeValueType: "CVT", self.LGTH: ""})
 
 
     def firstTimeInit(self, cmd: ZCommand, activeVars: ActiveVars):
@@ -1423,6 +1424,38 @@ class LIST(Variable):
 
 
     # --- Callable Functions  
+     
+    def LGTH(self, cmd: ZCommand, activeVars: ActiveVars):
+        cmd.checkArgs(2, True)
+
+        listToChoose = ZValue("", "PT") # POS | NEG
+        listToChoose.setValue(cmd.args[0], activeVars)
+
+        if listToChoose.value not in ["POS", "NEG"]:
+            raise ZError(125)
+        
+        targetVarName = ZValue("", "PT")
+        targetVarName.setValue(cmd.args[1], activeVars)
+
+        length = ""
+        match listToChoose.value:
+            case "POS":
+                length = str(len(self.posValues))
+            case "NEG":
+                length = str(len(self.negValues))
+
+                
+        var = activeVars.get(targetVarName.value)
+        if not var:
+            raise ZError(113)
+
+        if var.varType not  in ["INT", "PT", "FLOAT", "BOOL"]:
+            raise ZError(112)
+            
+        var.value.setValue(length, activeVars)
+        activeVars.update({var.name: var})
+
+        return activeVars 
 
     def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         cmd.checkArgs(1)
