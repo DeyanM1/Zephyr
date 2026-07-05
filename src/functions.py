@@ -10,7 +10,7 @@ import sys
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable, List, TypeAlias, Literal
+from typing import Any, Callable, List, TypeAlias, Literal, Union
 
 from colorama import Back
 
@@ -1280,7 +1280,7 @@ class FILE(Variable):
         
 
         self.registerFunc({self.w: ""})
-        self.registerFunc({self.cSET: "", self.cFLUSH: ""})
+        self.registerFunc({self.cSET: "", self.cFLUSH: "", self.cREAD: ""})
         self.registerFunc({self.gRENAME: "", self.gDEL: ""})
 
         
@@ -1325,10 +1325,53 @@ class FILE(Variable):
 
         self.value.value = self.path.as_posix()
 
+    def cREAD(self, cmd: ZCommand, activeVars: ActiveVars):
+        cmd.checkArgs(1)
+
+        cleanLines = ZValue("", "BOOL")
+        if cmd.checkArgs(2, False):
+            cleanLines.setValue(cmd.args[1], activeVars)
+
+        targetVarName = ZValue("", "PT")
+        targetVarName.setValue(cmd.args[0], activeVars)
+
+        targetVar: Union[None, LIST, PT] = activeVars.get(targetVarName.value)
+        if not targetVar:
+            raise ZError(113)
+        
+        with self.path.open("r") as f:
+            content = f.readlines()
+
+        if cleanLines.asPythonBOOL:
+            tempLines = []
+            for line in content:
+                tempLines.append(line.lstrip().rstrip().removesuffix("\n"))
+            content = tempLines.copy()
+
+        
+            
+        match targetVar.varType:
+            case "LIST":
+                listContent = []
+                for line in content:
+                    listContent.append(ZValue(line, "PT"))
+                    
+                targetVar.posValues = listContent
+
+            case "PT":
+                targetVar.value.value = "".join(content)
+
+            case _:
+                raise ZError(112)
+
+
+        activeVars.update({targetVar.name: targetVar})
+        return activeVars
+                
+        
 
     def cSET(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
-        if len(cmd.args) <= 0 and cmd.args[0] == "":
-            raise ZError(14)
+        cmd.checkArgs(1)
         
         text = ZValue("", "PT")
         text.setValue(cmd.args[0], activeVars)

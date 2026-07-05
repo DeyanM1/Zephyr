@@ -50,6 +50,20 @@ Removes all content from the file.
 file ? cFLUSH:;
 ```
 
+### Read Content (cREAD)
+Reads the content of a file and loads it onto a PT or LIST
+
+```zephyr
+file ? cREAD:<* targetVarname>|<*- cleanLines>;
+
+content # LIST:;
+file ? cREAD:content|~1;
+```
+
+- **targetVarName**: name of the variable the content is pasted into. Allowed Types are: `PT`, `LIST`. At PT the lines are combined to a single string. At LIST the lines are split and put on the Positive List Collection
+- **cleanLines**: Boolean switch if the lines are cleaned (remove Whitespaces, linebreaks)
+
+
 ### Rename (gRENAME)
 Renames the file to a new name.
 
