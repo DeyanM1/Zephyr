@@ -1,81 +1,125 @@
-__ ? LIB:./lib/ascii.py;
+__ ? LIB:ascii.py;
 ascii # ASCII:;
 
-code # PT:++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.>+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.;
-code # PT:+++++[>+<-];
 
+code # PT:;
 
-code # PT:++++++>+++++++[<+>-]++++++++[<+++++++>-]+++[<++++++>-]<.>++++++>+++++++[<+>-]++++++++[<+++++++>-]<.>++++++++++>++++++++++[<+>-]++++++++[<+++++++>-]<.>+++++>++++++[<+>-]++++++++[<+++++++>-]<.>++>+++[<+>-]++++++++[<+++++++>-]+++[<++++++>-]<.>++++++++++>+++++++++++[<+>-]++++++++[<+++++++>-]<.>++++++>+++++++[<+>-]++++++++[<+++++++>-]<.>>++++++++[<++++>-]<.>+++++>+++++[<+>-]++++++++[<+++++++>-]+++[<++++++>-]<.>++>+++[<+>-]++++++++[<+++++++>-]+++[<++++++>-]<.>>++++ ++++[<++++>-]<.>++++++++++>+++++++++++[<+>-]++++++++[<+++++++>-]<.>+++++++>++++++++[<+>-]++++++++[<+++++++>-]+++[<++++++>-]<.>>++++ ++++[<++++>-]<.>++++++>+++++++[<+>-]++++++++[<+++++++>-]+++[<++++++>-]<.>++++++>+++++++[<+>-]++++++++[<+++++++>-]<.>+++++>+++++[<+>-]++++++++[<+++++++>-]<.>+++>+++[<+>-]++++++++[<+++++++>-]+++[<++++++>-]<.>++++>+++++[<+>-]++++++++[<+++++++>-]<.>+++++++>++++++++[<+>-]++++++++[<+++++++>-]<.>++++++>+++++++[<+>-]++++++++[<+++++++>-]<.>;
-
-
-code # PT:>++++++++++>+>+[[+++++[>++++++++<-]>.<++++++[>--------<-]+<<<]>.>>[[-]<[>+<-]>>[<<+>+>-]<[>+<-[>+<-[>+<-[>+<-[>+<-[>+<-[>+<-[>+<-[>+<-[>[-]>+>+<<<-[>+<-]]]]]]]]]]]+>>>]<<<];
+file # FILE:./examples/Projects/BF-Compiler/examples/gameOfLife.bf;
+file ? cREAD:code|~1;
 
 code ? CT:LIST;
 
-codePointer # INT:1;
-maxCodePointer # INT:0;
 
-code ? LGTH:POS|maxCodePointer;
-
-
-cells # LIST:INT|0|0;
-cellsPointer # INT:1;
-
-
-output # PT:;
 charMap # LIST:PT|+|-|>|<|.|,|[|];
 
+§ #############################
+§ ######## Bracket-Map ########
+§ #############################
+
+bracketMap # LIST:INT;
+_stack # LIST:PT;
+_depth # INT:1;
+_ip # INT:1;
+_max_ip # INT:0;
+
+code ? LGTH:POS|_max_ip;
+
+bracketCO # CO:('_ip'<='_max_ip');
+bracketLOOP # LOOP:bracketCO;
+bracketLOOP ? START:21;
+    char # PT:'code<'_ip'>';
+
+    bCO1 # CO:('char'=='charMap<7>');
+    bIF1 # IF:bCO1;
+    bIF1 ? START:3;
+        _stack ? SET:'_depth';
+        _stack ? w:'_ip';
+        _depth ? w:++;
+    bIF1 ? END:;
+    
+    bCO2 # CO:('char'=='charMap<8>');
+    bIF2 # IF:bCO2;
+    bIF2 ? START:8;
+        _depth ? w:--;
+        opening # PT:'_stack<'_depth'>';
+        _stack ? SET:'_depth';
+        _stack ? w:;
+        bracketMap ? SET:'_ip';
+        bracketMap ? w:'opening';
+        bracketMap ? SET:'opening';
+        bracketMap ? w:'_ip';
+    bIF2 ? END:;
+
+    _ip ? w:++;
+
+bracketLOOP ? END:;
+
+§ #############################
+§ ########   EXECUTE   ########
+§ #############################
 
 
 
-whileTrue # CO:(1==1);
-loop # LOOP:whileTrue;
-loop ? START:115;
+
+cells # LIST:INT|0|0|0|0|0|0|0|0|0|0|0|0|0;
+ptr # INT:1;
+ip # INT:1;
+
+max_ip # INT:1;
+code ? LGTH:POS|max_ip;
+
+
+co1 # CO:('ip'<='max_ip');
+loop1 # LOOP:co1;
+loop1 ? START:61;
+    cmd # PT:'code<'ip'>';
+    
+    
     § ---- + ------ 
-    co1 # CO:('code'=='charMap<1>');
+    co1 # CO:('cmd'=='charMap<1>');
     if1 # IF:co1;
     if1 ? START:3;
-        mo1 # MO:(('cells' + 1) % 256);
+        mo1 # MO:(('cells<'ptr'>' + 1) % 256);
+        cells ? SET:'ptr';
         cells ? w:'mo1';
     if1 ? END:;
 
     § ---- - ------ 
-    co2 # CO:('code'=='charMap<2>');
+    co2 # CO:('cmd'=='charMap<2>');
     if2 # IF:co2;
-    if2 ? START:2;
-        mo2 # MO:(('cells' - 1) % 256);
+    if2 ? START:3;
+        mo2 # MO:(('cells<'ptr'>' - 1) % 256);
+        cells ? SET:'ptr';
         cells ? w:'mo2';
     if2 ? END:;
     
     § ---- > ----- 
-    co3 # CO:('code'=='charMap<3>');
+    co3 # CO:('cmd'=='charMap<3>');
     if3 # IF:co3;
     if3 ? START:2;
-        cellsPointer ? w:++;
-        cells ? SET:'cellsPointer';
+        ptr ? w:++;
+        cells ? SET:'ptr';
     if3 ? END:;
     
     § ---- < ------ 
-    co4 # CO:('code'=='charMap<4>');
+    co4 # CO:('cmd'=='charMap<4>');
     if4 # IF:co4;
     if4 ? START:2;
-        cellsPointer ? w:--;
-        cells ? SET:'cellsPointer';
+        ptr ? w:--;
+        cells ? SET:'ptr';
     if4 ? END:;
 
     § ---- . ------ 
-    co5 # CO:('code'=='charMap<5>');
+    co5 # CO:('cmd'=='charMap<5>');
     if5 # IF:co5;
     if5 ? START:3;
         char # PT:;
-        §ascii ? ToAscii:'cells'|char;
-        char ? w:'cells';
-        char ? debug:;
-        §output ? w:++|'char';
+        ascii ? ToAscii:'cells'|char;
+        char ? push:~0;
     if5 ? END:;
 
     § ---- , ------ 
-    co6 # CO:('code'=='charMap<6>');
+    co6 # CO:('cmd'=='charMap<6>');
     if6 # IF:co6;
     if6 ? START:5;
         input # PT:;
@@ -85,113 +129,29 @@ loop ? START:115;
         cells ? w:'inputAsNum';
     if6 ? END:;
 
-
-    § ---- [ ----
-    co7 # CO:('code'=='charMap<7>');
+    § ---- [ ------ 
+    co7 # CO:('cmd'=='charMap<7>');
     if7 # IF:co7;
-    if7 ? START:63;
-        startingCellsPointer # INT:'cellsPointer';
-        startingCodePointer # INT:'codePointer';
-
-
-        loop2 # LOOP:whileTrue;
-        loop2 ? START:58;
-
-            co7.1 # CO:('cells<'startingCellsPointer'>' == 0);
-            if7.1 # IF:co7.1;
-            if7.1 ? START:1;
-                loop2 ? STOP:;
-            if7.1 ? END:;
-
-            § ---- + ------ 
-            co7.2 # CO:('code'=='charMap<1>');
-            if7.2 # IF:co7.2;
-            if7.2 ? START:2;
-                mo1 # MO:(('cells' + 1) % 256);
-                cells ? w:'mo1';
-            if7.2 ? END:;
-
-            § ---- - ------ 
-            co7.3 # CO:('code'=='charMap<2>');
-            if7.3 # IF:co7.3;
-            if7.3 ? START:2;
-                mo2 # MO:(('cells' - 1) % 256);
-                cells ? w:'mo2';
-            if7.3 ? END:;
-            
-            § ---- > ----- 
-            co7.4 # CO:('code'=='charMap<3>');
-            if7.4 # IF:co7.4;
-            if7.4 ? START:2;
-                cellsPointer ? w:++;
-                cells ? SET:'cellsPointer';
-            if7.4 ? END:;
-            
-            § ---- < ------ 
-            co7.5 # CO:('code'=='charMap<4>');
-            if7.5 # IF:co7.5;
-            if7.5 ? START:2;
-                cellsPointer ? w:--;
-                cells ? SET:'cellsPointer';
-            if7.5 ? END:;
-        
-            § ---- . ------ 
-            co7.6 # CO:('code'=='charMap<5>');
-            if7.6 # IF:co7.6;
-            if7.6 ? START:3;
-                char # PT:;
-                §ascii ? ToAscii:'cells'|char;
-                char ? w:'cells';
-                char ? push:;
-                §output ? w:++|'char';
-            if7.6 ? END:;
-        
-            § ---- , ------ 
-            co7.7 # CO:('code'=='charMap<6>');
-            if7.7 # IF:co7.7;
-            if7.7 ? START:5;
-                input # PT:;
-                input ? INPUT:-> ;
-                inputAsNum # INT:;
-                ascii ? ToNum:'input'|inputAsNum;
-                cells ? w:'inputAsNum';
-            if7.7 ? END:;
-
-            § ---- ] ----
-            co8 # CO:('code'=='charMap<8>');
-            if8 # IF:co8;
-            if8 ? START:7;
-                codePointer ? w:'startingCodePointer';
-                code ? SET:'codePointer';
-
-                co8.1 # CO:('cells<'startingCellsPointer'>'==0);
-                if8.1 # IF:co8.1;
-                if8.1 ? START:1;
-                    loop2 ? STOP:;
-                if8.1 ? END:;
-            if8 ? END:;
-
-            codePointer ? w:++;
-            code ? SET:'codePointer';
-            
-        loop2 ? END:;
+    if7 ? START:5;
+        co7.1 # CO:('cells<'ptr'>'==0);
+        if7.1 # IF:co7.1;
+        if7.1 ? START:1;
+            ip # INT:'bracketMap<'ip'>';
+        if7.1 ? END:;
     if7 ? END:;
+    
+    § ---- ] ------ 
+    co8 # CO:('cmd'=='charMap<8>');
+    if8 # IF:co8;
+    if8 ? START:5;
+        co8.1 # CO:('cells<'ptr'>'!=0);
+        if8.1 # IF:co8.1;
+        if8.1 ? START:1;
+            ip # INT:'bracketMap<'ip'>';
+        if8.1 ? END:;
+    if8 ? END:;
 
+    
+    ip ? w:++;
 
-
-    lastCo # CO:('codePointer'!='maxCodePointer');
-    lastIf # IF:lastCo;
-    lastIf ? START:2;
-        codePointer ? w:++;
-        code ? SET:'codePointer';
-    lastIf ? ELSE:1;
-        loop ? STOP:;
-    lastIf ? END:;
-
-
-loop ? END:;
-
-
-
-cells ? debug:;
-output ? push:;
+loop1 ? END:;
