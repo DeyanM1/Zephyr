@@ -29,3 +29,4 @@
 | 122 | InvalidIndexError | PT insertion Error! Index can't be smaller than 1 |
 | 123 | IndexOutoFBounds | PT insertion Error! Index out of bounds! |
 | 124 | ModuleNotFound | Module Not Found inside global / local dir |
+| 125 | UnknownListCollectionType | Unknown List collection type! Use: POS / NEG |
