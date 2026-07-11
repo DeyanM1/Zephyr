@@ -17,13 +17,13 @@ printCurrentTrial # PT:;
 showTrialsCO # CO:('showTrials');
 showTrialsIF # IF:showTrialsCO;
 
-loop ? START:17;
+loop ? START:;
     sum # FLOAT:0;
     count # FLOAT:0;
 
     loop2CO # CO:('sum' < 1);
     loop2 # LOOP:loop2CO;
-    loop2 ? START:4;
+    loop2 ? START:;
         rng # RNG:0|1|FLOAT;
         sumMath # MO:('sum'+'rng');
         sum ? w:'sumMath';
@@ -35,7 +35,7 @@ loop ? START:17;
 
     printCurrentTrial ? w:'loopTrials';
 
-    showTrialsIF ? START:1;
+    showTrialsIF ? START:;
         printCurrentTrial ? push:;
     showTrialsIF ? END:;
 

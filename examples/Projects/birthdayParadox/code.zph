@@ -9,7 +9,7 @@ prob # FLOAT:1.0;
 iLoopCO # CO:('i' < 'countPersons');
 iLoop # LOOP:iLoopCO;
 
-iLoop ? START:8;
+iLoop ? START:;
     probMO # MO:;
     probMO ? w:('prob'*((365-('n'-1))/365));
 

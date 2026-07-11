@@ -9,7 +9,7 @@ aPb # FUNC:RES|~0|aPbMO;
 
 loopCO # CO:('n'<'limit');
 loop # LOOP:loopCO;
-loop ? START:5;
+loop ? START:;
 
     temp # FLOAT:'b';
     aPb ? call:;

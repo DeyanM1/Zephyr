@@ -1,3 +1,12 @@
-co7.1 # PT:5co7.1 # INT:5;;
 
-co7.1 ? push:;
+a # INT:1;
+b # INT:5;
+
+
+co # CO:('a'!='b');
+
+if # IF:co;
+if ? START:;
+    b ? debug:;
+
+if ? END:;

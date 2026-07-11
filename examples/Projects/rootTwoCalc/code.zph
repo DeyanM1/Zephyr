@@ -11,7 +11,7 @@ x # MO:(10**'digits');
 
 loopCO # CO:('digits'!=0);
 loop # LOOP:loopCO;
-loop ? START:2;
+loop ? START:;
 
     x ? w:(('x'+'n'//'x')//2);
     digits ? w:--;

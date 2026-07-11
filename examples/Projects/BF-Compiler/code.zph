@@ -4,7 +4,7 @@ ascii # ASCII:;
 
 code # PT:;
 
-file # FILE:./examples/Projects/BF-Compiler/examples/gameOfLife.bf;
+file # FILE:./examples/Projects/BF-Compiler/examples/fibonacci.bf;
 file ? cREAD:code|~1;
 
 code ? CT:LIST;
@@ -26,12 +26,12 @@ code ? LGTH:POS|_max_ip;
 
 bracketCO # CO:('_ip'<='_max_ip');
 bracketLOOP # LOOP:bracketCO;
-bracketLOOP ? START:21;
+bracketLOOP ? START:;
     char # PT:'code<'_ip'>';
 
     bCO1 # CO:('char'=='charMap<7>');
     bIF1 # IF:bCO1;
-    bIF1 ? START:3;
+    bIF1 ? START:;
         _stack ? SET:'_depth';
         _stack ? w:'_ip';
         _depth ? w:++;
@@ -39,7 +39,7 @@ bracketLOOP ? START:21;
     
     bCO2 # CO:('char'=='charMap<8>');
     bIF2 # IF:bCO2;
-    bIF2 ? START:8;
+    bIF2 ? START:;
         _depth ? w:--;
         opening # PT:'_stack<'_depth'>';
         _stack ? SET:'_depth';
@@ -71,14 +71,14 @@ code ? LGTH:POS|max_ip;
 
 co1 # CO:('ip'<='max_ip');
 loop1 # LOOP:co1;
-loop1 ? START:61;
+loop1 ? START:;
     cmd # PT:'code<'ip'>';
     
     
     § ---- + ------ 
     co1 # CO:('cmd'=='charMap<1>');
     if1 # IF:co1;
-    if1 ? START:3;
+    if1 ? START:;
         mo1 # MO:(('cells<'ptr'>' + 1) % 256);
         cells ? SET:'ptr';
         cells ? w:'mo1';
@@ -87,7 +87,7 @@ loop1 ? START:61;
     § ---- - ------ 
     co2 # CO:('cmd'=='charMap<2>');
     if2 # IF:co2;
-    if2 ? START:3;
+    if2 ? START:;
         mo2 # MO:(('cells<'ptr'>' - 1) % 256);
         cells ? SET:'ptr';
         cells ? w:'mo2';
@@ -96,7 +96,7 @@ loop1 ? START:61;
     § ---- > ----- 
     co3 # CO:('cmd'=='charMap<3>');
     if3 # IF:co3;
-    if3 ? START:2;
+    if3 ? START:;
         ptr ? w:++;
         cells ? SET:'ptr';
     if3 ? END:;
@@ -104,7 +104,7 @@ loop1 ? START:61;
     § ---- < ------ 
     co4 # CO:('cmd'=='charMap<4>');
     if4 # IF:co4;
-    if4 ? START:2;
+    if4 ? START:;
         ptr ? w:--;
         cells ? SET:'ptr';
     if4 ? END:;
@@ -112,7 +112,7 @@ loop1 ? START:61;
     § ---- . ------ 
     co5 # CO:('cmd'=='charMap<5>');
     if5 # IF:co5;
-    if5 ? START:3;
+    if5 ? START:;
         char # PT:;
         ascii ? ToAscii:'cells'|char;
         char ? push:~0;
@@ -121,7 +121,7 @@ loop1 ? START:61;
     § ---- , ------ 
     co6 # CO:('cmd'=='charMap<6>');
     if6 # IF:co6;
-    if6 ? START:5;
+    if6 ? START:;
         input # PT:;
         input ? INPUT:-> ;
         inputAsNum # INT:;
@@ -132,10 +132,10 @@ loop1 ? START:61;
     § ---- [ ------ 
     co7 # CO:('cmd'=='charMap<7>');
     if7 # IF:co7;
-    if7 ? START:5;
+    if7 ? START:;
         co7.1 # CO:('cells<'ptr'>'==0);
         if7.1 # IF:co7.1;
-        if7.1 ? START:1;
+        if7.1 ? START:;
             ip # INT:'bracketMap<'ip'>';
         if7.1 ? END:;
     if7 ? END:;
@@ -143,10 +143,10 @@ loop1 ? START:61;
     § ---- ] ------ 
     co8 # CO:('cmd'=='charMap<8>');
     if8 # IF:co8;
-    if8 ? START:5;
+    if8 ? START:;
         co8.1 # CO:('cells<'ptr'>'!=0);
         if8.1 # IF:co8.1;
-        if8.1 ? START:1;
+        if8.1 ? START:;
             ip # INT:'bracketMap<'ip'>';
         if8.1 ? END:;
     if8 ? END:;

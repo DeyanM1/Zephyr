@@ -19,7 +19,7 @@ x_newTimes # MO:(('x_new' - 'x') * ('x_new' - 'x'));
 
 loopCO # CO:('x_newTimes' >= 'epsTimesEps');
 loop # LOOP:loopCO;
-loop ? START:4;
+loop ? START:;
 
     x # FLOAT:'x_new';
     fx # MO:('base'**'x' - 'y');

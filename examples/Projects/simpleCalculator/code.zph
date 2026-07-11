@@ -15,7 +15,7 @@ a ? INPUT:Num1 -> ;
 § Detect if a is exit
 ifCO # CO:('a'=='exit');
 if # IF:ifCO;
-if ? START:1;
+if ? START:;
     __ ? jump:99;
 if ? END:;
 

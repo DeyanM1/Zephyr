@@ -28,4 +28,4 @@
 - [ ] fix BrainFuck compiler
 - [ ] add list support for animation objects
 - [ ] add 3d list
-- [ ] fix ELSE automatic Index set
+- [ ] fix ELSE automatic Index set (Higher Lower Game / Math Game /  Broken)

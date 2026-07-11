@@ -5,13 +5,13 @@ maxRange ? INPUT:Enter range to find Primes -> ;
 
 mainloopCO # CO:('currentNum' != 'maxRange');
 mainloop # LOOP:mainloopCO;
-mainloop ? START:28;
+mainloop ? START:;
     messageTrue # PT: IS Prime ;
     messageFalse # PT:Is NOT Prime ;
 
     if1CO # CO:('currentNum' >= 2);
     if1 # IF:if1CO;
-    if1 ? START:23;
+    if1 ? START:;
 
         i # INT:2;
         prime_flag # INT:1;
@@ -23,13 +23,13 @@ mainloop ? START:28;
 
         loop2CO # CO:('fMO1' <= 'currentNum');
         loop2 # LOOP:loop2CO;
-        loop2 ? START:8;
+        loop2 ? START:;
 
             mo2 # MO:('currentNum'%'i');
             
             if2CO # CO:('mo2' == 0);
             if2 # IF:if2CO;
-            if2 ? START:1;
+            if2 ? START:;
 
                 prime_flag ? w:0;
             
@@ -41,7 +41,7 @@ mainloop ? START:28;
 
         if3CO # CO:('prime_flag' == 1);
         if3 # IF:if3CO;
-        if3 ? START:2;
+        if3 ? START:;
             messageTrue ? insertAt:'currentNum'|1;
             messageTrue ? push:;
         if3 ? END:;

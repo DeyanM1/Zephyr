@@ -10,7 +10,7 @@ guess ? INPUT:Enter Guess or exit> ;
 
 exitCO # CO:('guess' == 'exit')
 exitIF # IF:exitCO;
-exitIF ? START:1
+exitIF ? START:;
     __ ? jump:27;
 exitIF ? END:;
 
@@ -23,19 +23,19 @@ lowerMessage # PT:The Number is lower! try again!;
 
 winCO # CO:('number'=='guess');
 winIF # IF:winCO;
-winIF ? START:1;
+winIF ? START:;
     __ ? jump:16;
 winIF ? END:;
 
 mainCondition # CO:('number'!='guess');
 LOOP # LOOP:mainCondition;
-LOOP ? START:8;
+LOOP ? START:;
     higherCondition # CO:('number'>'guess');
 
     higherIF # IF:higherCondition;
-    higherIF ? START:1;
+    higherIF ? START:;
         higherMessage ? push:;
-    higherIF ? ELSE:1;
+    higherIF ? ELSE:;
         lowerMessage ? push:;
     higherIF ? END:;
 

@@ -29,16 +29,16 @@ if2 # IF:if2CO;
 if3 # IF:if3CO;
 if4 # IF:if4CO;
 
-if1 ? START:1;
+if1 ? START:;
     operator ? w:+;
 if1 ? END:;
-if2 ? START:1;
+if2 ? START:;
     operator ? w:-;
 if2 ? END:;
-if3 ? START:1;
+if3 ? START:;
     operator ? w:*;
 if3 ? END:;
-if4 ? START:1;
+if4 ? START:;
     operator ? w:/;
 if4 ? END:;
 
@@ -59,9 +59,9 @@ userResult ? INPUT:-> ;
 
 userExitCO # CO:('userResult' == 'exit');
 userExitIF # IF:userExitCO;
-userExitIF ? START:1;
+userExitIF ? START:;
     system ? quit:0;
-userExitIF ? ELSE:1;
+userExitIF ? ELSE:;
     userResult ? CT:FLOAT;
 userExitIF ? END:;
 
@@ -69,7 +69,7 @@ mo # MO:('number_A' 'operator' 'number_B');
 
 ifCO # CO:('userResult' != 'mo');
 if # IF:ifCO;
-if ? START:3;
+if ? START:;
 
     messageLose ? push:;
     tries ? w:++;

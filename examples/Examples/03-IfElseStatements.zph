@@ -8,11 +8,11 @@ message2 # PT:B is greater than A;  § Text B definieren
 conditionalObject # CO:('a' > 'b'); § condition definieren: a ist größer als b
 statement # IF:conditionalObject;   § if statement definiren und auf condition conditionalObject setzen
 
-statement ? START:1;                § if starten
+statement ? START:;                § if starten
 
     message1 ? push:;               § Condition wahr message2 wird ausgedruckt
 
-statement ? ELSE:1;
+statement ? ELSE:;
 
     message2 ? push:;               § Condition falsch message2 wird ausgedruckt
 

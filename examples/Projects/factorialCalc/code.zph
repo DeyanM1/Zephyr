@@ -9,7 +9,7 @@ func # FUNC:RES|~0|funcMath;
 noNegErrorMessage # PT:ERROR! Number cant be negative;
 noNeg # CO:('number'<0);
 noNegIF # IF:noNeg;
-noNegIF ? START:2;
+noNegIF ? START:;
     noNegErrorMessage ? push:;
     __ ? jump:10;
 noNegIF ? END:;
@@ -17,7 +17,7 @@ noNegIF ? END:;
 
 condition # CO:('number'!=1);
 loop # LOOP:condition;
-loop ? START:3;
+loop ? START:;
     func ? call:;
     result ? w:'func';
 

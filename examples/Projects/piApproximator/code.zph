@@ -6,13 +6,13 @@ showSteps ? INPUT:Show Steps ~1/~0 -> ;
 showStepsCO # CO:('showSteps');
 showStepsIF # IF:showStepsCO;
 
-iterations # INT:6000;
+iterations # INT:3000;
 iteration # INT:1;
 
 iLoopCO # CO:('iteration'<'iterations');
 iLoop # LOOP:iLoopCO;
 
-iLoop ? START:9;
+iLoop ? START:;
     piMO # MO:;
     piMO ? w:('pi'+4/'divisor'-4/('divisor'+2));
 
@@ -20,7 +20,7 @@ iLoop ? START:9;
 
     piMO ? CT:PT;
 
-    showStepsIF ? START:1;
+    showStepsIF ? START:;
         piMO ? push:;
     showStepsIF ? END:;
     
@@ -29,3 +29,6 @@ iLoop ? START:9;
     iteration ? w:++;
 
 iLoop ? END:;
+
+
+piMO ? push:;
