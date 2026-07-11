@@ -908,8 +908,8 @@ class IF(Variable):
         self.conditionalObjectName: ZValue = ZValue("", "PT")
         self.conditionalObjectValue: ZValue = ZValue("~0", "BOOL")
 
-        self.countCommandsInIf: ZValue = ZValue("0", "INT")
-        self.countCommandsInElif: ZValue = ZValue("0", "INT")
+        self.endIndex: ZIndex = 0
+        self.countCommandsInElse: ZValue = ZValue("0", "INT")
         
         self.firstTimeInit(cmd, activeVars) 
         
@@ -936,26 +936,25 @@ class IF(Variable):
             raise ZError(114)
   
     def START(self, cmd: ZCommand, activeVars: ActiveVars, index: ZIndex) -> tuple[ActiveVars, ZIndex]:
-        if len(cmd.args) > 0 and cmd.args[0] != "":
-            self.countCommandsInIf.setValue(cmd.args[0], activeVars)
-        else:
-            raise ZError(114)
+        cmd.checkArgs(1)
+
+        self.endIndex = int(cmd.args[0])
         
         newIndex: ZIndex = 0
         if self.conditionalObjectValue.asPythonBOOL:
             newIndex = index
         elif not self.conditionalObjectValue.asPythonBOOL:
-            newIndex = index + int(self.countCommandsInIf.value)
+            newIndex = self.endIndex
         
         return activeVars, newIndex
 
     def ELSE(self, cmd: ZCommand, activeVars: ActiveVars, index: ZIndex) -> tuple[ActiveVars, ZIndex]:
-        self.countCommandsInElif.setValue(cmd.args[0], activeVars)
+        self.countCommandsInElse.setValue(cmd.args[0], activeVars)
         newIndex: ZIndex = 0
         if not self.conditionalObjectValue.asPythonBOOL:
             newIndex = index
         elif self.conditionalObjectValue.asPythonBOOL:
-            newIndex = index + int(self.countCommandsInElif.value)
+            newIndex = index + int(self.countCommandsInElse.value)
         
         return activeVars, newIndex
 

@@ -28,3 +28,4 @@
 - [ ] fix BrainFuck compiler
 - [ ] add list support for animation objects
 - [ ] add 3d list
+- [ ] fix ELSE automatic Index set

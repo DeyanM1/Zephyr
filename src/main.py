@@ -64,7 +64,7 @@ def lexer(zfile: ZFile) -> list[ZCommand]:
 
     ZCommandData: list[ZCommand] = []  
     currentCodeLocation = 1
-    cmd = ZCommand(-1, "", "", "", [""])
+    cmd = ZCommand(0, "", "", "", [""])
     
     try:
         # Parse each command into ZCommand objects
@@ -83,7 +83,10 @@ def lexer(zfile: ZFile) -> list[ZCommand]:
 
                 for zcommand in zcommandData:
                     if zcommand.name == name and zcommand.func == "START":
-                        zcommand.args[0] = str(currentCodeLocation-1)
+                        if zcommand.args[0]:
+                            zcommand.args.append(str(currentCodeLocation-1))
+                        else:
+                            zcommand.args[0] = str(currentCodeLocation-1)
 
                 zcommandData.reverse()
                 ZCommandData = zcommandData
@@ -98,7 +101,7 @@ def lexer(zfile: ZFile) -> list[ZCommand]:
 
 
 
-    # Convert ZCommand objects to JSON-friendly dictionary
+    # Convert ZCommandData  to json
     combined_json = {str(cmd.lineNum): asdict(cmd) for cmd in ZCommandData}
     for entry in combined_json.values():
         entry.pop("jsonized", None)

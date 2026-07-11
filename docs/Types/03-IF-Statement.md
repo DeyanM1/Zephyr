@@ -2,15 +2,18 @@
 
 An IF statement executes a block of code only if a Conditional Object evaluates to true. It optionally supports an ELSE block to execute code when the condition is false.
 
+
+# **ELSE** -> **Under construction!!**
+
 ---
 
 ## Syntax Overview
 
 ```zephyr
 if # IF:<*ConditionalObjectName>;
-if ? START:<*CommandCount>;
+if ? START:;
   § Code to execute if true
-if ? ELSE:<*CommandCount>;
+if ? ELSE:;
   § Code to execute if false
 if ? END:;
 ```
@@ -31,19 +34,18 @@ if # IF:conditionName;
 ```
 
 ### START
-Marks the beginning of the IF block. The parameter is the number of individual commands to execute. Blank lines and comment-only lines are not counted.
+
+Marks the beginning of the IF block.
 
 ```zephyr
-if ? START:<*commandsInIF>;
-if ? START:2;
+if ? START:;
 ```
 
 ### ELSE
-Marks the beginning of the ELSE block (optional). Specifies the number of commands in the ELSE block. If the condition is false, these commands execute instead.
+Marks the beginning of the ELSE block (optional). If the condition is false, these commands execute instead.
 
 ```zephyr
-if ? ELSE:<*commandsInELSE>;
-if ? ELSE:1;
+if ? ELSE:;
 ```
 
 ### END
@@ -60,12 +62,3 @@ Changes the Conditional Object that the IF statement checks.
 if ? w:<*ConditionalObjectName>;
 if ? w:newConditionName;
 ```
-
-
-
-## Notes
-
-- Command count refers to individual Zephyr statements, not lines of code.
-- Blank lines and lines containing only comments are not counted toward the command total.
-- Each command must end with a semicolon.
-- The IF statement must have exactly matching command counts, or execution may fail.
