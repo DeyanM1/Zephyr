@@ -1,12 +1,28 @@
-welcomeMessage # PT:Welcome to guess The Number !'
+§ -------------------------------------
+§ -------- Guess The Number -----------
+§ --------    By Deyan      -----------
+§ -------------------------------------
+
+
+blank # PT:;
+welcomeMessage # PT:Welcome to guess The Number !;
+winMessage # PT:Congratulations, you won with  tries!;
+higherMessage # PT:The Number is higher! try again!;
+lowerMessage # PT:The Number is lower! try again!;         
 exit # PT:exit;
+
+
+welcomeMessage ? push:;
+blank ? push:;
+
+
 
 number # RNG:1|10|INT;
 number ? CT:INT;
 
 tries # INT:0;
 guess # PT:0;
-guess ? INPUT:Enter Guess or exit> ;
+guess ? INPUT:Enter a Guess or exit> ;
 
 exitCO # CO:('guess' == 'exit')
 exitIF # IF:exitCO;
@@ -16,11 +32,7 @@ exitIF ? END:;
 
 guess ? CT:INT;
 
-winMessage # PT:Congratulations, you won with  tries! ;
-
-higherMessage # PT:The Number is higher! try again!;
-lowerMessage # PT:The Number is lower! try again!;                                     
-
+    
 winCO # CO:('number'=='guess');
 winIF # IF:winCO;
 winIF ? START:;
@@ -38,6 +50,7 @@ LOOP ? START:;
     higherIF ? ELSE:;
         lowerMessage ? push:;
     higherIF ? END:;
+    blank ? push:;
 
     tries ? w:++;
 
@@ -46,8 +59,8 @@ LOOP ? START:;
 LOOP ? END:;
 tries ? w:++;
 
-
-winMessage ? insertAt:'tries'|32;
+blank ? push:;
+winMessage ? insertAt:'tries'|31;
 winMessage ? push:;
 
-__ ? jumpTo:1;
+§__ ? jumpTo:1;

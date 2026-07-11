@@ -75,7 +75,7 @@ if ? START:;
     tries ? w:++;
     __ ? jump:-15;
 
-if ? ELSE:2;
+if ? ELSE:;
     messageWin ? w:++|'tries';
     messageWin ? push:;
     __ ? jumpTo:3;

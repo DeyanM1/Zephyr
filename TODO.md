@@ -1,3 +1,5 @@
+# TODO
+
 - [x] Usable buildin jump function
 - [x] loop
 - [x] random number generator
@@ -23,9 +25,9 @@
 - [x] add error handling to libraries
 - [x] add docs for Libraries
 - [x] update lib import syntax
+- [x] fix ELSE automatic Index set (Higher Lower Game / Math Game /  Broken)
 - [ ] add LIST example script
 - [ ] add iteration function -> for loop
 - [ ] fix BrainFuck compiler
 - [ ] add list support for animation objects
 - [ ] add 3d list
-- [ ] fix ELSE automatic Index set (Higher Lower Game / Math Game /  Broken)

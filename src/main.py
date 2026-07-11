@@ -77,13 +77,14 @@ def lexer(zfile: ZFile) -> list[ZCommand]:
                 raise ZError(104)
 
 
-            if func == "END":
+            if func == "END" or func == "ELSE":
                 zcommandData = ZCommandData.copy()
                 zcommandData.reverse()
 
                 for zcommand in zcommandData:
                     if zcommand.name == name and zcommand.func == "START":
-                        if zcommand.args[0]:
+                        
+                        if func == "ELSE":
                             zcommand.args.append(str(currentCodeLocation-1))
                         else:
                             zcommand.args[0] = str(currentCodeLocation-1)
@@ -136,9 +137,9 @@ def compiler(inputData: ZFile) -> None:
                 )
                 ZCommandData.append(cmd)
 
-            """case [*commands] if all(isinstance(cmd, ZCommand) for cmd in commands):
+        case [*commands] if all(isinstance(cmd, ZCommand) for cmd in commands):
             ZCommandData = inputData
-            #print(ZCommandData)"""
+            #print(ZCommandData)
 
         case _:
             raise TypeError("Input must be a ZFile or a list of ZCommand instances")
@@ -163,7 +164,7 @@ def compiler(inputData: ZFile) -> None:
         e.process(cmd, inputData)
     
 
-    #print(f"\n{Fore.GREEN}Code finished successfully. \n{Fore.MAGENTA}{activeVars}{Fore.RESET}")
+    print(f"\n{Fore.GREEN}Code finished successfully. \n{Fore.MAGENTA}{Fore.RESET}")
 
 def execute(cmd: ZCommand, activeVars: ActiveVars, index: ZIndex) -> tuple[ActiveVars, ZIndex]:
     match cmd.base:
