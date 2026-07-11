@@ -1191,7 +1191,8 @@ class LOOP(Variable):
         self.supportedVars = ["INT", "FLOAT", "PT"]
 
         self.startIndex: ZIndex = index
-        self.countCommandsInLoop: ZValue = ZValue("0", "INT")
+        self.endIndex: ZIndex = 0
+        
         self.active: bool = False
         self.countLooped: int = 1
 
@@ -1235,22 +1236,20 @@ class LOOP(Variable):
         self.checkCondition(activeVars)
         
     def STOP(self, cmd: ZCommand, activeVars: ActiveVars, index: ZIndex):
-        index = self.startIndex + int(self.countCommandsInLoop.value) +1 
+        index = self.endIndex
 
         return activeVars, index
             
     def START(self, cmd: ZCommand, activeVars: ActiveVars, index: ZIndex):
         self.startIndex = index
-
-        if len(cmd.args) > 0 and cmd.args[0] != "":
-            self.countCommandsInLoop.setValue(cmd.args[0], activeVars)
-        else:
-            raise ZError(114)
+        
+        cmd.checkArgs(1)
+        self.endIndex = int(cmd.args[0])
 
 
         self.checkCondition(activeVars)
         if not self.active:
-            return activeVars, self.startIndex + int(self.countCommandsInLoop.value)
+            return activeVars, self.endIndex
         
         
         return activeVars, index

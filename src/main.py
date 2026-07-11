@@ -60,10 +60,12 @@ def lexer(zfile: ZFile) -> list[ZCommand]:
             compiledData.append((lineNum, currentCommand))
             currentCommand = ""
 
-
-    ZCommandData: list[ZCommand] = []
     # Read compiledData, turn into ZCommands
+
+    ZCommandData: list[ZCommand] = []  
+    currentCodeLocation = 1
     cmd = ZCommand(-1, "", "", "", [""])
+    
     try:
         # Parse each command into ZCommand objects
         first, arguments, name, base, func = "", "", "", "", ""
@@ -74,8 +76,22 @@ def lexer(zfile: ZFile) -> list[ZCommand]:
             except ValueError:
                 raise ZError(104)
 
+
+            if func == "END":
+                zcommandData = ZCommandData.copy()
+                zcommandData.reverse()
+
+                for zcommand in zcommandData:
+                    if zcommand.name == name and zcommand.func == "START":
+                        zcommand.args[0] = str(currentCodeLocation-1)
+
+                zcommandData.reverse()
+                ZCommandData = zcommandData
+                    
+
             args = arguments.split("|")
             ZCommandData.append(ZCommand(line, name, base, func, args))
+            currentCodeLocation += 1
         #ZCommandData.append(ZCommand(ZCommandData[-1].lineNum+1, ZFILE, "EOF", "#", "EOF", []))
     except ZError as e:
         e.process(cmd, zfile)
