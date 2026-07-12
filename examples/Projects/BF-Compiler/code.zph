@@ -4,7 +4,7 @@ ascii # ASCII:;
 
 code # PT:;
 
-file # FILE:./examples/Projects/BF-Compiler/examples/fibonacci.bf;
+file # FILE:./examples/Projects/BF-Compiler/examples/gameOfLife.bf;
 file ? cREAD:code|~1;
 
 code ? CT:LIST;

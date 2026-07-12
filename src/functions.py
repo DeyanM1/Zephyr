@@ -1436,7 +1436,7 @@ class LIST(Variable):
         pointer.setValue(position, activeVars)
 
         if int(pointer.value) > 0:
-            while len(self.posValues) <= int(pointer.value):
+            while len(self.posValues) < int(pointer.value):
                 self.posValues.append(ZValue("", self.valueType))
 
         if int(pointer.value) == 0:

@@ -1,0 +1,115 @@
+§ -----------------------------
+§ ---- Jon Millens 1D-Life ----
+§ -----------------------------
+
+
+RULE_DEAD # LIST:INT|0|0|1|1|0;
+RULE_ALIVE # LIST:INT|0|0|1|0|1;
+
+
+
+file # FILE:./examples/Projects/1D-gameOfLife/examples/viperine.bin;
+content # LIST:PT;
+file ? cREAD:content|~1;
+
+
+row # PT:;
+row ? w:'content<2>';
+row ? CT:LIST;
+
+
+§ ---- Define Animation ----
+
+ao # AO:---- 1D-GameOfLife ----|0.5|~0;
+
+
+§ ---- Define generationLoop ----
+
+generation # INT:1;
+generations # INT:15;
+
+
+gCO # CO:('generation'<='generations');
+gLOOP # LOOP:gCO;
+gLOOP ? START:;
+    
+    § ---- RUN ----
+    
+    n # INT:0;
+    row ? LGTH:POS|n;
+    
+    newRow # LIST:PT;
+    newRow ? w:'content<1>';
+    i # INT:1;
+    
+    co # CO:('i'<='n');
+    loop # LOOP:co;
+    loop ? START:;
+    
+        mo1 # MO:('i'-2);
+        co1 # CO:('mo1'>=1);
+        if1 # IF:co1;
+        if1 ? START:;
+            left2 # INT:'row<'mo1'>';
+        if1 ? ELSE:;
+            left2 # INT:0;
+        if1 ? END:;
+    
+        
+        mo2 # MO:('i'-1);
+        co2 # CO:('mo2'>=1);
+        if2 # IF:co2;
+        if2 ? START:;
+            left1 # INT:'row<'mo2'>';
+        if2 ? ELSE:;
+            left1 # INT:0;
+        if2 ? END:;
+    
+        
+        mo3 # MO:('i'+1);
+        co3 # CO:('mo3'<='n');
+        if3 # IF:co3;
+        if3 ? START:;
+            right1 # INT:'row<'mo3'>';
+        if3 ? ELSE:;
+            right1 # INT:0;
+        if3 ? END:;
+    
+        
+        mo4 # MO:('i'+2);
+        co4 # CO:('mo4'<='n');
+        if4 # IF:co4;
+        if4 ? START:;
+            right2 # INT:'row<'mo4'>';
+        if4 ? ELSE:;
+            right2 # INT:0;
+        if4 ? END:;
+    
+        total # MO:('left1'+'left2'+'right1'+'right2'+1);
+        current # INT:'row<'i'>';
+    
+        
+        co5 # CO:('current'==0);
+        if5 # IF:co5;
+        if5 ? START:;
+            nextState # INT:'RULE_DEAD<'total'>';
+        if5 ? ELSE:;
+            nextState # INT:'RULE_ALIVE<'total'>';
+        if5 ? END:;
+    
+        newRow ? SET:'i';
+        newRow ? w:'nextState';
+    
+        i ? w:++;
+    loop ? END:;
+    
+    row # LIST:INT;
+    newRow ? copy:row;
+    
+    ao ? wLIST:row;
+
+    generation ? w:++;
+
+gLOOP ? END:;
+
+ao ? start:;
