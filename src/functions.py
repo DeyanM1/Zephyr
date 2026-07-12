@@ -1745,7 +1745,7 @@ class AO(Variable):
 
         self.firstTimeInit(cmd, activeVars)
                 
-        self.registerFunc({self.w: "", self.setDelay: "", self.clearScreen: "", self.start: "", self.step: "", self.reset: "", self.setIndex: "", self.display: ""})
+        self.registerFunc({self.w: "", self.wLIST: "", self.setDelay: "", self.clearScreen: "", self.start: "", self.step: "", self.reset: "", self.setIndex: "", self.display: ""})
         
 
 
@@ -1766,12 +1766,33 @@ class AO(Variable):
     # --- Callable Functions  
 
     def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
-        if cmd.args[0] and cmd.args[0] != "":
-            self.frames.append(ZValue("", "PT"))
-            self.frames[-1].setValue(cmd.args[0], activeVars)
+        cmd.checkArgs(1, True)
+        
+        self.frames.append(ZValue("", "PT"))
+        self.frames[-1].setValue(cmd.args[0], activeVars)
+
+    def wLIST(self, cmd: ZCommand, activeVars: ActiveVars):
+        cmd.checkArgs(1, True)
+
+        listVarName = cmd.args[0]
+        listVar = activeVars.get(listVarName)
+        if not listVar:
+            raise ZError(112)
+
+        if listVar.varType != "LIST":
+            raise ZError(113)
+
+        elementsListZValue: list[ZValue] = listVar.posValues  # pyright: ignore[reportAttributeAccessIssue]
+        elementsList = []
+        for zvalue in elementsListZValue:
+            elementsList.append(zvalue.value)
+
+        elements = "".join(elementsList)
+
+        self.frames.append(ZValue(elements, "PT"))
             
     def display(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
-            self.displayFrame(int(self.value.value))
+        self.displayFrame(int(self.value.value))
 
     def setDelay(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
        self.delay.setValue(cmd.args[0], activeVars) 
@@ -1788,7 +1809,6 @@ class AO(Variable):
             time.sleep(float(self.delay.value))
             if self.doClearScreen.asPythonBOOL:
                 print('\033[2J\033[H')
-                pass # TODO: clear screen!
             
         self.value = ZValue("0", "INT")
         

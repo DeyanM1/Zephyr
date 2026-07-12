@@ -19,7 +19,7 @@ ao # AO:<*- initialFrame>|<*- delayInSeconds>|<*- clearScreen>;
 animation # AO:"Frame1"|2|~1;
 ```
 
-- **`InitialFrame`** — (Optional) Initial frame as `PT` or a list of `PT` values
+- **`InitialFrame`** — (Optional) Initial frame as `PT` or type that can convert into `PT`
 - **`DelayInSeconds`** — (Optional) Delay between frames in seconds
 - **`ClearScreen`** — (Optional) Whether to clear screen after each frame: `~0` (false) or `~1` (true)
 
@@ -30,6 +30,14 @@ Adds a new frame to the animation. Accepts any type that can convert to `PT`.
 ```zephyr
 ao ? w:<*FrameToAdd>;
 animation ? w:"Frame2";
+```
+
+### WriteList (wLIST)
+adds a new Frame to the animation. accepts the name of a `LIST`
+
+```zephyr
+ao ? wLIST:<* ListVarName>;
+animation ? w:myList;
 ```
 
 ### Set Delay (setDelay)
