@@ -1412,7 +1412,7 @@ class LIST(Variable):
 
         self.firstTimeInit(cmd, activeVars)
 
-        self.registerFunc({self.w: "", self.SET: "SET", self.changeValueType: "CVT", self.LGTH: ""})
+        self.registerFunc({self.w: "", self.SET: "SET", self.changeValueType: "CVT", self.LGTH: "", self.copy: ""})
 
 
     def firstTimeInit(self, cmd: ZCommand, activeVars: ActiveVars):
@@ -1483,6 +1483,30 @@ class LIST(Variable):
 
 
     # --- Callable Functions  
+
+    def copy(self, cmd: ZCommand, activeVars: ActiveVars):
+        cmd.checkArgs(1, True)
+
+        targetListName = ZValue("", "PT")
+        targetListName.setValue(cmd.args[0], activeVars)
+        
+        targetList = activeVars.get(targetListName.value)
+        if not targetList:
+            raise ZError(113)
+            
+        if not targetList.varType == "LIST":
+            raise ZError(112)
+
+
+        targetList.posValues = self.posValues   # pyright: ignore[reportAttributeAccessIssue]
+        targetList.negValues = self.negValues   # pyright: ignore[reportAttributeAccessIssue]
+
+        activeVars.update({targetList.name: targetList})
+
+        return activeVars
+        
+
+        
      
     def LGTH(self, cmd: ZCommand, activeVars: ActiveVars):
         cmd.checkArgs(2, True)

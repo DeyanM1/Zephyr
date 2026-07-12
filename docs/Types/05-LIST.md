@@ -53,6 +53,22 @@ list ? LGTH:POS|length;
 - **CollectionType**: Either POS or NEG to select one of the two collections
 - **targetVar**: name of the Variable the length value is pasted into
 
+
+### Copy
+
+Copies the pos / neg values of a list to a target list with a compatible ValueType
+
+```zephyr
+list ? copy:<* targetVar>;
+
+list1 # LIST:INT|1|2|3;
+list2 # LIST:PT;
+
+list1 ? copy:list2;
+```
+
+- **targetVar**: The name of the Variable the content is pasted into.
+
 ## Reading from a List
 
 To read a value from a list and assign it to another variable, use single quotes with the list name:
