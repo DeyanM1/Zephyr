@@ -1,12 +1,10 @@
 
-a # INT:1;
-b # INT:5;
+a # BOOL:;
+b # PT:3;
 
+a ? debug:;
 
-co # CO:('a'!='b');
+a ? w:--;
+a ? w:++;
 
-if # IF:co;
-if ? START:;
-    b ? debug:;
-
-if ? END:;
+a ? debug:;

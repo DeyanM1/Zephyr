@@ -26,8 +26,8 @@
 - [x] add docs for Libraries
 - [x] update lib import syntax
 - [x] fix ELSE automatic Index set (Higher Lower Game / Math Game /  Broken)
+- [x] fix BrainFuck compiler
+- [x] add list support for animation objects
 - [ ] add LIST example script
 - [ ] add iteration function -> for loop
-- [ ] fix BrainFuck compiler
-- [ ] add list support for animation objects
 - [ ] add 3d list

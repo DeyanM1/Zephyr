@@ -72,6 +72,7 @@ Use `? push:` to display text:
 greeting # PT:"Hello";
 greeting ? push:;          § Output: Hello
 ```
+
 - **newLine** if set to False it doesnt print a newline after the print (~1 / ~0). Default is True
 
 only Variables of the Type PT can be pushed
@@ -92,6 +93,7 @@ Use `? w:++` to append text to the end:
 
 ```zephyr
 message # PT:"Hello";
+message ? w:++|<* text>;
 message ? w:++|"!";        § Appends "!" to the end
 message ? push:;           § Output: Hello!
 ```
@@ -156,6 +158,7 @@ Increment by a specific amount:
 
 ```zephyr
 count # INT:5;
+count ? w:++|<* amount>;
 count ? w:++|3;            § Add 3 to count
 ```
 
@@ -172,6 +175,7 @@ Decrement by a specific amount:
 
 ```zephyr
 count # INT:10;
+count ? w:--|<* amount>;
 count ? w:--|3;            § Subtract 3 from count
 ```
 
@@ -208,6 +212,7 @@ temperature ? w:25.5;      § Change temperature
 
 ```zephyr
 temperature # FLOAT:20.0;
+temperature ? w:++|<* amount>;
 temperature ? w:++|0.5;    § Add 0.5 to temperature
 ```
 
@@ -215,6 +220,7 @@ temperature ? w:++|0.5;    § Add 0.5 to temperature
 
 ```zephyr
 temperature # FLOAT:20.0;
+temperature ? w:--|<* amount>;
 temperature ? w:--|0.5;    § Subtract 0.5 from temperature
 ```
 

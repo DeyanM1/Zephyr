@@ -246,19 +246,25 @@ class ZValue:
         match self.valueType:
             case "FLOAT":
                 try:
-                    self.value = str(float(newValue))
+                    if newValue == "":
+                        self.value = "0.0"
+                    else:
+                        self.value = str(float(newValue))
                 except ValueError:
                     raise ZError(105)
 
             case "INT":
                 try:
-                    self.value = str(newValue).split(".")[0]
+                    if newValue == "":
+                        self.value = "0"
+                    else:
+                        self.value = str(newValue).split(".")[0]
                 except ValueError:
                     raise ZError(105)
 
             case "BOOL":
                 match newValue:
-                    case "0"|"0.0"|"~0"|False:
+                    case "0"|"0.0"|"~0"|False|"":
                         self.value = "~0"
                     case "1"|"1.0"|"~1"|True:
                         self.value = "~1"
@@ -349,12 +355,13 @@ class ZValue:
                         self.value = "~0"
 
             case "INT"|"FLOAT":
-                self.setValue(str(float(self.value)+float(incrementValueRaw)), activeVars)
+                incrementValue = ZValue("0", "INT")
+                incrementValue.setValue(incrementValueRaw, activeVars)
+                
+                self.setValue(str(float(self.value)+float(incrementValue.value)), activeVars)
 
 
-    def decrement(self, decrementValue: str, activeVars: ActiveVars) -> None:
-        newValue = float(self.value) - float(decrementValue)
-
+    def decrement(self, decrementValueRaw: str, activeVars: ActiveVars) -> None:
         match self.valueType:   
             case "PT":
                 self.value = ""
@@ -366,7 +373,10 @@ class ZValue:
                         self.value = "~0"
                 
             case "INT"|"FLOAT":
-                self.setValue(str(newValue), activeVars)
+                decrementValue = ZValue("0", "INT")
+                decrementValue.setValue(decrementValueRaw, activeVars)
+                
+                self.setValue(str(float(self.value)-float(decrementValue.value)), activeVars)
 
 
 
@@ -525,7 +535,7 @@ class INT(Variable):
         if not var:
             raise ZError(113)
 
-        if var.varType not  in ["INT", "PT", "FLOAT", "BOOL"]:
+        if var.varType not in ["INT", "PT", "FLOAT", "BOOL"]:
             raise ZError(112)
             
         var.value.setValue(length, activeVars)
@@ -546,16 +556,24 @@ class INT(Variable):
     def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         if self.constant.asPythonBOOL:
             raise ZError(107)
-        
+
+        cmd.checkArgs(1, True)
 
         match cmd.args[0]:
             case "++":
-                self.value.increment(cmd.args[1] if 1 < len(cmd.args) else "1", activeVars)
+                if cmd.checkArgs(2, False):
+                    self.value.increment(cmd.args[1], activeVars)
+                else:
+                    self.value.increment("1", activeVars)
+                    
             case "--":
-                self.value.decrement(cmd.args[1] if 1 < len(cmd.args) else "1", activeVars)
+                if cmd.checkArgs(2, False):
+                    self.value.decrement(cmd.args[1], activeVars)
+                else:
+                    self.value.decrement("1", activeVars)
 
             case _:
-                self.value.setValue(cmd.args[0] if cmd.args[0] != "" else "0", activeVars)
+                self.value.setValue(cmd.args[0], activeVars)
 
 @register()
 class FLOAT(Variable):
@@ -617,11 +635,21 @@ class FLOAT(Variable):
         if self.constant.asPythonBOOL:
             raise ZError(107)
 
+        cmd.checkArgs(1, True)
+
+
         match cmd.args[0]:
             case "++":
-                self.value.increment(cmd.args[1] if 1 < len(cmd.args) else "1", activeVars)
+                if cmd.checkArgs(2, False):
+                    self.value.increment(cmd.args[1], activeVars)
+                else:
+                    self.value.increment("1", activeVars)
+                    
             case "--":
-                self.value.decrement(cmd.args[1] if 1 < len(cmd.args) else "1", activeVars)
+                if cmd.checkArgs(2, False):
+                    self.value.decrement(cmd.args[1], activeVars)
+                else:
+                    self.value.decrement("1", activeVars)
 
             case _:
                 self.value.setValue(cmd.args[0] if cmd.args[0] != "" else "0", activeVars)
@@ -688,11 +716,19 @@ class PT(Variable):
         if self.constant.asPythonBOOL:
             raise ZError(107)
 
+        
+        cmd.checkArgs(1, True)
+
+
         match cmd.args[0]:
             case "++":
-                self.value.increment(cmd.args[1] if 1 < len(cmd.args) else "1", activeVars)
+                if cmd.checkArgs(2, False):
+                    self.value.increment(cmd.args[1], activeVars)
+                else:
+                    self.value.increment("1", activeVars)
+                    
             case "--":
-                self.value.decrement(cmd.args[1] if 1 < len(cmd.args) else "1", activeVars)
+                self.value.decrement("0", activeVars)
 
             case _:
                 self.value.setValue(cmd.args[0], activeVars)
@@ -742,7 +778,7 @@ class BOOL(Variable):
         super().__init__(cmd, activeVars)
         self.supportedVars = ["FLOAT", "PT", "INT"]
 
-        self.value: ZValue = ZValue("0", "BOOL")
+        self.value: ZValue = ZValue("~0", "BOOL")
         self.constant: ZValue = ZValue("~0", "BOOL")
         
         self.firstTimeInit(cmd, activeVars)
@@ -784,12 +820,16 @@ class BOOL(Variable):
         if self.constant.asPythonBOOL:
             raise ZError(107)
 
-            
+        
+        cmd.checkArgs(1, True)
+
+
         match cmd.args[0]:
             case "++":
-                self.value.increment(cmd.args[1] if 1 < len(cmd.args) else "1", activeVars)
+                self.value.increment("1", activeVars)
+                    
             case "--":
-                self.value.decrement(cmd.args[1] if 1 < len(cmd.args) else "1", activeVars)
+                self.value.decrement("1", activeVars)
 
             case _:
                 self.value.setValue(cmd.args[0] if cmd.args[0] != "" else "0", activeVars)
