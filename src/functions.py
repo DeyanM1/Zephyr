@@ -55,7 +55,8 @@ class ZError(Exception):
             122: lambda: ("PT insertion Error! Index can't be smaller than 1", "InvalidIndexError", 0, SyntaxError),
             123: lambda: ("PT insertion Error! Index out of bounds!", "IndexOutoFBounds", 0, SyntaxError),
             124: lambda: ("Module Not Found inside global / local dir", "ModuleNotFound", 0, SyntaxError),
-            125: lambda: ("Unknown List collection type! Use: POS / NEG", "UnknownListCollectionType", 0, SyntaxError)
+            125: lambda: ("Unknown List collection type! Use: POS / NEG", "UnknownListCollectionType", 0, SyntaxError),
+            126: lambda: ("Uncompleted Index Scobe: Missing > in variable index.", "UncompletedIndexScobe", 0, SyntaxError)
         }
 
         if returnDict:
@@ -184,13 +185,13 @@ class ZValue:
             return False
     
     def isInt(self, value: str) -> bool:
-        if value.endswith(".0") or value == "":
+        if value.endswith(".0"):
             core = value[:-2]
             return core.isdigit() or (core.startswith("-") and core[1:].isdigit()) or value == ""
         return value.isdigit() or (value.startswith("-") and value[1:].isdigit())
 
     def isBool(self, value: str) -> bool:
-        if value in ("1", "0", "1.0", "0.0", "", "~0", "~1", True, False):
+        if value in ("1", "0", "1.0", "0.0", "", "~0", "~1"):
             return True
 
         return False
@@ -208,7 +209,7 @@ class ZValue:
         return False
 
     @property
-    def asZBOOl(self) -> bool | ZBOOLValues:
+    def asZBOOL(self) -> bool | ZBOOLValues:
         if self.valueType == "BOOL":
             return self.value # type:ignore
 
@@ -258,7 +259,7 @@ class ZValue:
                     if newValue == "":
                         self.value = "0"
                     else:
-                        self.value = str(newValue).split(".")[0]
+                        self.value = str(int(str(newValue).split(".")[0]))
                 except ValueError:
                     raise ZError(105)
 
@@ -268,6 +269,8 @@ class ZValue:
                         self.value = "~0"
                     case "1"|"1.0"|"~1"|True:
                         self.value = "~1"
+                    case _:
+                        self.value = "~0"
 
             case "PT":
                 self.value = str(newValue)
@@ -303,7 +306,10 @@ class ZValue:
 
 
             if varName.endswith(">"):
-                varName, indexRaw = varName.split("<", 1)
+                try:
+                    varName, indexRaw = varName.split("<", 1)
+                except ValueError:
+                    raise ZError(126)
 
                 indexRaw = "".join(indexRaw.rsplit(">", 1))
 
@@ -354,8 +360,14 @@ class ZValue:
                     case "~1":
                         self.value = "~0"
 
-            case "INT"|"FLOAT":
+            case "INT":
                 incrementValue = ZValue("0", "INT")
+                incrementValue.setValue(incrementValueRaw, activeVars)
+                
+                self.setValue(str(int(self.value)+int(incrementValue.value)), activeVars)
+            
+            case "FLOAT":
+                incrementValue = ZValue("0", "FLOAT")
                 incrementValue.setValue(incrementValueRaw, activeVars)
                 
                 self.setValue(str(float(self.value)+float(incrementValue.value)), activeVars)
@@ -372,11 +384,17 @@ class ZValue:
                     case "~1":
                         self.value = "~0"
                 
-            case "INT"|"FLOAT":
-                decrementValue = ZValue("0", "INT")
-                decrementValue.setValue(decrementValueRaw, activeVars)
+            case "INT":
+                incrementValue = ZValue("0", "INT")
+                incrementValue.setValue(decrementValueRaw, activeVars)
                 
-                self.setValue(str(float(self.value)-float(decrementValue.value)), activeVars)
+                self.setValue(str(int(self.value)-int(incrementValue.value)), activeVars)
+            
+            case "FLOAT":
+                incrementValue = ZValue("0", "FLOAT")
+                incrementValue.setValue(decrementValueRaw, activeVars)
+                
+                self.setValue(str(float(self.value)-float(incrementValue.value)), activeVars)
 
 
 
@@ -450,14 +468,6 @@ class Variable:
 
 
     def registerFunc(self, funcList: dict[Callable[..., Any], str]) -> None:
-        """
-        Register a function for a type. Its added to the functionRegistry
-
-        Args:
-            func (Callable[..., Any]): The function to generate the docstring for.
-            name (Optional[str]): The name to use in the docstring. If not provided, the function's name will be used.
-
-        """
         for func, name in funcList.items():
             if name:
                 self.functionRegistry[name] = func
@@ -471,6 +481,8 @@ class Variable:
         return self.value.value
         
     def CT(self, cmd: ZCommand, activeVars: ActiveVars) -> ActiveVars:
+        cmd.checkArgs(1, True)
+        
         targetVarType: str = cmd.args[0]
 
         if targetVarType not in self.supportedVars:
@@ -678,13 +690,13 @@ class PT(Variable):
     def setConstant(self, newStateRaw: str, activeVars: ActiveVars):
         self.constant.setValue(newStateRaw, activeVars)
 
-    def onChange(self, targetType: str) -> str:
+    def onChange(self, targetType: str) -> str|List[str]:    # pyright: ignore[reportIncompatibleMethodOverride]
         if targetType == "LIST":
             params = ["PT"]
             for char in self.value.value:
                 params.append(f"{char}")
 
-            return params  # pyright: ignore[reportReturnType]
+            return params
         return self.value.value
     
 
@@ -741,24 +753,22 @@ class PT(Variable):
 
     def insertAt(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         cmd.checkArgs(2, True)
-        try:
-            valueToInsert = ZValue("", "PT")
-            position = ZValue("0", "INT")
         
+        valueToInsert = ZValue("", "PT")
+        position = ZValue("0", "INT")
     
-            valueToInsert.setValue(cmd.args[0], activeVars)
-            position.setValue(cmd.args[1], activeVars)
-    
-            if int(position.value) < 1:
-                raise ZError(122)
-    
-            if len(self.value.value)+1 < int(position.value):
-                raise ZError(123)
-    
-            newValue = self.value.value[:int(position.value)-1] + valueToInsert.value + self.value.value[int(position.value)-1:]
-            self.value.setValue(newValue, activeVars)
-        except Exception:
+
+        valueToInsert.setValue(cmd.args[0], activeVars)
+        position.setValue(cmd.args[1], activeVars)
+
+        if int(position.value) < 1:
             raise ZError(122)
+
+        if len(self.value.value)+1 < int(position.value):
+            raise ZError(123)
+                
+        newValue = self.value.value[:int(position.value)-1] + valueToInsert.value + self.value.value[int(position.value)-1:]
+        self.value.setValue(newValue, activeVars)
 
     def push(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         if cmd.checkArgs(1, False):
@@ -832,7 +842,7 @@ class BOOL(Variable):
                 self.value.decrement("1", activeVars)
 
             case _:
-                self.value.setValue(cmd.args[0] if cmd.args[0] != "" else "0", activeVars)
+                self.value.setValue(cmd.args[0], activeVars)
 
 
 ### ------- Other -------
@@ -1472,7 +1482,7 @@ class LIST(Variable):
         return self.getValue(int(self.pointer.value)).value
 
     def setPointer(self, position: str, activeVars: ActiveVars):
-        pointer = ZValue("", "INT")
+        pointer = ZValue("1", "INT")
         pointer.setValue(position, activeVars)
 
         if int(pointer.value) > 0:

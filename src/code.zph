@@ -1,10 +1,5 @@
-
 a # BOOL:;
-b # PT:3;
 
-a ? debug:;
-
-a ? w:--;
-a ? w:++;
+a ? w:~0;
 
 a ? debug:;
