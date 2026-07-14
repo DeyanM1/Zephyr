@@ -29,7 +29,6 @@ class ZError(Exception):
         self.code = code
     
     def process(self, cmd: ZCommand, zfile: ZFile, exit: bool = True, returnDict: bool = False) -> None|dict:
-        # errorCode: (message, offset_function)
         errors: dict[int, Callable[..., tuple[str, str, int, type[BaseException]]]] = {
             101: lambda: (f"Unknown Base, use '{ZBase.use}' or '{ZBase.define}'", "UnknownBase", len(cmd.name) + 2, SyntaxError),
             102: lambda: ("Undefined Variable", "UndefinedVariable", 1, SyntaxError),
