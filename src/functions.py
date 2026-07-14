@@ -25,6 +25,7 @@ CO_ALLOWEDCHARS: str = "()=!><1234567890."
 
 
 
+
 class ZError(Exception):
     def __init__(self, code: int) -> None:
         self.code = code
