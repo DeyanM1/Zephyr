@@ -943,6 +943,8 @@ class CO(Variable):
     # --- Callable Functions
         
     def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        cmd.checkArgs(1, True)
+        
         self.rawCondition.setValue(cmd.args[0], activeVars)
         self.compile(activeVars)
 
@@ -956,8 +958,7 @@ class IF(Variable):
         self.value: ZValue = ZValue("", "PT") # UNUSED HERE
 
 
-        self.conditionalObjectName: ZValue = ZValue("", "PT")
-        self.conditionalObjectValue: ZValue = ZValue("~0", "BOOL")
+        self.conditionalObject: Variable
 
         self.endIndex: ZIndex = 0
         self.elseIndex: ZIndex = 0
@@ -975,16 +976,21 @@ class IF(Variable):
     # --- Callable Functions
 
     def w(self, cmd: ZCommand, activeVars: ActiveVars):
-        if len(cmd.args) > 0:
-            self.conditionalObjectName.setValue(cmd.args[0], activeVars)
-            conditionalObject = activeVars.get(self.conditionalObjectName.value)
+        cmd.checkArgs(1, True)
 
-            if isinstance(conditionalObject, CO):
-                self.conditionalObjectValue = conditionalObject.value # type: ignore
-            else:
-                raise ZError(112)
-        else:
-            raise ZError(114)
+        coName = ZValue("", "PT")
+        
+        coName.setValue(cmd.args[0], activeVars)
+        conditionalObject = activeVars.get(coName.value)
+
+        if not conditionalObject: 
+            raise ZError(113)
+
+        if conditionalObject.varType == "CO":
+            raise ZError(112)
+              
+        self.conditionalObject = conditionalObject
+            
   
     def START(self, cmd: ZCommand, activeVars: ActiveVars, index: ZIndex) -> tuple[ActiveVars, ZIndex]:
         cmd.checkArgs(1)
@@ -994,9 +1000,10 @@ class IF(Variable):
             self.elseIndex = int(cmd.args[1])
         
         newIndex: ZIndex = 0
-        if self.conditionalObjectValue.asPythonBOOL:
+        if self.conditionalObject.value.asPythonBOOL:
             newIndex = index
-        elif not self.conditionalObjectValue.asPythonBOOL:
+            
+        else:
             if self.elseIndex != 0:
                 newIndex = self.elseIndex
             else:
@@ -1006,9 +1013,9 @@ class IF(Variable):
 
     def ELSE(self, cmd: ZCommand, activeVars: ActiveVars, index: ZIndex) -> tuple[ActiveVars, ZIndex]:
         newIndex: ZIndex = 0
-        if not self.conditionalObjectValue.asPythonBOOL:
+        if not self.conditionalObject.value.asPythonBOOL:
             newIndex = index
-        elif self.conditionalObjectValue.asPythonBOOL:
+        else:
             newIndex = self.endIndex
             
         return activeVars, newIndex
@@ -1108,6 +1115,8 @@ class MO(Variable):
     # --- Callable Functions
 
     def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        cmd.checkArgs(1, True)
+        
         self.rawEquation.setValue(cmd.args[0], activeVars)
         self.compile(activeVars)
       
@@ -1159,16 +1168,18 @@ class FUNC(Variable):
     # --- Callable Functions
                 
     def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        cmd.checkArgs(1, True)
+        
         moName = ZValue("", "PT")
         moName.setValue(cmd.args[0], activeVars)
-        mathObject: MO = activeVars.get(moName.value)
+        mathObject = activeVars.get(moName.value)
         
         if not mathObject:
             raise ZError(113)
-        if isinstance(mathObject, MO):
-            self.mo = mathObject
-        else:
+        if mathObject.varType != "MO":
             raise ZError(112)
+                       
+        self.mo = mathObject
 
         self.autoCall(activeVars)
 
@@ -1220,8 +1231,7 @@ class RNG(Variable):
 
     def w(self, cmd: ZCommand, activeVars: ActiveVars):
         # Check if all arguments are available
-        if not len(cmd.args) > 2 or cmd.args[0] == "" or cmd.args[1] == "" or cmd.args[2] == "":
-            raise ZError(114)
+        cmd.checkArgs(3)
         
         newRandomNumberType = ZValue("", "PT")
         newRandomNumberType.setValue(cmd.args[2], activeVars)
@@ -1253,8 +1263,7 @@ class LOOP(Variable):
         self.active: bool = False
         self.countLooped: int = 1
 
-        self.conditionalObjectName: ZValue = ZValue("", "PT")
-        
+        self.conditionalObject: CO # Defined later
 
         self.firstTimeInit(cmd, activeVars)
         
@@ -1265,7 +1274,7 @@ class LOOP(Variable):
             self.w(cmd, activeVars)
 
     def checkCondition(self, activeVars: ActiveVars):
-        self.conditionalObject.compile(activeVars) # type: ignore
+        self.conditionalObject.compile(activeVars)
         if self.conditionalObject.value.asPythonBOOL:
             self.active = True
         else:
@@ -1278,17 +1287,20 @@ class LOOP(Variable):
     # --- Callable Functions  
 
     def w(self, cmd: ZCommand, activeVars: ActiveVars):
-        if len(cmd.args) > 0 and cmd.args[0] != "":
-            self.conditionalObjectName.setValue(cmd.args[0], activeVars)
+        cmd.checkArgs(1, True)
+        
+        coName = ZValue("", "PT")
+        coName.setValue(cmd.args[0], activeVars)
 
-            self.conditionalObject: CO = activeVars.get(self.conditionalObjectName.value)
+        var: CO = activeVars.get(coName.value)
 
-            if isinstance(self.conditionalObject, CO): # type: ignore
-                self.conditionalObjectValue = self.conditionalObject.value # type: ignore
-            else:
-                raise ZError(112)
-        else:
-            raise ZError(114)
+        if not var:
+            raise ZError(113)
+            
+        if not isinstance(var, CO):
+            raise ZError(112)
+
+        self.conditionalObject = var
         
         self.checkCondition(activeVars)
         
@@ -1326,8 +1338,6 @@ class FILE(Variable):
         super().__init__(cmd, activeVars)
         self.supportedVars = []
 
-        self.value: ZValue = ZValue("", "PT") # unused
-
         self.path: Path = Path()
 
 
@@ -1358,10 +1368,11 @@ class FILE(Variable):
         Only sets the filePath
         
         """
-        if len(cmd.args) > 0 and cmd.args[0] == "":
+
+        if not cmd.checkArgs(1, False):
             self.path = Path.cwd() / "unnamed_file.txt"
 
-        elif len(cmd.args) > 0 and cmd.args[0] != "":
+        else:
             rawPath = ZValue("", "PT")
             rawPath.setValue(cmd.args[0], activeVars)
             path = Path(rawPath.value)
@@ -1370,9 +1381,6 @@ class FILE(Variable):
                 path = (Path.cwd() / path).resolve()
             
             self.path = path
-        
-        else:
-            raise ZError(114)
 
 
         self.path.parent.mkdir(parents=True, exist_ok=True)
@@ -1383,7 +1391,7 @@ class FILE(Variable):
     def cREAD(self, cmd: ZCommand, activeVars: ActiveVars):
         cmd.checkArgs(1)
 
-        cleanLines = ZValue("", "BOOL")
+        cleanLines = ZValue("~0", "BOOL")
         if cmd.checkArgs(2, False):
             cleanLines.setValue(cmd.args[1], activeVars)
 
@@ -1650,16 +1658,18 @@ class BUILD_IN(Variable):
     # --- Callable Functions  
     
     def wait(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        cmd.checkArgs(1, True)
+        
         waitTime: ZValue = ZValue("0.0", "FLOAT")
         waitTime.setValue(cmd.args[0], activeVars)
 
         time.sleep(float(waitTime.value))
 
     def jump(self, cmd: ZCommand, activeVars: ActiveVars, index: ZIndex) -> tuple[ActiveVars, ZIndex] :
+        cmd.checkArgs(1, True)
+        
         indexToAdd: ZValue = ZValue("0", "INT")
 
-        cmd.checkArgs(1)
-        
         indexToAdd.setValue(cmd.args[0], activeVars)
 
         if indexToAdd.value.startswith("-"):
@@ -1669,9 +1679,9 @@ class BUILD_IN(Variable):
             
     
     def jumpTo(self, cmd: ZCommand, activeVars: ActiveVars, index: ZIndex) -> tuple[ActiveVars, ZIndex]:
-        indexToJump: ZValue = ZValue("0", "INT")
-
         cmd.checkArgs(1)
+        
+        indexToJump: ZValue = ZValue("0", "INT")       
             
         indexToJump.setValue(cmd.args[0], activeVars)
 
@@ -1747,7 +1757,7 @@ class BUILD_IN(Variable):
             register(name)(cls)
 
     def export(self, cmd: ZCommand, activeVars: ActiveVars):
-        if len(cmd.args) > 0 and cmd.args[0] != "":
+        if cmd.checkArgs(1, False):
             fileName = ZValue("", "PT")
             fileName.setValue(cmd.args[0], activeVars)
 
@@ -1762,7 +1772,7 @@ class BUILD_IN(Variable):
                 pickle.dump(activeVars, f)
 
     def load(self, cmd: ZCommand, activeVars: ActiveVars) -> ActiveVars:
-        if len(cmd.args) > 0 and cmd.args[0] != "":
+        if cmd.checkArgs(1, False):
             fileName = ZValue("", "PT")
             fileName.setValue(cmd.args[0], activeVars)
 
@@ -1845,12 +1855,15 @@ class AO(Variable):
         self.displayFrame(int(self.value.value))
 
     def setDelay(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
-       self.delay.setValue(cmd.args[0], activeVars) 
+        cmd.checkArgs(1)
+        self.delay.setValue(cmd.args[0], activeVars) 
 
-    def setIndex(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+    def setIndex(self, cmd: ZCommand, activeVars: ActiveVars) -> None:       
+        cmd.checkArgs(1)
         self.value.setValue(cmd.args[0], activeVars)
 
     def clearScreen(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        cmd.checkArgs(1)
         self.doClearScreen.setValue(cmd.args[0], activeVars)
 
     def start(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
