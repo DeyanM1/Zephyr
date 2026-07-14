@@ -56,7 +56,8 @@ class ZError(Exception):
             123: lambda: ("PT insertion Error! Index out of bounds!", "IndexOutoFBounds", 0, SyntaxError),
             124: lambda: ("Module Not Found inside global / local dir", "ModuleNotFound", 0, SyntaxError),
             125: lambda: ("Unknown List collection type! Use: POS / NEG", "UnknownListCollectionType", 0, SyntaxError),
-            126: lambda: ("Uncompleted Index Scobe: Missing > in variable index.", "UncompletedIndexScobe", 0, SyntaxError)
+            126: lambda: ("Uncompleted Index Scobe: Missing > in variable index.", "UncompletedIndexScobe", 0, SyntaxError),
+            127: lambda: ("MO name not yet provided. use: ? w.", "MONotFound", 0, SyntaxError),
         }
 
         if returnDict:
@@ -152,7 +153,7 @@ class ZCommand:
     name: str
     base: str
     func: str
-    args: list[str]
+    args: List[str]
 
 
     def checkArgs(self, count: int, raiseError: bool = True) -> bool:
@@ -461,7 +462,7 @@ class Variable:
         self.value: ZValue
 
 
-        self.supportedVars: list[str] = [] # Supported Variables to change to
+        self.supportedVars: List[str] = [] # Supported Variables to change to
 
         self.functionRegistry: dict[str, Callable[..., Any]] = {}
         self.registerFunc({self.CT: "", self.debug: ""})
@@ -1173,7 +1174,10 @@ class FUNC(Variable):
 
     def call(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         if not self.disableVariableChange.asPythonBOOL:
-            self.mo.compile(activeVars)
+            try:
+                self.mo.compile(activeVars)
+            except AttributeError:
+                raise ZError(127)
             self.value = self.mo.value
         
 @register()
@@ -1184,7 +1188,7 @@ class RNG(Variable):
         self.supportedVars = ["INT", "FLOAT", "PT", "BOOL"]
 
         self.randomNumberType: ZValueType = "FLOAT"
-        self.allowedTypes: list[str] = ["INT", "FLOAT"]
+        self.allowedTypes: List[str] = ["INT", "FLOAT"]
 
         self.value: ZValue = ZValue("0", self.randomNumberType) # type:ignore
         self.rangeMin: ZValue = ZValue("0", self.randomNumberType)  # type:ignore
@@ -1327,8 +1331,7 @@ class FILE(Variable):
         self.path: Path = Path()
 
 
-        if len(cmd.args) > 0:
-            self.w(cmd, activeVars)
+        self.firstTimeInit(cmd, activeVars)
         
 
         self.registerFunc({self.w: ""})
@@ -1345,7 +1348,7 @@ class FILE(Variable):
         with self.path.open("r") as openFile:
             ret = openFile.readlines()
         
-        return str(*ret)
+        return "".join(ret)
         
                 
     # --- Callable Functions  
@@ -1440,7 +1443,7 @@ class FILE(Variable):
         
         newName = ZValue("", "PT")
         newName.setValue(cmd.args[0], activeVars)
-        self.path.rename(newName.value)
+        self.path = self.path.rename(newName.value)
 
     def gDEL(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         self.path.unlink()
@@ -1453,7 +1456,7 @@ class LIST(Variable):
 
         self.pointer: ZValue = ZValue("1", "INT")
 
-        self.allowedValueTypes: list[str] = ["INT", "PT", "FLOAT"]
+        self.allowedValueTypes: List[str] = ["INT", "PT", "FLOAT"]
         self.valueType: ZValueType = "FLOAT"
 
         self.posValues: List[ZValue] = []
@@ -1591,7 +1594,7 @@ class LIST(Variable):
         return activeVars 
 
     def w(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
-        #cmd.checkArgs(1)
+        cmd.checkArgs(1)
 
         self.setValue(cmd.args[0], activeVars)
 
@@ -1637,6 +1640,7 @@ class LIST(Variable):
 class BUILD_IN(Variable):
     def __init__(self, cmd: ZCommand, activeVars: ActiveVars, zfile: ZFile) -> None:
         super().__init__(cmd, activeVars)
+        self.value = ZValue("", "PT")
 
         self.zfile: ZFile = zfile
 
@@ -1653,30 +1657,26 @@ class BUILD_IN(Variable):
 
     def jump(self, cmd: ZCommand, activeVars: ActiveVars, index: ZIndex) -> tuple[ActiveVars, ZIndex] :
         indexToAdd: ZValue = ZValue("0", "INT")
-        if len(cmd.args[0]):
-            if cmd.args[0] == "":
-                raise ZError(114)
+
+        cmd.checkArgs(1)
+        
+        indexToAdd.setValue(cmd.args[0], activeVars)
+
+        if indexToAdd.value.startswith("-"):
+            return activeVars, ZIndex(index-int(indexToAdd.value.replace("-", ""))-1)
+        else:
+            return activeVars, ZIndex(index+(int(indexToAdd.value)))
             
-            indexToAdd.setValue(cmd.args[0], activeVars)
-
-            if indexToAdd.value.startswith("-"):
-                return activeVars, ZIndex(index-int(indexToAdd.value.replace("-", ""))-1)
-            else:
-                return activeVars, ZIndex(index+(int(indexToAdd.value)))
-
-        raise ZError(114)
     
     def jumpTo(self, cmd: ZCommand, activeVars: ActiveVars, index: ZIndex) -> tuple[ActiveVars, ZIndex]:
         indexToJump: ZValue = ZValue("0", "INT")
-        if len(cmd.args[0]):
-            if cmd.args[0] == "":
-                raise ZError(114)
+
+        cmd.checkArgs(1)
             
-            indexToJump.setValue(cmd.args[0], activeVars)
+        indexToJump.setValue(cmd.args[0], activeVars)
 
-            return activeVars, int(indexToJump.value)-2
+        return activeVars, int(indexToJump.value)-2
 
-        raise ZError(114)
 
     def LIB(self, cmd: ZCommand, activeVars: ActiveVars):
         cmd.checkArgs(1, True)
@@ -1789,7 +1789,7 @@ class AO(Variable):
 
         self.value: ZValue = ZValue("0", "INT") # Current position of the Animation
         self.delay: ZValue = ZValue("0", "FLOAT")
-        self.frames: list[ZValue] = []
+        self.frames: List[ZValue] = []
         self.doClearScreen: ZValue = ZValue("~0", "BOOL")
 
 
@@ -1827,12 +1827,12 @@ class AO(Variable):
         listVarName = cmd.args[0]
         listVar = activeVars.get(listVarName)
         if not listVar:
-            raise ZError(112)
+            raise ZError(113)
 
         if listVar.varType != "LIST":
             raise ZError(113)
 
-        elementsListZValue: list[ZValue] = listVar.posValues  # pyright: ignore[reportAttributeAccessIssue]
+        elementsListZValue: List[ZValue] = listVar.posValues  # pyright: ignore[reportAttributeAccessIssue]
         elementsList = []
         for zvalue in elementsListZValue:
             elementsList.append(zvalue.value)
