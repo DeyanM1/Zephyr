@@ -17,4 +17,8 @@ jobs:
 
       - name: Compile
         run: |
-          ./dist/build.sh
+          pip install nuitka==4.1.1 patchelf==0.17.0
+          python -m nuitka src/zlm.py --onefile --output-dir=dist/linux --output-filename=zlm
+          python -m nuitka src/zcli.py --onefile --output-dir=dist/linux --output-filename=zcli
+          cd ../linux/
+          rm -rf zcli.build zcli.dist zcli.onefile-build zlm.build zlm.dist zlm.onefile-build
