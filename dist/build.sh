@@ -16,7 +16,7 @@ uv run nuitka src/zlm.py --onefile --output-dir=dist/linux --output-filename=zlm
 #cd ./dist/windows
 #rm -rf zcli.build zcli.dist zcli.onefile-build zlm.build zlm.dist zlm.onefile-build
 
-cd ../linux/
+cd ./dist/linux/
 rm -rf zcli.build zcli.dist zcli.onefile-build zlm.build zlm.dist zlm.onefile-build
 
 
