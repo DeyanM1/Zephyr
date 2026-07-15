@@ -1,4 +1,4 @@
-![www](https://github.com/user-attachments/assets/621614f4-354e-4368-832e-184b75503e86)
+![www](https://github.com/DeyanM1/Zephyr/blob/main/docs/assets/img/Github-Title.png?raw=true)
 
 
 ## Introduction
@@ -38,4 +38,7 @@ This language is intended for:
 
 
 https://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=Zephyr%0A
+
 https://convertio.co/txt-png/
+
+https://github.com/user-attachments/assets/621614f4-354e-4368-832e-184b75503e86
