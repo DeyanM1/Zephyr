@@ -7,6 +7,7 @@ import pickle
 import platform
 import random
 import sys
+from tabnanny import check
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -679,7 +680,7 @@ class PT(Variable):
         
         self.firstTimeInit(cmd, activeVars)
 
-        self.registerFunc({self.push: "", self.w: "", self.INPUT: "", self.insertAt: "", self.C: "", self.LGTH: ""})
+        self.registerFunc({self.push: "", self.w: "", self.INPUT: "", self.insertAt: "", self.C: "", self.LGTH: "", self.check: ""})
 
         
     def firstTimeInit(self, cmd: ZCommand, activeVars: ActiveVars):
@@ -703,6 +704,43 @@ class PT(Variable):
     
 
     # --- Callable Functions
+
+    def check(self, cmd: ZCommand, activeVars: ActiveVars):
+        cmd.checkArgs(2)
+        
+        allowedChecks = ["INT", "FLOAT", "BOOL"]
+
+        checkFor = ZValue("", "PT")
+        checkFor.setValue(cmd.args[0], activeVars)
+        if checkFor.value not in allowedChecks:
+            raise ZError(114)
+        
+        targetVarName = ZValue("", "PT")
+        targetVarName.setValue(cmd.args[1], activeVars)
+        targetVar = activeVars.get(targetVarName.value)
+
+        if not targetVar:
+            raise ZError(113)
+
+        if targetVar.varType != "BOOL":
+            raise ZError(112)
+
+        matches = False
+        match checkFor.value:
+            case "INT":
+                matches = self.value.isInt(self.value.value)
+            case "FLOAT":
+                matches = self.value.isFloat(self.value.value)
+            case "BOOL":
+                matches = self.value.isBool(self.value.value)
+
+        if matches:
+            targetVar.value = ZValue("~1", "BOOL")
+        else:
+            targetVar.value = ZValue("~0", "BOOL")
+
+        activeVars.update({targetVar.name: targetVar})
+        
 
     def LGTH(self, cmd: ZCommand, activeVars: ActiveVars):
         cmd.checkArgs(1, True)

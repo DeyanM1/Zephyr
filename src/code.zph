@@ -1,5 +1,7 @@
-a # BOOL:;
+a # PT:~0;
 
-a ? w:~0;
+b # BOOL:;
 
-a ? debug:;
+a ? check:BOOL|b;
+
+b ? debug:;

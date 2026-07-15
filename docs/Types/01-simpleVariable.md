@@ -123,10 +123,23 @@ message ? push:;                 § Output: Mr. Hello
 Use `? INPUT:` to let the user type text:
 
 ```zephyr
+message ? INPUT:<*- message>;
 message # PT:"";
 message ? INPUT:"What's your name? ";
 message ? push:;           § Displays what the user typed
 ```
+
+### Check type compatibility of value ( ? check)
+
+Use `? check:;` to check if the current value is compatible with a variable type
+
+```zephyr
+value ? check:<* type>|<* targetVarName>;
+value ? check:INT|isInt;
+```
+
+- **`type`**: the to check for. allowed: `INT`, `FLOAT`, `BOOL`
+- **`targetVarName`**: the name of the boolean var the result is pasted into.
 
 ## Working with INTEGERS (INT)
 
