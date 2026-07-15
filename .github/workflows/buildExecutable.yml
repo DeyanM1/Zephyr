@@ -7,6 +7,7 @@ on:
       - 'src/functions.py'
       - 'src/zcli.py'
       - 'src/zlm.py'
+  workflow_dispatch: 
 
 jobs:
   compile-X86:
@@ -29,6 +30,7 @@ jobs:
           path: |
             ./dist/linux/zcli
             ./dist/linux/zlm
+            
   compile-arm:
     runs-on: ubuntu-24.04-arm
     steps:
