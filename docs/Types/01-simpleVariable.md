@@ -348,45 +348,6 @@ lengthOfA ? push:;    § outputs 6
 - **targetVarName** is the name of the variable the length is pasted into
 
 
-## Examples
-
-### Example 1: Simple Calculator
-
-```zephyr
-§ Create two numbers
-num1 # INT:10;
-num2 # INT:5;
-
-
-§ Do basic math (we'll learn about Math Objects later)
-§ For now, just manipulate the values
-num1 ? w:++|5;             § Add 5 to num1
-
-num1 ? CT:PT;              § Change type to PT
-num1 ? push:;              § Print num to console
-```
-
-### Example 2: User Input
-
-```zephyr
-name # PT:"";
-name ? INPUT:"What is your name? ";
-
-greeting # PT:"Hello, ";
-greeting ? w:++|'name';    § Append the name to greeting
-greeting ? push:;          § Output: Hello, [whatever they typed]
-```
-
-### Example 3: Toggle Status
-
-```zephyr
-is_ready # BOOL:~0;        § Start as not ready
-
-is_ready ? w:++;           § Toggle to ready
-
-is_ready ? w:++;           § Toggle back to not ready
-```
-
 ## Summary
 
 | Operation | Example | Result |
