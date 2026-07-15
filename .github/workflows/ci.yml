@@ -4,6 +4,11 @@ on:
     branches:
       - master
       - main
+    paths:
+        - "docs/**" 
+  workflow_dispatch: 
+
+    
 permissions:
   contents: write
 jobs:
