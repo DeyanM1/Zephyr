@@ -1,5 +1,7 @@
 site_name: Zephyr Documentation
 site_url: https://deyan.is-a.dev/Zephyr
+repo_url: https://github.com/DeyanM1/Zephyr
+repo_name: DeyanM1/Zephyr
 
 
 theme:
@@ -7,6 +9,8 @@ theme:
   font:
     text: Source Sans 3
     code: JetBrains Mono
+  icon:
+      repo: fontawesome/brands/github
   logo: assets/img/logo.svg
   favicon: assets/img/favicon.ico
   features:
