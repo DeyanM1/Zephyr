@@ -3,8 +3,6 @@
 An IF statement executes a block of code only if a Conditional Object evaluates to true. It optionally supports an ELSE block to execute code when the condition is false.
 
 
-# **ELSE** -> **Under construction!!**
-
 ---
 
 ## Syntax Overview
