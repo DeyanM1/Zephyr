@@ -1,4 +1,4 @@
-site_name: Zephyr documentation
+site_name: Zephyr Documentation
 site_url: https://deyan.is-a.dev/Zephyr
 
 
@@ -7,16 +7,24 @@ theme:
   font:
     text: Source Sans 3
     code: JetBrains Mono
-  logo: assets/logo.svg
-  favicon: img/favicon.ico
+  logo: assets/img/logo.svg
+  favicon: assets/img/favicon.ico
   features:
-    - navigation.footer
-  palette:
+    - search.suggest
+    - search.highlight
+  palette: 
+    - scheme: slate
+      toggle:
+        icon: material/brightness-percent
+        name: Switch to Light Mode
+      primary: black
+      accent: black
+      
   # Palette toggle for light mode
     - scheme: default
       toggle:
-        icon: material/brightness-5
-        name: Switch to dark mode
+        icon: material/brightness-7
+        name: Switch to Alternate Mode
       primary: pink
       accent: deep purple
 
@@ -24,15 +32,18 @@ theme:
     - scheme: slate
       toggle:
         icon: material/brightness-4
-        name: Switch to light mode
+        name: Switch to OLED Mode
       primary: purple
       accent: pink
 
+    
+
+extra_css: 
+  - assets/stylesheets/extra.css
+
 markdown_extensions:
+  - pymdownx.betterem
   - attr_list
-  - pymdownx.emoji:
-      emoji_index: !!python/name:material.extensions.emoji.twemoji
-      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.superfences:
@@ -48,3 +59,4 @@ markdown_extensions:
 
 plugins:
   - awesome-pages
+  - search
