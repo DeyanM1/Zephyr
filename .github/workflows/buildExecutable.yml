@@ -9,7 +9,7 @@ on:
       - 'src/zlm.py'
 
 jobs:
-  compile:
+  compile-X86:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -25,7 +25,27 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: compiled-output
+          name: Zephyr-Binaries-x86_64
+          path: |
+            ./dist/linux/zcli
+            ./dist/linux/zlm
+  compile-arm:
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Compile
+        run: |
+          pip install nuitka==4.1.1 patchelf==0.17.0
+          python -m nuitka src/zlm.py --onefile --output-dir=dist/linux --output-filename=zlm
+          python -m nuitka src/zcli.py --onefile --output-dir=dist/linux --output-filename=zcli
+
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Zephyr-Binaries-arm64
           path: |
             ./dist/linux/zcli
             ./dist/linux/zlm
