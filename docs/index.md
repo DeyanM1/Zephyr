@@ -1,4 +1,4 @@
-![Zephyr](https://github.com/user-attachments/assets/621614f4-354e-4368-832e-184b75503e86)
+![Zephyr](https://github.com/DeyanM1/Zephyr/blob/main/docs/assets/img/Github-Title.png?raw=true)
 
 ## What is Zephyr?
 
