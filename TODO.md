@@ -32,3 +32,4 @@
 - [ ] add iteration function -> for loop
 - [ ] add 3d list
 - [ ] fix simpleVar docs
+- [ ] PT inser at placeholder

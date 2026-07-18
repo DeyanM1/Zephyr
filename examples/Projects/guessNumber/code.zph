@@ -3,64 +3,84 @@
 § --------    By Deyan      -----------
 § -------------------------------------
 
+__ ? LIB:system.py;
+system # SYSTEM:;
+
 
 blank # PT:;
 welcomeMessage # PT:Welcome to guess The Number !;
 winMessage # PT:Congratulations, you won with  tries!;
 higherMessage # PT:The Number is higher! try again!;
 lowerMessage # PT:The Number is lower! try again!;         
+errorMessage # PT:The entered Number must be a INT!;
 exit # PT:exit;
-
-
-welcomeMessage ? push:;
-blank ? push:;
-
+false # BOOL:~0;
 
 
 number # RNG:1|10|INT;
-number ? CT:INT;
-
 tries # INT:0;
-guess # PT:0;
-guess ? INPUT:Enter a Guess or exit> ;
+guess # PT:;
 
-exitCO # CO:('guess' == 'exit')
-exitIF # IF:exitCO;
-exitIF ? START:;
-    __ ? jump:27;
-exitIF ? END:;
 
-guess ? CT:INT;
+blank ? push:;
+welcomeMessage ? push:;
 
-    
-winCO # CO:('number'=='guess');
-winIF # IF:winCO;
-winIF ? START:;
-    __ ? jump:16;
-winIF ? END:;
 
 mainCondition # CO:('number'!='guess');
 LOOP # LOOP:mainCondition;
 LOOP ? START:;
-    higherCondition # CO:('number'>'guess');
+    guess ? INPUT:Enter guess or exit > ;
 
+    § ---- check if Input is 'exit'
+    exitCO # CO:('guess' == 'exit');
+    exitIF # IF:exitCO; 
+    exitIF ? START:;
+        number ? CT:PT;
+        message # PT:The number was: ;
+        message ? w:++|'number';
+        message ? push:;
+        system ? quit:1;
+    exitIF ? END:;
+       
+    § ---- check if Number is a valid number
+    isNumber # BOOL:~0;
+    guess ? check:INT|isNumber;
+    
+    checkNumberCO # CO:('isNumber'=='false');
+    checkNumberIF # IF:checkNumberCO;
+    checkNumberIF ? START:;
+        errorMessage ? push:;
+        __ ? jump:-17;
+    checkNumberIF ? END:;
+
+
+    § ---- change guess type to int
+    guess ? CT:INT;
+    
+    
+    § ---- higher/lower logic
+    higherCondition # CO:('number'>'guess');
     higherIF # IF:higherCondition;
     higherIF ? START:;
         higherMessage ? push:;
-    higherIF ? ELSE:;
-        lowerMessage ? push:;
     higherIF ? END:;
+
+
+    lowerCondition # CO:('number'<'guess');
+    lowerIF # IF:lowerCondition;
+    lowerIF ? START:;
+        lowerMessage ? push:;
+    lowerIF ? END:;
+
+    § ---- loop finish logic
+    guess ? CT:PT;
+    
     blank ? push:;
 
     tries ? w:++;
 
-    guess ? INPUT:Enter Guess> ;
-
 LOOP ? END:;
-tries ? w:++;
 
 blank ? push:;
 winMessage ? insertAt:'tries'|31;
 winMessage ? push:;
-
-§__ ? jumpTo:1;
