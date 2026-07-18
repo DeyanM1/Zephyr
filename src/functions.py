@@ -58,7 +58,7 @@ class ZError(Exception):
             124: lambda: ("Module Not Found inside global / local dir", "ModuleNotFound", 0, SyntaxError),
             125: lambda: ("Unknown List collection type! Use: POS / NEG", "UnknownListCollectionType", 0, SyntaxError),
             126: lambda: ("Uncompleted Index Scobe: Missing > in variable index.", "UncompletedIndexScobe", 0, SyntaxError),
-            127: lambda: ("MO name not yet provided. use: ? w.", "MONotFound", 0, SyntaxError),
+            127: lambda: ("MO name not yet provided. use: ? w.", "MathObjectNotFound", 0, SyntaxError),
             128: lambda: ("Program exited by KeyboardInterrupt", "KeyboardInterrupt", 0, SyntaxError),
         }
 
