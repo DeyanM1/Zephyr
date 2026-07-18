@@ -1,7 +1,5 @@
-a # PT:~0;
+a # BOOL:~1;
 
-b # BOOL:;
+co # CO:('a');
 
-a ? check:BOOL|b;
-
-b ? debug:;
+co ? debug:;

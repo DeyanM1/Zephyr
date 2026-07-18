@@ -162,6 +162,9 @@ def compiler(inputData: ZFile) -> None:
             index += 1
     except ZError as e:
         e.process(cmd, inputData)
+    except KeyboardInterrupt:
+        error = ZError(128)
+        error.process(cmd, inputData)
     
 
     print(f"\n{Fore.GREEN}Code finished successfully. \n{Fore.MAGENTA}{Fore.RESET}")

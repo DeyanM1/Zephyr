@@ -60,6 +60,7 @@ class ZError(Exception):
             125: lambda: ("Unknown List collection type! Use: POS / NEG", "UnknownListCollectionType", 0, SyntaxError),
             126: lambda: ("Uncompleted Index Scobe: Missing > in variable index.", "UncompletedIndexScobe", 0, SyntaxError),
             127: lambda: ("MO name not yet provided. use: ? w.", "MONotFound", 0, SyntaxError),
+            128: lambda: ("Program exited by KeyboardInterrupt", "KeyboardInterrupt", 0, SyntaxError),
         }
 
         if returnDict:
@@ -740,6 +741,8 @@ class PT(Variable):
             targetVar.value = ZValue("~0", "BOOL")
 
         activeVars.update({targetVar.name: targetVar})
+
+        return activeVars
         
 
     def LGTH(self, cmd: ZCommand, activeVars: ActiveVars):
@@ -1025,7 +1028,7 @@ class IF(Variable):
         if not conditionalObject: 
             raise ZError(113)
 
-        if conditionalObject.varType == "CO":
+        if conditionalObject.varType != "CO":
             raise ZError(112)
               
         self.conditionalObject = conditionalObject
@@ -1037,6 +1040,7 @@ class IF(Variable):
 
         if cmd.checkArgs(2, False):
             self.elseIndex = int(cmd.args[1])
+
         
         newIndex: ZIndex = 0
         if self.conditionalObject.value.asPythonBOOL:
@@ -1710,6 +1714,7 @@ class BUILD_IN(Variable):
         indexToAdd: ZValue = ZValue("0", "INT")
 
         indexToAdd.setValue(cmd.args[0], activeVars)
+
 
         if indexToAdd.value.startswith("-"):
             return activeVars, ZIndex(index-int(indexToAdd.value.replace("-", ""))-1)
