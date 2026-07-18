@@ -7,7 +7,6 @@ import pickle
 import platform
 import random
 import sys
-from tabnanny import check
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
