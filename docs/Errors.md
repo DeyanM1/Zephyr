@@ -32,3 +32,4 @@
 | 125 | UnknownListCollectionType | Unknown List collection type! Use: POS / NEG |
 | 126 | UncompletedIndexScobe | Uncompleted Index Scobe: Missing > in variable index. |
 | 127 | MONotFound | MO name not yet provided. use: ? w. |
+| 128 | KeyboardInterrupt | Program exited by KeyboardInterrupt |
