@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with: 
-          token: ${{ secrets.PATH_TOKEN }}
+          token: ${{ secrets.PAT_TOKEN }}
       
       - name: Update Errors.md
         run:
