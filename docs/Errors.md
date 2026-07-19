@@ -33,3 +33,4 @@
 | 126 | UncompletedIndexScobe | Uncompleted Index Scobe: Missing > in variable index. |
 | 127 | MathObjectNotFound | MO name not yet provided. use: ? w. |
 | 128 | KeyboardInterrupt | Program exited by KeyboardInterrupt |
+| 129 | UnknownPlaceholder | Placeholder not found |
