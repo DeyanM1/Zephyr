@@ -1,5 +1,7 @@
-a # BOOL:~1;
+a # PT:My name $a is $a!;
 
-co # CO:('a');
+b # PT:Deyan;
 
-co ? debug:;
+a ? insertAt:'b'|$a;
+
+a ? push:;

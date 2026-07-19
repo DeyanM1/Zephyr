@@ -60,6 +60,7 @@ class ZError(Exception):
             126: lambda: ("Uncompleted Index Scobe: Missing > in variable index.", "UncompletedIndexScobe", 0, SyntaxError),
             127: lambda: ("MO name not yet provided. use: ? w.", "MathObjectNotFound", 0, SyntaxError),
             128: lambda: ("Program exited by KeyboardInterrupt", "KeyboardInterrupt", 0, SyntaxError),
+            129: lambda: ("Placeholder not found", "UnknownPlaceholder", 0, SyntaxError),
         }
 
         if returnDict:
@@ -701,6 +702,37 @@ class PT(Variable):
 
             return params
         return self.value.value
+  
+    def insertAtPlaceholder(self, cmd: ZCommand, activeVars: ActiveVars):
+        valueToInsert = ZValue("", "PT")
+        placeholder = ZValue("", "PT")
+
+        valueToInsert.setValue(cmd.args[0], activeVars)
+        placeholder.setValue(cmd.args[1], activeVars)
+
+        if placeholder.value not in self.value.value:
+            raise ZError(129)
+
+        newValue = self.value.value.replace(placeholder.value, valueToInsert.value)
+
+        self.value.value = newValue
+
+    def insertAtPosition(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
+        valueToInsert = ZValue("", "PT")
+        position = ZValue("0", "INT")
+    
+
+        valueToInsert.setValue(cmd.args[0], activeVars)
+        position.setValue(cmd.args[1], activeVars)
+
+        if int(position.value) < 1:
+            raise ZError(122)
+
+        if len(self.value.value)+1 < int(position.value):
+            raise ZError(123)
+                
+        newValue = self.value.value[:int(position.value)-1] + valueToInsert.value + self.value.value[int(position.value)-1:]
+        self.value.value = newValue
     
 
     # --- Callable Functions
@@ -793,24 +825,17 @@ class PT(Variable):
         newValue = input(message.value)
         self.value.setValue(newValue, activeVars)
 
-    def insertAt(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
-        cmd.checkArgs(2, True)
-        
-        valueToInsert = ZValue("", "PT")
-        position = ZValue("0", "INT")
-    
+    def insertAt(self, cmd: ZCommand, activeVars: ActiveVars):
+        cmd.checkArgs(2)
 
-        valueToInsert.setValue(cmd.args[0], activeVars)
+        position = ZValue("", "PT")
         position.setValue(cmd.args[1], activeVars)
 
-        if int(position.value) < 1:
-            raise ZError(122)
+        if position.value.startswith("$"):
+            self.insertAtPlaceholder(cmd, activeVars)
+        else:
+            self.insertAtPosition(cmd, activeVars)
 
-        if len(self.value.value)+1 < int(position.value):
-            raise ZError(123)
-                
-        newValue = self.value.value[:int(position.value)-1] + valueToInsert.value + self.value.value[int(position.value)-1:]
-        self.value.setValue(newValue, activeVars)
 
     def push(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         if cmd.checkArgs(1, False):

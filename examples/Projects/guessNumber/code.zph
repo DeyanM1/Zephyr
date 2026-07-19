@@ -9,7 +9,7 @@ system # SYSTEM:;
 
 blank # PT:;
 welcomeMessage # PT:Welcome to guess The Number !;
-winMessage # PT:Congratulations, you won with  tries!;
+winMessage # PT:Congratulations, you won with $count tries!;
 higherMessage # PT:The Number is higher! try again!;
 lowerMessage # PT:The Number is lower! try again!;         
 errorMessage # PT:The entered Number must be a INT!;
@@ -82,5 +82,5 @@ LOOP ? START:;
 LOOP ? END:;
 
 blank ? push:;
-winMessage ? insertAt:'tries'|31;
+winMessage ? insertAt:'tries'|$count;
 winMessage ? push:;

@@ -118,14 +118,24 @@ message ? insertAt:"Mr. "|1;    § Insert "Mr. " at the beginning
 message ? push:;                 § Output: Mr. Hello
 ```
 
+### Inserting Text at PlaceHolder
+
+Inserting text at a placeholder in the original Text
+
+```zephyr
+message # PT:Hello $a!;
+message ? insertAt:$a|World;  § Insert World at the $a
+message ? push:;              § Output: Hello World!
+```
+
 ### Getting User Input
 
 Use `? INPUT:` to let the user type text:
 
 ```zephyr
 message ? INPUT:<*- message>;
-message # PT:"";
-message ? INPUT:"What's your name? ";
+message # PT:;
+message ? INPUT:What's your name? ;
 message ? push:;           § Displays what the user typed
 ```
 

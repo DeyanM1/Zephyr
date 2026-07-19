@@ -28,8 +28,8 @@
 - [x] fix ELSE automatic Index set (Higher Lower Game / Math Game /  Broken)
 - [x] fix BrainFuck compiler
 - [x] add list support for animation objects
+- [x] PT insert at placeholder
 - [ ] add LIST example script
 - [ ] add iteration function -> for loop
 - [ ] add 3d list
 - [ ] fix simpleVar docs
-- [ ] PT insert at placeholder
