@@ -8,7 +8,7 @@ Zephyr supports four types of simple variables:
 
 | Type | Purpose | Example |
 |------|---------|---------|
-| `PT` | **Printable Text** - strings of characters | `"Hello World"` |
+| `PT` | **Printable Text** - strings of characters | `Hello World` |
 | `INT` | **Integer** - whole numbers | `42`, `-10` |
 | `FLOAT` | **Floating-point** - decimal numbers | `3.14`, `-2.5` |
 | `BOOL` | **Boolean** - true or false values | `~1` (true) or `~0` (false) |
@@ -18,13 +18,14 @@ Zephyr supports four types of simple variables:
 
 - **`convertibleInto`** -> `PT`, `INT`, `FLOAT`, `BOOL`, `LIST`
 - **`convertValue`** -> Value of variable
-**Note**: Every simplevar can be converted between the 4 simplevar types
 
+**Note**: Every simplevar can be converted between the 4 simplevar types
 **Note**: Only PT can be turned into `LIST`, Chars of the PT are turned into values of LIST (Split by char)
+
 
 ## Creating a Simple Variable
 
-To create a simple variable, use the `#` base with the type and optional initial value:
+To create a simple variable, use the `#` base with the type, optional initial value and optional constant flag:
 
 ```zephyr
 <VariableName> # <Type>:<*- Value>|<*- const>;
@@ -39,12 +40,50 @@ pi # FLOAT:3.14;           § Create a decimal number
 is_active # BOOL:~1;       § Create a boolean (true)
 ```
 
+## Changing Variable Types
+
+You can convert a simple variable to a different type using `? CT:` (Change Type):
+
+```zephyr
+value # INT:5;
+value ? CT:PT;             § Convert from INT to PT
+```
+
+### Conversion Rules
+
+When converting, here's what happens:
+
+| From | To | Result |
+|------|-----|--------|
+| Any type | `PT` | Converts the values to text |
+| `PT` | `INT` or `FLOAT` | Only works if text is a valid number |
+| `BOOL:~1` | `INT` or `FLOAT` | Becomes 1 or 1.0 |
+| `BOOL:~0` | `INT` or `FLOAT` | Becomes 0 or 0.0 |
+| Any type | `BOOL` | Only works if the value is 1, 0, ~1, or ~0 |
+
 
 ## Constant
 
-Every simple var can be set constant. The value of a constant var cant be changed anymore
+You can make a simple variable constant (unchangeable) by adding the `~1` parameter:
 
 ```zephyr
+<name> # <Type>:<*- initialValue>|<*- const>
+
+pi # PT:3.14159|~1;      § This variable cannot be changed
+```
+
+If you try to change a constant variable, you'll get an error:
+
+```zephyr
+pi # PT:3.14159|~1;
+pi ? w:3.14;             § ERROR! Write Protection - can't change constant
+```
+
+
+Or using the `? C`:
+
+```zephyr
+<name> ? C:<~ const>;
 
 age # INT:25|~1;
 age ? w:26;               § Throws a write protection error
@@ -52,14 +91,40 @@ age ? C:~0;               § write protection is now turned off
 age ? w:26;               § Value is now changed.
 ```
 
+- **const** is a boolean value that sets if the var is const or not.
+
+
+## Length of a variable
+
+use LNGH to get the amount of characters or digits in a variable
+
+this function is available on: INT, PT, FLOAT
+
+usage:
+
+```zephyr
+<name> ? LGTH:<* targetVarName>;
+
+a # PT:Length;
+lengthOfA # INT:;
+
+a ? LGTH:lengthOfA;
+
+lengthOfA ? push:;    § outputs 6
+```
+
+- **targetVarName** is the name of the variable the length is pasted into
+
 
 ## Working with TEXT (PT)
 
 ### Creating Text Variables
 
 ```zephyr
-greeting # PT:"Hello";
-message # PT:"Welcome to Zephyr";
+<name> # PT:<*- initialValue>|<*- const>;
+
+greeting # PT:Hello;
+message # PT:Welcome to Zephyr;
 ```
 
 ### Displaying Text
@@ -67,24 +132,25 @@ message # PT:"Welcome to Zephyr";
 Use `? push:` to display text:
 
 ```zephyr
-<pt> ? push:<*- newLine>;
+<name> ? push:<*- newLine>;
 
-greeting # PT:"Hello";
+greeting # PT:Hello;
 greeting ? push:;          § Output: Hello
 ```
 
 - **newLine** if set to False it doesnt print a newline after the print (~1 / ~0). Default is True
-
-only Variables of the Type PT can be pushed
+- only Variables of the Type PT can be pushed
 
 ### Changing Text Value
 
 Use `? w:` to write/change the value:
 
 ```zephyr
-message # PT:"Hello";
-message ? w:"Goodbye";     § Now message contains "Goodbye"
-message ? push:;           § Output: Goodbye
+<name> ? w:<newValue>;
+
+message # PT:Hello;
+message ? w:Goodbye;     § Now message contains "Goodbye"
+message ? push:;         § Output: Goodbye
 ```
 
 ### Adding Text (Incrementing)
@@ -92,9 +158,11 @@ message ? push:;           § Output: Goodbye
 Use `? w:++` to append text to the end:
 
 ```zephyr
-message # PT:"Hello";
+<name> ? w:++|<* ValuetoAppend>;
+
+message # PT:Hello;
 message ? w:++|<* text>;
-message ? w:++|"!";        § Appends "!" to the end
+message ? w:++|!;          § Appends ! to the end
 message ? push:;           § Output: Hello!
 ```
 
@@ -103,7 +171,9 @@ message ? push:;           § Output: Hello!
 Use `? w:--` to delete all the text:
 
 ```zephyr
-message # PT:"Hello";
+<name> ? w:--;
+
+message # PT:Hello;
 message ? w:--;            § Clears the message
 message ? push:;           § Output: (empty)
 ```
@@ -113,8 +183,10 @@ message ? push:;           § Output: (empty)
 Insert text at a specific position (position 1 is the first character):
 
 ```zephyr
-message # PT:"Hello";
-message ? insertAt:"Mr. "|1;    § Insert "Mr. " at the beginning
+<name> ? insertAt:<* value>|<* position>;
+
+message # PT:Hello;
+message ? insertAt:Mr. |1;    § Insert "Mr. " at the beginning
 message ? push:;                 § Output: Mr. Hello
 ```
 
@@ -123,6 +195,8 @@ message ? push:;                 § Output: Mr. Hello
 Inserting text at a placeholder in the original Text
 
 ```zephyr
+<name> ? insertAt:<* placeholder>|<* text>;
+
 message # PT:Hello $a!;
 message ? insertAt:$a|World;  § Insert World at the $a
 message ? push:;              § Output: Hello World!
@@ -133,7 +207,8 @@ message ? push:;              § Output: Hello World!
 Use `? INPUT:` to let the user type text:
 
 ```zephyr
-message ? INPUT:<*- message>;
+<name> ? INPUT:<*- message>;
+
 message # PT:;
 message ? INPUT:What's your name? ;
 message ? push:;           § Displays what the user typed
@@ -145,17 +220,24 @@ Use `? check:;` to check if the current value is compatible with a variable type
 
 ```zephyr
 value ? check:<* type>|<* targetVarName>;
-value ? check:INT|isInt;
+
+value # PT:Hello;
+isInt # BOOL:~0;
+value ? check:INT|isInt;    § isInt is still ~0
 ```
 
 - **`type`**: the to check for. allowed: `INT`, `FLOAT`, `BOOL`
 - **`targetVarName`**: the name of the boolean var the result is pasted into.
+
+
 
 ## Working with INTEGERS (INT)
 
 ### Creating Integer Variables
 
 ```zephyr
+<name> # INT:<*- initialValue>|<*- const>;
+
 count # INT:10;            § Create an integer
 score # INT:0;             § Create with initial value 0
 negative # INT:-5;         § Create negative number
@@ -164,50 +246,51 @@ negative # INT:-5;         § Create negative number
 ### Changing Integer Value
 
 ```zephyr
+<name> ? w:<* newValue>;
+
 count # INT:10;
 count ? w:20;              § Change value to 20
 ```
 
 ### Incrementing (Adding)
 
-Increment by 1 (default):
 
 ```zephyr
+<name> ? w:++|<*- incrementValue>;
+
 count # INT:5;
 count ? w:++;              § Add 1 to count
+count ? w:++|4;            § Add 4 to count
 ```
 
-Increment by a specific amount:
-
-```zephyr
-count # INT:5;
-count ? w:++|<* amount>;
-count ? w:++|3;            § Add 3 to count
-```
+- **incrementValue** defaults to 1.
 
 ### Decrementing (Subtracting)
 
-Decrement by 1 (default):
 
 ```zephyr
+<name> ? w:++|<*- decrementValue>;
+
 count # INT:10;
-count ? w:--;               § Subtract 1 from count
+count ? w:--;              § decrement count by 1
+count ? w:--|4;            § decrement count by 4
 ```
 
-Decrement by a specific amount:
-
-```zephyr
-count # INT:10;
-count ? w:--|<* amount>;
-count ? w:--|3;            § Subtract 3 from count
-```
+- **decrementValue** defaults to 1.
 
 ### Getting User Input
 
 ```zephyr
+<name> ? INPUT:<*- message>;
+
 age # INT:0;
-age ? INPUT:"Enter your age: ";
+age ? INPUT:Enter your age: ;
 ```
+
+- **message**: Message printet in the line of the input.
+- **Note**: If the Input doesnt match the type it throws a ZError!
+
+
 
 ## Working with FLOAT (Decimal Numbers)
 
@@ -254,134 +337,47 @@ weight # FLOAT:0.0;
 weight ? INPUT:"Enter your weight in kg: ";
 ```
 
+
 ## Working with BOOLEAN (True/False)
 
 ### Understanding Booleans
 
 Booleans represent true/false or yes/no:
-- `~1` means **true** (yes, on, active)
-- `~0` means **false** (no, off, inactive)
+
+- `~1` means **true**
+- `~0` means **false**
 
 ### Creating Boolean Variables
 
 ```zephyr
+<name> # Type:<*- initialState>;
+
 is_active # BOOL:~1;       § Create true
 is_finished # BOOL:~0;     § Create false
 ```
 
-### Displaying Boolean Values
-
-```zephyr
-is_active # BOOL:~1;
-```
-
-### Toggling a Boolean (Flipping True/False)
+### Toggling a Boolean
 
 Use `? w:++` or `? w:--` to toggle between true and false:
 
 ```zephyr
+<name> ? w:<++/-->;
+
 is_active # BOOL:~1;
 is_active ? w:++;          § Toggle: ~1 becomes ~0
 
 is_active ? w:++;          § Toggle: ~0 becomes ~1
 ```
 
-### Converting Boolean to Integer
+### Converting Boolean to Integer/Float
 
-You can convert a boolean to INT:
+You can convert a boolean to INT/FLOAT:
 
 ```zephyr
+<name> ? CT:<newType>;
+
 is_active # BOOL:~1;
 is_active ? CT:INT;        § Convert to integer
 ```
 
-## Changing Variable Types
-
-You can convert a simple variable to a different type using `? CT:` (Change Type):
-
-```zephyr
-value # INT:5;
-value ? CT:PT;             § Convert from INT to PT
-```
-
-### Conversion Rules
-
-When converting, here's what happens:
-
-| From | To | Result |
-|------|-----|--------|
-| `INT` or `FLOAT` | `PT` | Converted to text (e.g., 5 becomes "5") |
-| `PT` | `INT` or `FLOAT` | Only works if text is a valid number |
-| `BOOL:~1` | `INT` or `FLOAT` | Becomes 1 or 1.0 |
-| `BOOL:~0` | `INT` or `FLOAT` | Becomes 0 or 0.0 |
-| Any type | `BOOL` | Only works if the value is 1, 0, ~1, or ~0 |
-
-### Example Conversions
-
-```zephyr
-§ INT to PT
-num # INT:42;
-num ? CT:PT;
-num ? push:;               § Output: 42
-
-§ PT to INT
-text # PT:"100";
-text ? CT:INT;
-
-§ BOOL to INT
-flag # BOOL:~1;
-flag ? CT:INT;
-```
-
-## Making a Variable Constant 
-
-You can make a simple variable constant (unchangeable) by adding the `~1` parameter:
-
-```zephyr
-pi # PT:"3.14159"|~1;      § This variable cannot be changed
-```
-
-If you try to change a constant variable, you'll get an error:
-
-```zephyr
-pi # PT:"3.14159"|~1;
-pi ? w:"3.14";             § ERROR! Write Protection - can't change constant
-```
-
-## Length of a variable
-
-use LNGH to get the amount of characters or digits in a variable
-
-this function is available on: INT, PT, FLOAT
-
-usage:
-
-```zephyr
-<var> ? LGTH:<* targetVarName>;
-
-
-a # PT:Length;
-lengthOfA # INT:;
-
-a ? LGTH:lengthOfA;
-
-lengthOfA ? push:;    § outputs 6
-```
-
-- **targetVarName** is the name of the variable the length is pasted into
-
-
-## Summary
-
-| Operation | Example | Result |
-|-----------|---------|--------|
-| Create variable | `count # INT:5;` | Creates variable with value 5 |
-| Change value | `count ? w:10;` | Sets value to 10 |
-| Display value | `message ? push:;` | Prints PT to console |
-| Increment by 1 | `count ? w:++;` | Adds 1 |
-| Increment by N | `count ? w:++|3;` | Adds 3 |
-| Decrement by 1 | `count ? w:--;` | Subtracts 1 |
-| Decrement by N | `count ? w:--|3;` | Subtracts 3 |
-| Get user input | `count ? INPUT:"Enter: ";` | Waits for user to type |
-| Insert text (PT) | `text ? insertAt:"X"|1;` | Inserts "X" at position 1 |
-| Change type | `count ? CT:PT;` | Converts to different type |
+- **newType**: The newType has to either be `INT` or `FLOAT`
