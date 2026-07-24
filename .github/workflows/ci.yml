@@ -33,3 +33,25 @@ jobs:
             mkdocs-material-
       - run: pip install mkdocs-material mkdocs-awesome-pages-plugin
       - run: mkdocs gh-deploy --force
+      
+      - name: Build Zim documentation
+        run: |
+          docker run \
+          --network host \
+            -v ./dist/docs:/output \
+            ghcr.io/openzim/zimit \
+              zimit \
+                --seeds http://localhost:8000/Zephyr \
+                --name ZephyrDocs.zim \
+                --title "Zephyr Documentation" \
+                --creator "DeyanM1" \
+                --publisher "DeyanM1" \
+                --lang "en" \
+                --description "Full documentation of the Zephyr programming Language by DeyanM1" \
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Zephyr-Binaries-x86_64
+          path: |
+            ./dist/docs/ZephyrDocs.zim
