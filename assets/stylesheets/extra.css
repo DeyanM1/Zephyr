@@ -1,0 +1,12 @@
+.md-typeset code{
+    font-feature-settings: "kern", "liga";
+    font-variant-ligatures: normal;
+}
+.md-typeset kbd {
+    font-feature-settings: "kern", "liga";
+    font-variant-ligatures: normal;
+}
+.md-typeset pre {
+    font-feature-settings: "kern", "liga";
+    font-variant-ligatures: normal;
+}
