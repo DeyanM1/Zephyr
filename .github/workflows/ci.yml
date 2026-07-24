@@ -49,12 +49,10 @@ jobs:
                 --lang "en" \
                 --description "Full documentation of the Zephyr programming Language by DeyanM1" 
 
-          mv ./dist/docs/ZephyrDocs*.zim ./dist/docs/ZephyrDocs.zim
-
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: Zephyr Documentation
           path: |
-            ./dist/docs/ZephyrDocs.zim
+            ./dist/docs/ZephyrDocs*.zim
           archive: false
