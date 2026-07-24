@@ -1404,6 +1404,7 @@ class FILE(Variable):
     def __init__(self, cmd: ZCommand, activeVars: ActiveVars) -> None:
         super().__init__(cmd, activeVars)
         self.supportedVars = []
+        self.value: ZValue = ZValue("", "PT")
 
         self.path: Path = Path()
 

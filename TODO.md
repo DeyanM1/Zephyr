@@ -33,3 +33,5 @@
 - [ ] add iteration function -> for loop
 - [ ] add 3d list
 - [ ] fix simpleVar docs
+- [ ] fix LOOP docs
+- [ ] update all types docs
