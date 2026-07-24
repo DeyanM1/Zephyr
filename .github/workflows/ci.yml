@@ -42,12 +42,15 @@ jobs:
             ghcr.io/openzim/zimit \
               zimit \
                 --seeds https://deyan.is-a.dev/Zephyr/ \
-                --name ZephyrDocs.zim \
+                --name ZephyrDocs \
                 --title "Zephyr Documentation" \
                 --creator "DeyanM1" \
                 --publisher "DeyanM1" \
                 --lang "en" \
-                --description "Full documentation of the Zephyr programming Language by DeyanM1" \
+                --description "Full documentation of the Zephyr programming Language by DeyanM1" 
+          ls -la ./dist/docs
+          ls -la
+          ls -la .dist/
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
