@@ -1,0 +1,40 @@
+name: Build Zim documentation
+on:
+  push:
+    branches:
+      - master
+      - main
+    paths:
+      - "docs/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+    
+      - name: Build Zim documentation
+        run: |
+          docker run \
+          --network host \
+            -v ./dist/docs:/output \
+            ghcr.io/openzim/zimit \
+              zimit \
+                --seeds https://deyan.is-a.dev/Zephyr/ \
+                --name ZephyrDocs \
+                --title "Zephyr Documentation" \
+                --creator "DeyanM1" \
+                --publisher "DeyanM1" \
+                --lang "en" \
+                --description "Full documentation of the Zephyr programming Language by DeyanM1" 
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: Zephyr Documentation
+          path: |
+            ./dist/docs/ZephyrDocs*.zim
+          archive: false
