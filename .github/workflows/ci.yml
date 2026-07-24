@@ -41,7 +41,7 @@ jobs:
             -v ./dist/docs:/output \
             ghcr.io/openzim/zimit \
               zimit \
-                --seeds http://localhost:8000/Zephyr \
+                --seeds https://www.deyan.is-a.dev/Zephyr \
                 --name ZephyrDocs.zim \
                 --title "Zephyr Documentation" \
                 --creator "DeyanM1" \
