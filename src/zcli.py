@@ -3,6 +3,7 @@ from pathlib import Path
 from main import execute, lexer, compiler
 from functions import ZFile, ZError, ZCommand, ZIndex, ZBase, typeRegistry, ActiveVars
 import readline
+import sys
 
 readline.parse_and_bind("tab: complete")
 readline.parse_and_bind("set editing-mode emacs")
@@ -30,7 +31,7 @@ def zcli():
                 except FileNotFoundError:
                     pass
                 print("Exiting...")
-                quit()
+                sys.exit()
             
             history.append(rawCMD)
             
@@ -52,7 +53,7 @@ def zcli():
         
         except (KeyboardInterrupt, EOFError):
             print("\nExiting...")
-            quit()
+            sys.exit()
 
 
 
