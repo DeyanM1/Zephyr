@@ -41,7 +41,7 @@ __ ? jumpTo:10;
 Saves variables to an export file. Defaults to `.zpkg` with the same name as the source file.
 
 ```zephyr
-__ ? export:<*ExportPath>;  
+__ ? export:<*- ExportPath>;  
 __ ? export:"variables.zpkg";
 ```
 
@@ -61,11 +61,4 @@ __ ? LIB:<*LibFilePath>;
 __ ? LIB:"./lib/GPIO.py";
 ```
 
-
-## Notes
-
-- The `__` variable is reserved and built-in—it cannot be renamed or redeclared.
-- Jump commands count executable lines. Blank lines and comments do not count.
-- Export/Load operations use the `.zpkg` format.
-- Libraries must be located at the specified file path relative to the current working directory.
-- Library files typically have `.py` extensions as they are Python-based.
+Look at zlm in Libraries for more information

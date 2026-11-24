@@ -33,11 +33,11 @@ animation ? w:"Frame2";
 ```
 
 ### WriteList (wLIST)
-adds a new Frame to the animation. accepts the name of a `LIST`
+appends the content of the list as individual frames to the animation. accepts the name of a `LIST`
 
 ```zephyr
 ao ? wLIST:<* ListVarName>;
-animation ? w:myList;
+animation ? wLIST:myList;
 ```
 
 ### Set Delay (setDelay)

@@ -1,7 +1,5 @@
 # List
 
-A List is an ordered collection of values of a single type. Its value represents the current pointer position. Lists support random access to elements and dynamic position changes.
-
 ---
 
 
@@ -39,12 +37,24 @@ list ? w:<*- value>;
 myList ? w:10;
 ```
 
+### Changing Value type (CVT)
+
+You can change the valuetype of a List using `? CVT:` but only if every value in the list matches the new Type
+
+```zephyr
+list ? CVT:<*newValueType>;
+myList # LIST:PT|1|2|3;
+
+list ? CVT:INT;
+```
+
+
 ### Length
 
 To get the length of either the pos or neg values of a list use  ? LGTH.
 
 ```zephyr
-list ? LGTH:<* CollectionType>|<* targetVar>
+list ? LGTH:<* CollectionType>|<* targetVar>;
 
 length # INT:;
 list ? LGTH:POS|length;
@@ -77,15 +87,8 @@ To read a value from a list and assign it to another variable, use single quotes
 result ? w:'myList';              § Read value at current pointer
 result ? w:'myList<2>';           § Read value at position 2
 result ? w:'myList<'index'>';     § Read value at position stored in variable index
-result ? w:'myList<'myList<2>'>;  § Nested list access (can nest infinitely)
+result ? w:'myList<'myList<2>'>';  § Nested list access (can nest infinitely)
 ```
 
 - The infinite nesting can be used everywhere a value can be replaced with a variable (*)
 
-
-
-## Notes
-
-- Pointer positions are 1-indexed and can be any integer except 0 (positive or negative).
-- Attempting to read from an unset position may result in undefined behavior.
-- List values can be read using nested variable syntax with single quotes.

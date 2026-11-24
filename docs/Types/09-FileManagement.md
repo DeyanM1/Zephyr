@@ -56,7 +56,7 @@ Reads the content of a file and loads it onto a PT or LIST
 ```zephyr
 file ? cREAD:<* targetVarname>|<*- cleanLines>;
 
-content # LIST:;
+content # LIST:PT;
 file ? cREAD:content|~1;
 ```
 

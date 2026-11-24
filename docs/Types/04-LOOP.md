@@ -8,7 +8,7 @@ A Loop object repeatedly executes a block of code while a Conditional Object eva
 
 ```zephyr
 loop # LOOP:<*ConditionalObjectName>;
-loop ? START:<*CommandCount>;
+loop ? START:;
   § Code to execute repeatedly
 loop ? END:;
 ```

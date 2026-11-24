@@ -17,7 +17,7 @@ Creates a new Function with a Math Object.
 
 ```zephyr
 function # FUNC:<*ResultType>|<*-DisableVariableChange>|<*-MathObjectName>;
-calculate # FUNC:RES|0|myMathObject;
+calculate # FUNC:RES|~0|myMathObject;
 ```
 
 - **`ResultType`** — The type of the function result currently only RES

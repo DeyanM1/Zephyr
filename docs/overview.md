@@ -17,7 +17,7 @@ Here's what each part means:
   - **`?`**: For variable operations (e.g., modifying or retrieving values).
   - **`#`**: For declaring variables.
 - **`function`**: The operation to execute on the variable (e.g., printing, defining a function).
-- **`arguments`**: Additional information passed to the function Seperated by `|`.
+- **`arguments`**: Additional information passed to the function seperated by `|`.
 - **`command`:** The entire statement.
 
 
@@ -100,8 +100,7 @@ You can use variables as arguments by enclosing them in single quotes:
 ```zephyr
 num1 # INT:5;
 num2 # INT:10;
-sum # INT:0;
-sum ? w:('num1' + 'num2');  § Using variables num1 and num2
+sum # MO:('num1' + 'num2');  § Using variables num1 and num2
 ```
 
 The `'num1'` and `'num2'` are replaced with their actual values.
@@ -159,7 +158,7 @@ Not all type conversions are possible. Check the documentation for each type to 
 
 ```zephyr
 value # INT:10;
-value # PT:"Hello";  § Redeclare as a different type
+value # PT:Hello;  § Redeclare as a different type
 ```
 
 ## Working with Variables
@@ -167,7 +166,7 @@ value # PT:"Hello";  § Redeclare as a different type
 Once you create a variable, you use `?` to perform actions on it:
 
 ```zephyr
-message # PT:"Hello";
+message # PT:Hello;
 message ? push:;              § Display the message
-message ? w:"Goodbye";        § Change the value
+message ? w:Goodbye;        § Change the value
 ```

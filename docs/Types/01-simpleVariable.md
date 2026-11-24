@@ -19,7 +19,7 @@ Zephyr supports four types of simple variables:
 - **`convertibleInto`** -> `PT`, `INT`, `FLOAT`, `BOOL`, `LIST`
 - **`convertValue`** -> Value of variable
 
-**Note**: Every simplevar can be converted between the 4 simplevar types
+**Note**: Every simplevar can be converted between the 4 simplevar types if the types are compatible
 **Note**: Only PT can be turned into `LIST`, Chars of the PT are turned into values of LIST (Split by char)
 
 
@@ -96,7 +96,7 @@ age ? w:26;               § Value is now changed.
 
 ## Length of a variable
 
-use LNGH to get the amount of characters or digits in a variable
+use LGTH to get the amount of characters or digits in a variable
 
 this function is available on: INT, PT, FLOAT
 
@@ -110,6 +110,7 @@ lengthOfA # INT:;
 
 a ? LGTH:lengthOfA;
 
+lengthOfA ? CT:PT;
 lengthOfA ? push:;    § outputs 6
 ```
 
@@ -216,7 +217,7 @@ message ? push:;           § Displays what the user typed
 
 ### Check type compatibility of value ( ? check)
 
-Use `? check:;` to check if the current value is compatible with a variable type
+Use `? check:` to check if the current value is compatible with a variable type
 
 ```zephyr
 value ? check:<* type>|<* targetVarName>;
@@ -269,7 +270,7 @@ count ? w:++|4;            § Add 4 to count
 
 
 ```zephyr
-<name> ? w:++|<*- decrementValue>;
+<name> ? w:--|<*- decrementValue>;
 
 count # INT:10;
 count ? w:--;              § decrement count by 1
@@ -301,11 +302,6 @@ pi # FLOAT:3.14;
 temperature # FLOAT:-5.5;
 ```
 
-### Displaying Floats
-
-```zephyr
-pi # FLOAT:3.14159;
-```
 
 ### Changing Float Value
 
@@ -369,9 +365,7 @@ is_active ? w:++;          § Toggle: ~1 becomes ~0
 is_active ? w:++;          § Toggle: ~0 becomes ~1
 ```
 
-### Converting Boolean to Integer/Float
-
-You can convert a boolean to INT/FLOAT:
+### Converting Boolean 
 
 ```zephyr
 <name> ? CT:<newType>;
@@ -380,4 +374,4 @@ is_active # BOOL:~1;
 is_active ? CT:INT;        § Convert to integer
 ```
 
-- **newType**: The newType has to either be `INT` or `FLOAT`
+- **newType**: The newType has to either be `INT` or `FLOAT` or `PT`

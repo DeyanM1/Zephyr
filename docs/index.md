@@ -4,7 +4,7 @@
 
 Zephyr is a unique programming language designed around **variables as the primary concept**. Unlike traditional languages where functions and classes are the focus, Zephyr puts variables at the center of everything. This makes it perfect for learning how programming languages actually work under the hood.
 
-All variables in Zephyr are lowercase, and the syntax is designed to be minimal yet powerful. You can use Zephyr to:
+The syntax is designed to be minimal yet powerful. You can use Zephyr to:
 - Store and manipulate data
 - Perform calculations
 - Build logic with conditions and loops
@@ -38,7 +38,7 @@ If you've always wondered how compilation and execution really work, Zephyr demy
 
 ## Getting Started
 
-Ready to dive in? Head over to the [Getting Started Guide](overview.md) to write your first Zephyr program..
+Ready to dive in? Head over to the [Getting Started Guide](overview.md) 
 
 
 
