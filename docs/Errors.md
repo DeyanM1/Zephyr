@@ -14,7 +14,7 @@
 | 107 | WriteProtection | Value cannot be changed. Variable is constant! |
 | 108 | TypeError | Current Variable type doesnt support new variable type! |
 | 109 | ListIndexError | List doesn't support position 0! |
-| 110 | WriteError | Only INT, PT, FLOAT are in- and decrementable! |
+| 110 | WriteError | Only INT, PT, FLOAT, BOOL are in- and decrementable! |
 | 111 | ConditionError | Error in Condition/Equation. |
 | 112 | ParamUnsupportedTypeError | Given variable isnt correct type! |
 | 113 | ParamUndefinedVariable | Given variable isnt defined! |
@@ -27,10 +27,10 @@
 | 120 | ListTypeError | Some Value in List doesnt match new Type |
 | 121 | ClassMissingFunctionReg | Class error! Variable doesnt have Function Registry! |
 | 122 | InvalidIndexError | PT insertion Error! Index can't be smaller than 1 |
-| 123 | IndexOutoFBounds | PT insertion Error! Index out of bounds! |
+| 123 | IndexOutOfBounds | PT insertion Error! Index out of bounds! |
 | 124 | ModuleNotFound | Module Not Found inside global / local dir |
 | 125 | UnknownListCollectionType | Unknown List collection type! Use: POS / NEG |
-| 126 | UncompletedIndexScobe | Uncompleted Index Scobe: Missing > in variable index. |
-| 127 | MathObjectNotFound | MO name not yet provided. use: ? w. |
+| 126 | IcompletedIndexScobe | Uncompleted Index Scobe: Missing > in variable index. |
+| 127 | MathObjectNotProvided | MO name not yet provided. use: ? w. |
 | 128 | KeyboardInterrupt | Program exited by KeyboardInterrupt |
 | 129 | UnknownPlaceholder | Placeholder not found |
